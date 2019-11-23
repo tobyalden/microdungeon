@@ -6,7 +6,7 @@ import entities.*;
 class GameScene extends Scene
 {
     override public function begin() {
-        add(new Player());
+        add(new Player(152, 82));
     }
 
     override public function update() {
