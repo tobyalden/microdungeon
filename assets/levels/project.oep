@@ -1,0 +1,11 @@
+<project> 
+	<name>Memory</name> 
+	<settings> 
+		<defaultWidth>320</defaultWidth>
+		<defaultHeight>180</defaultHeight>
+	</settings> 
+	<layers> 
+		<grid name="walls" gridSize="4" exportAsObjects="true"/>
+	</layers> 
+</project>
+

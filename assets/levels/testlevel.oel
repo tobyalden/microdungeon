@@ -1,0 +1,14 @@
+<level>
+  <width>320</width>
+  <height>180</height>
+  <walls>
+    <rect x="0" y="0" w="320" h="4"/>
+    <rect x="0" y="4" w="4" h="176"/>
+    <rect x="4" y="176" w="316" h="4"/>
+    <rect x="48" y="128" w="36" h="16"/>
+    <rect x="76" y="56" w="24" h="56"/>
+    <rect x="260" y="28" w="16" h="24"/>
+    <rect x="272" y="136" w="28" h="24"/>
+    <rect x="316" y="4" w="4" h="172"/>
+  </walls>
+</level>
