@@ -11,7 +11,7 @@ class Main extends Engine
         HXP.scene = new GameScene();
     }
 
-	override public function update() {
+    override public function update() {
         super.update();
     }
 }
