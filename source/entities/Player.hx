@@ -9,17 +9,21 @@ import haxepunk.math.*;
 class Player extends MiniEntity
 {
     public static inline var RUN_ACCEL = 100;
-    public static inline var RUN_DECEL = 100;
+    public static inline var RUN_ACCEL_TURN_MULTIPLIER = 2;
+    public static inline var RUN_DECEL = RUN_ACCEL * RUN_ACCEL_TURN_MULTIPLIER;
+    public static inline var AIR_ACCEL = 50;
+    public static inline var AIR_DECEL = 50;
     public static inline var MAX_RUN_SPEED = 100;
-    public static inline var GRAVITY = 200;
-    public static inline var GRAVITY_ON_WALL = 100;
+    public static inline var MAX_AIR_SPEED = 100;
+    public static inline var GRAVITY = 400;
+    public static inline var GRAVITY_ON_WALL = 150;
     public static inline var JUMP_POWER = 100;
-    public static inline var JUMP_CANCEL_POWER = 25;
-    public static inline var WALL_JUMP_POWER_X = 100;
-    public static inline var WALL_JUMP_POWER_Y = 100;
+    public static inline var JUMP_CANCEL_POWER = 40;
+    public static inline var WALL_JUMP_POWER_X = 140;
+    public static inline var WALL_JUMP_POWER_Y = 70;
     public static inline var WALL_STICKINESS = 30;
-    public static inline var MAX_FALL_SPEED = 100;
-    public static inline var MAX_FALL_SPEED_ON_WALL = 50;
+    public static inline var MAX_FALL_SPEED = 300;
+    public static inline var MAX_FALL_SPEED_ON_WALL = 200;
 
     private var sprite:Spritemap;
     private var velocity:Vector2;
@@ -48,17 +52,28 @@ class Player extends MiniEntity
     }
 
     private function movement() {
+        var accel = isOnGround() ? RUN_ACCEL : AIR_ACCEL;
+        if(
+            isOnGround() && (
+                Input.check("left") && velocity.x > 0
+                || Input.check("right") && velocity.x < 0
+            )
+        ) {
+            accel *= RUN_ACCEL_TURN_MULTIPLIER;
+        }
+        var decel = isOnGround() ? RUN_DECEL : AIR_DECEL;
         if(Input.check("left") && !isOnLeftWall()) {
-            velocity.x -= RUN_ACCEL * HXP.elapsed;
+            velocity.x -= accel * HXP.elapsed;
         }
         else if(Input.check("right") && !isOnRightWall()) {
-            velocity.x += RUN_ACCEL * HXP.elapsed;
+            velocity.x += accel * HXP.elapsed;
         }
         else if(!isOnWall()) {
             velocity.x = MathUtil.approach(
-                velocity.x, 0, RUN_DECEL * HXP.elapsed
+                velocity.x, 0, decel * HXP.elapsed
             );
         }
+        var maxSpeed = isOnGround() ? MAX_RUN_SPEED : MAX_AIR_SPEED;
         velocity.x = MathUtil.clamp(velocity.x, -MAX_RUN_SPEED, MAX_RUN_SPEED);
 
         if(isOnGround()) {
@@ -68,7 +83,8 @@ class Player extends MiniEntity
             }
         }
         else if(isOnWall()) {
-            velocity.y += GRAVITY_ON_WALL * HXP.elapsed;
+            var gravity = velocity.y > 0 ? GRAVITY_ON_WALL : GRAVITY;
+            velocity.y += gravity * HXP.elapsed;
             velocity.y = Math.min(velocity.y, MAX_FALL_SPEED_ON_WALL);
             if(Input.pressed("jump")) {
                 velocity.y = -WALL_JUMP_POWER_Y;
@@ -98,6 +114,11 @@ class Player extends MiniEntity
         else if(isOnRightWall()) {
             velocity.x = Math.min(velocity.x, WALL_STICKINESS);
         }
+        return true;
+    }
+
+    override public function moveCollideY(_:Entity) {
+        velocity.y = 0;
         return true;
     }
 
