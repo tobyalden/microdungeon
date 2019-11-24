@@ -20,13 +20,16 @@ class Player extends MiniEntity
     public static inline var JUMP_POWER = 160;
     public static inline var JUMP_CANCEL_POWER = 40;
     public static inline var WALL_JUMP_POWER_X = 130;
-    public static inline var WALL_JUMP_POWER_Y = 130;
+    public static inline var WALL_JUMP_POWER_Y = 120;
     public static inline var WALL_STICKINESS = 60;
     public static inline var MAX_FALL_SPEED = 270;
     public static inline var MAX_FALL_SPEED_ON_WALL = 200;
+    public static inline var DOUBLE_JUMP_POWER_X = 0;
+    public static inline var DOUBLE_JUMP_POWER_Y = 130;
 
     private var sprite:Spritemap;
     private var velocity:Vector2;
+    private var canDoubleJump:Bool;
 
     public function new(x:Float, y:Float) {
         super(x, y);
@@ -43,6 +46,7 @@ class Player extends MiniEntity
         graphic = sprite;
         mask = new Hitbox(6, 12, -1, 0);
         velocity = new Vector2();
+        canDoubleJump = false;
     }
 
     override public function update() {
@@ -77,6 +81,7 @@ class Player extends MiniEntity
         velocity.x = MathUtil.clamp(velocity.x, -maxSpeed, maxSpeed);
 
         if(isOnGround()) {
+            canDoubleJump = true;
             velocity.y = 0;
             if(Input.pressed("jump")) {
                 velocity.y = -JUMP_POWER;
@@ -94,6 +99,16 @@ class Player extends MiniEntity
             }
         }
         else {
+            if(Input.pressed("jump") && canDoubleJump) {
+                velocity.y = -DOUBLE_JUMP_POWER_Y;
+                if(velocity.x > 0 && Input.check("left")) {
+                    velocity.x = -DOUBLE_JUMP_POWER_X;
+                }
+                else if(velocity.x < 0 && Input.check("right")) {
+                    velocity.x = DOUBLE_JUMP_POWER_X;
+                }
+                canDoubleJump = false;
+            }
             if(Input.released("jump")) {
                 velocity.y = Math.max(velocity.y, -JUMP_CANCEL_POWER);
             }
