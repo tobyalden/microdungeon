@@ -8,21 +8,21 @@ import haxepunk.math.*;
 
 class Player extends MiniEntity
 {
-    public static inline var RUN_ACCEL = 100;
+    public static inline var RUN_ACCEL = 400;
     public static inline var RUN_ACCEL_TURN_MULTIPLIER = 2;
     public static inline var RUN_DECEL = RUN_ACCEL * RUN_ACCEL_TURN_MULTIPLIER;
-    public static inline var AIR_ACCEL = 50;
-    public static inline var AIR_DECEL = 50;
+    public static inline var AIR_ACCEL = 360;
+    public static inline var AIR_DECEL = 360;
     public static inline var MAX_RUN_SPEED = 100;
-    public static inline var MAX_AIR_SPEED = 100;
-    public static inline var GRAVITY = 400;
+    public static inline var MAX_AIR_SPEED = 120;
+    public static inline var GRAVITY = 500;
     public static inline var GRAVITY_ON_WALL = 150;
-    public static inline var JUMP_POWER = 100;
+    public static inline var JUMP_POWER = 160;
     public static inline var JUMP_CANCEL_POWER = 40;
-    public static inline var WALL_JUMP_POWER_X = 140;
-    public static inline var WALL_JUMP_POWER_Y = 70;
-    public static inline var WALL_STICKINESS = 30;
-    public static inline var MAX_FALL_SPEED = 300;
+    public static inline var WALL_JUMP_POWER_X = 130;
+    public static inline var WALL_JUMP_POWER_Y = 130;
+    public static inline var WALL_STICKINESS = 60;
+    public static inline var MAX_FALL_SPEED = 270;
     public static inline var MAX_FALL_SPEED_ON_WALL = 200;
 
     private var sprite:Spritemap;
@@ -74,7 +74,7 @@ class Player extends MiniEntity
             );
         }
         var maxSpeed = isOnGround() ? MAX_RUN_SPEED : MAX_AIR_SPEED;
-        velocity.x = MathUtil.clamp(velocity.x, -MAX_RUN_SPEED, MAX_RUN_SPEED);
+        velocity.x = MathUtil.clamp(velocity.x, -maxSpeed, maxSpeed);
 
         if(isOnGround()) {
             velocity.y = 0;
