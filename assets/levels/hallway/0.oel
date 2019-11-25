@@ -3,8 +3,8 @@
   <height>180</height>
   <walls>
     <rect x="0" y="0" w="320" h="4"/>
-    <rect x="0" y="4" w="4" h="176"/>
-    <rect x="4" y="176" w="316" h="4"/>
-    <rect x="316" y="4" w="4" h="172"/>
+    <rect x="0" y="4" w="4" h="60"/>
+    <rect x="0" y="112" w="320" h="68"/>
+    <rect x="316" y="4" w="4" h="60"/>
   </walls>
 </level>
