@@ -18,6 +18,8 @@ class Boomerang extends MiniEntity
     private var initialVelocity:Vector2;
     private var age:Float;
 
+    private var sfx:Map<String, Sfx>;
+
     public function new(player:Player, heading:Vector2) {
         super(player.centerX, player.centerY);
         type = "boomerang";
@@ -33,11 +35,21 @@ class Boomerang extends MiniEntity
             'graphics/boomerang${player.playerNumber}.png', 8, 8
         );
         graphic = sprite;
+        sfx = [
+            "whoosh" => new Sfx("audio/whoosh.wav"),
+            "catch" => new Sfx("audio/catch.wav")
+        ];
+        sfx["whoosh"].loop();
+    }
+
+    public function destroy() {
+        sfx["whoosh"].stop();
+        scene.remove(this);
     }
 
     override public function update() {
         if(player.isDead) {
-            scene.remove(this);
+            destroy();
         }
         var towardsPlayer = new Vector2(
             player.centerX - centerX, player.centerY - centerY
@@ -56,12 +68,14 @@ class Boomerang extends MiniEntity
         );
         towardsPlayer.scale(HXP.elapsed);
         if(age > 0.1 && towardsPlayer.length > distanceFromPlayer) {
-            scene.remove(this);
+            destroy();
+            sfx["catch"].play();
         }
         else {
             moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed);
         }
         super.update();
         age += HXP.elapsed;
+        sfx["whoosh"].volume = velocity.length / MAX_SPEED;
     }
 }

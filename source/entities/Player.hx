@@ -32,6 +32,8 @@ class Player extends MiniEntity
     private var sprite:Spritemap;
     private var velocity:Vector2;
     private var canDoubleJump:Bool;
+    private var wasOnGround:Bool;
+    private var sfx:Map<String, Sfx>;
 
     public function new(x:Float, y:Float, playerNumber:Int) {
         super(x, y);
@@ -49,7 +51,18 @@ class Player extends MiniEntity
         mask = new Hitbox(6, 12, -1, 0);
         velocity = new Vector2();
         canDoubleJump = false;
+        wasOnGround = false;
         isDead = false;
+        sfx = [
+            "jump" => new Sfx("audio/jump.wav"),
+            "doublejump" => new Sfx("audio/doublejump.wav"),
+            "land" => new Sfx("audio/land.wav"),
+            "run" => new Sfx("audio/run.wav"),
+            "skid" => new Sfx("audio/skid.wav"),
+            "toss" => new Sfx("audio/toss.wav"),
+            "wallslide" => new Sfx("audio/wallslide.wav"),
+            "death" => new Sfx("audio/death.wav")
+        ];
     }
 
     override public function update() {
@@ -66,6 +79,7 @@ class Player extends MiniEntity
         visible = false;
         collidable = false;
         explode();
+        sfx["death"].play();
     }
 
     private function explode() {
@@ -117,6 +131,7 @@ class Player extends MiniEntity
             }
             var boomerang = new Boomerang(this, boomerangHeading);
             scene.add(boomerang);
+            sfx["toss"].play();
         }
     }
 
@@ -146,10 +161,14 @@ class Player extends MiniEntity
         velocity.x = MathUtil.clamp(velocity.x, -maxSpeed, maxSpeed);
 
         if(isOnGround()) {
+            if(!wasOnGround) {
+                sfx["land"].play();
+            }
             canDoubleJump = true;
             velocity.y = 0;
             if(Main.inputPressed("jump", playerNumber)) {
                 velocity.y = -JUMP_POWER;
+                sfx["jump"].play();
             }
         }
         else if(isOnWall()) {
@@ -166,6 +185,7 @@ class Player extends MiniEntity
         else {
             if(Main.inputPressed("jump", playerNumber) && canDoubleJump) {
                 velocity.y = -DOUBLE_JUMP_POWER_Y;
+                sfx["doublejump"].play();
                 if(
                     velocity.x > 0 && Main.inputCheck("left", playerNumber)
                 ) {
@@ -185,6 +205,7 @@ class Player extends MiniEntity
             velocity.y = Math.min(velocity.y, MAX_FALL_SPEED);
         }
 
+        wasOnGround = isOnGround();
         moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
     }
 
@@ -207,9 +228,12 @@ class Player extends MiniEntity
     }
 
     private function animation() {
+        var playRunSfx = false;
+        var playWallSlideSfx = false;
         if(!isOnGround()) {
             if(isOnWall()) {
                 sprite.play("wall");
+                playWallSlideSfx = true;
                 sprite.flipX = isOnLeftWall();
             }
             else {
@@ -228,14 +252,39 @@ class Player extends MiniEntity
                 || velocity.x < 0 && Main.inputCheck("right", playerNumber)
             ) {
                 sprite.play("skid");
+                if(!sfx["skid"].playing) {
+                    sfx["skid"].play();
+                }
             }
             else {
                 sprite.play("run");
+                playRunSfx = true;
             }
             sprite.flipX = velocity.x < 0;
         }
         else {
             sprite.play("idle");
+        }
+
+        if(playRunSfx) {
+            if(!sfx["run"].playing) {
+                sfx["run"].loop();
+            }
+        }
+        else {
+            sfx["run"].stop();
+        }
+
+        if(playWallSlideSfx) {
+            sfx["wallslide"].volume = Math.abs(
+                velocity.y / MAX_FALL_SPEED_ON_WALL
+            );
+            if(!sfx["wallslide"].playing) {
+                sfx["wallslide"].loop();
+            }
+        }
+        else {
+            sfx["wallslide"].stop();
         }
     }
 }
