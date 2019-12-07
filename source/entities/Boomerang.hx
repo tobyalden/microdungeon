@@ -5,6 +5,7 @@ import haxepunk.graphics.*;
 import haxepunk.input.*;
 import haxepunk.masks.*;
 import haxepunk.math.*;
+import scenes.*;
 
 class Boomerang extends MiniEntity
 {
@@ -22,6 +23,7 @@ class Boomerang extends MiniEntity
 
     public function new(player:Player, heading:Vector2) {
         super(player.centerX, player.centerY);
+        name = 'boomerang${player.playerNumber}';
         type = "boomerang";
         this.player = player;
         mask = new Hitbox(8, 8);
@@ -40,6 +42,12 @@ class Boomerang extends MiniEntity
             "catch" => new Sfx("audio/catch.wav")
         ];
         sfx["whoosh"].loop();
+    }
+
+    public function stopAllSfx() {
+        for(s in sfx) {
+            s.stop();
+        }
     }
 
     public function destroy() {

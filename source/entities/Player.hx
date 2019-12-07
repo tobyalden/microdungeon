@@ -5,6 +5,7 @@ import haxepunk.graphics.*;
 import haxepunk.input.*;
 import haxepunk.masks.*;
 import haxepunk.math.*;
+import scenes.*;
 
 class Player extends MiniEntity
 {
@@ -65,6 +66,12 @@ class Player extends MiniEntity
         ];
     }
 
+    public function stopAllSfx() {
+        for(s in sfx) {
+            s.stop();
+        }
+    }
+
     override public function update() {
         if(!isDead) {
             combat();
@@ -80,6 +87,7 @@ class Player extends MiniEntity
         collidable = false;
         explode();
         sfx["death"].play();
+        cast(scene, GameScene).onDeath();
     }
 
     private function explode() {
@@ -268,7 +276,9 @@ class Player extends MiniEntity
 
         if(playRunSfx) {
             if(!sfx["run"].playing) {
-                sfx["run"].loop();
+                if(!cast(scene, GameScene).allSfxStopped) {
+                    sfx["run"].loop();
+                }
             }
         }
         else {
@@ -280,7 +290,9 @@ class Player extends MiniEntity
                 velocity.y / MAX_FALL_SPEED_ON_WALL
             );
             if(!sfx["wallslide"].playing) {
-                sfx["wallslide"].loop();
+                if(!cast(scene, GameScene).allSfxStopped) {
+                    sfx["wallslide"].loop();
+                }
             }
         }
         else {
