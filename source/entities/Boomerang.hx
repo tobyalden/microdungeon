@@ -11,14 +11,16 @@ class Boomerang extends MiniEntity
     public static inline var MAX_SPEED = 300;
     public static inline var RETURN_RATE = 0.75;
 
+    private var player:Player;
     private var sprite:Spritemap;
     private var velocity:Vector2;
 
     private var initialVelocity:Vector2;
     private var age:Float;
 
-    public function new(source:Entity, heading:Vector2) {
-        super(source.centerX, source.centerY);
+    public function new(player:Player, heading:Vector2) {
+        super(player.centerX, player.centerY);
+        this.player = player;
         mask = new Hitbox(8, 8);
         x -= width / 2;
         y -= height / 2;
@@ -26,12 +28,13 @@ class Boomerang extends MiniEntity
         velocity.normalize(MAX_SPEED);
         initialVelocity = velocity.clone();
         age = 0;
-        sprite = new Spritemap("graphics/boomerang.png", 8, 8);
+        sprite = new Spritemap(
+            'graphics/boomerang${player.playerNumber}.png', 8, 8
+        );
         graphic = sprite;
     }
 
     override public function update() {
-        var player = scene.getInstance("player");
         var towardsPlayer = new Vector2(
             player.centerX - centerX, player.centerY - centerY
         );

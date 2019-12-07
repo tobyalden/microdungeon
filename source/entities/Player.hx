@@ -27,20 +27,16 @@ class Player extends MiniEntity
     public static inline var DOUBLE_JUMP_POWER_X = 0;
     public static inline var DOUBLE_JUMP_POWER_Y = 130;
 
+    public var playerNumber(default, null):Int;
     private var sprite:Spritemap;
     private var velocity:Vector2;
     private var canDoubleJump:Bool;
 
-    public function new(x:Float, y:Float) {
+    public function new(x:Float, y:Float, playerNumber:Int) {
         super(x, y);
-        name = "player";
-        Key.define("left", [Key.LEFT, Key.LEFT_SQUARE_BRACKET]);
-        Key.define("right", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET]);
-        Key.define("up", [Key.UP]);
-        Key.define("down", [Key.DOWN]);
-        Key.define("jump", [Key.Z]);
-        Key.define("attack", [Key.X]);
-        sprite = new Spritemap("graphics/player.png", 8, 12);
+        this.playerNumber = playerNumber;
+        name = 'player${playerNumber}';
+        sprite = new Spritemap('graphics/player${playerNumber}.png', 8, 12);
         sprite.add("idle", [0]);
         sprite.add("run", [1, 2, 3, 2], 8);
         sprite.add("jump", [4]);
@@ -61,12 +57,12 @@ class Player extends MiniEntity
     }
 
     private function combat() {
-        if(Input.pressed("attack")) {
+        if(Main.inputPressed("act", playerNumber)) {
             var boomerangHeading = new Vector2(sprite.flipX ? -1 : 1, 0);
-            if(Input.check("up")) {
+            if(Main.inputCheck("up", playerNumber)) {
                 boomerangHeading.y = -1;
             }
-            else if(Input.check("down")) {
+            else if(Main.inputCheck("down", playerNumber)) {
                 boomerangHeading.y = 1;
             }
             var boomerang = new Boomerang(this, boomerangHeading);
@@ -78,17 +74,17 @@ class Player extends MiniEntity
         var accel = isOnGround() ? RUN_ACCEL : AIR_ACCEL;
         if(
             isOnGround() && (
-                Input.check("left") && velocity.x > 0
-                || Input.check("right") && velocity.x < 0
+                Main.inputCheck("left", playerNumber) && velocity.x > 0
+                || Main.inputCheck("right", playerNumber) && velocity.x < 0
             )
         ) {
             accel *= RUN_ACCEL_TURN_MULTIPLIER;
         }
         var decel = isOnGround() ? RUN_DECEL : AIR_DECEL;
-        if(Input.check("left") && !isOnLeftWall()) {
+        if(Main.inputCheck("left", playerNumber) && !isOnLeftWall()) {
             velocity.x -= accel * HXP.elapsed;
         }
-        else if(Input.check("right") && !isOnRightWall()) {
+        else if(Main.inputCheck("right", playerNumber) && !isOnRightWall()) {
             velocity.x += accel * HXP.elapsed;
         }
         else if(!isOnWall()) {
@@ -102,7 +98,7 @@ class Player extends MiniEntity
         if(isOnGround()) {
             canDoubleJump = true;
             velocity.y = 0;
-            if(Input.pressed("jump")) {
+            if(Main.inputPressed("jump", playerNumber)) {
                 velocity.y = -JUMP_POWER;
             }
         }
@@ -110,7 +106,7 @@ class Player extends MiniEntity
             var gravity = velocity.y > 0 ? GRAVITY_ON_WALL : GRAVITY;
             velocity.y += gravity * HXP.elapsed;
             velocity.y = Math.min(velocity.y, MAX_FALL_SPEED_ON_WALL);
-            if(Input.pressed("jump")) {
+            if(Main.inputPressed("jump", playerNumber)) {
                 velocity.y = -WALL_JUMP_POWER_Y;
                 velocity.x = (
                     isOnLeftWall() ? WALL_JUMP_POWER_X : -WALL_JUMP_POWER_X
@@ -118,17 +114,21 @@ class Player extends MiniEntity
             }
         }
         else {
-            if(Input.pressed("jump") && canDoubleJump) {
+            if(Main.inputPressed("jump", playerNumber) && canDoubleJump) {
                 velocity.y = -DOUBLE_JUMP_POWER_Y;
-                if(velocity.x > 0 && Input.check("left")) {
+                if(
+                    velocity.x > 0 && Main.inputCheck("left", playerNumber)
+                ) {
                     velocity.x = -DOUBLE_JUMP_POWER_X;
                 }
-                else if(velocity.x < 0 && Input.check("right")) {
+                else if(
+                    velocity.x < 0 && Main.inputCheck("right", playerNumber)
+                ) {
                     velocity.x = DOUBLE_JUMP_POWER_X;
                 }
                 canDoubleJump = false;
             }
-            if(Input.released("jump")) {
+            if(Main.inputReleased("jump", playerNumber)) {
                 velocity.y = Math.max(velocity.y, -JUMP_CANCEL_POWER);
             }
             velocity.y += GRAVITY * HXP.elapsed;
@@ -164,18 +164,18 @@ class Player extends MiniEntity
             }
             else {
                 sprite.play("jump");
-                if(Input.check("left")) {
+                if(Main.inputCheck("left", playerNumber)) {
                     sprite.flipX = true;
                 }
-                else if(Input.check("right")) {
+                else if(Main.inputCheck("right", playerNumber)) {
                     sprite.flipX = false;
                 }
             }
         }
         else if(velocity.x != 0) {
             if(
-                velocity.x > 0 && Input.check("left")
-                || velocity.x < 0 && Input.check("right")
+                velocity.x > 0 && Main.inputCheck("left", playerNumber)
+                || velocity.x < 0 && Main.inputCheck("right", playerNumber)
             ) {
                 sprite.play("skid");
             }
