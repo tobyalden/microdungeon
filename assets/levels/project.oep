@@ -3,9 +3,15 @@
 	<settings> 
 		<defaultWidth>320</defaultWidth>
 		<defaultHeight>180</defaultHeight>
+		<workingDirectory>../graphics</workingDirectory>
 	</settings> 
+	<objects>
+		<object name="player1" image="player1icon.png" width="8" height="12" limit="1"/>
+		<object name="player2" image="player2icon.png" width="8" height="12" limit="1"/>
+	</objects>
 	<layers> 
 		<grid name="walls" gridSize="4" exportAsObjects="true"/>
+		<objects name="objects" gridSize="4"/>
 	</layers> 
 </project>
 

@@ -9,6 +9,7 @@ class Level extends Entity
 {
     public static inline var TILE_SIZE = 4;
 
+    public var entities(default, null):Array<Entity>;
     private var walls:Grid;
     private var tiles:Tilemap;
 
@@ -41,6 +42,20 @@ class Level extends Entity
                 Std.int(Std.parseInt(r.att.w) / TILE_SIZE),
                 Std.int(Std.parseInt(r.att.h) / TILE_SIZE)
             );
+        }
+
+        entities = new Array<Entity>();
+        if(fastXml.hasNode.objects) {
+            for (e in fastXml.node.objects.nodes.player1) {
+                entities.push(new Player(
+                    Std.parseInt(e.att.x), Std.parseInt(e.att.y), 1
+                ));
+            }
+            for (e in fastXml.node.objects.nodes.player2) {
+                entities.push(new Player(
+                    Std.parseInt(e.att.x), Std.parseInt(e.att.y), 2
+                ));
+            }
         }
     }
 

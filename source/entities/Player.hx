@@ -38,6 +38,7 @@ class Player extends MiniEntity
         this.playerNumber = playerNumber;
         name = 'player${playerNumber}';
         sprite = new Spritemap('graphics/player${playerNumber}.png', 8, 12);
+        sprite.flipX = playerNumber == 2;
         sprite.add("idle", [0]);
         sprite.add("run", [1, 2, 3, 2], 8);
         sprite.add("jump", [4]);
