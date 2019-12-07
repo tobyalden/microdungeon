@@ -11,7 +11,7 @@ class Boomerang extends MiniEntity
     public static inline var MAX_SPEED = 300;
     public static inline var RETURN_RATE = 0.75;
 
-    private var player:Player;
+    public var player(default, null):Player;
     private var sprite:Spritemap;
     private var velocity:Vector2;
 
@@ -20,6 +20,7 @@ class Boomerang extends MiniEntity
 
     public function new(player:Player, heading:Vector2) {
         super(player.centerX, player.centerY);
+        type = "boomerang";
         this.player = player;
         mask = new Hitbox(8, 8);
         x -= width / 2;
@@ -35,6 +36,9 @@ class Boomerang extends MiniEntity
     }
 
     override public function update() {
+        if(player.isDead) {
+            scene.remove(this);
+        }
         var towardsPlayer = new Vector2(
             player.centerX - centerX, player.centerY - centerY
         );

@@ -28,6 +28,7 @@ class Player extends MiniEntity
     public static inline var DOUBLE_JUMP_POWER_Y = 130;
 
     public var playerNumber(default, null):Int;
+    public var isDead(default, null):Bool;
     private var sprite:Spritemap;
     private var velocity:Vector2;
     private var canDoubleJump:Bool;
@@ -47,16 +48,32 @@ class Player extends MiniEntity
         mask = new Hitbox(6, 12, -1, 0);
         velocity = new Vector2();
         canDoubleJump = false;
+        isDead = false;
     }
 
     override public function update() {
-        combat();
-        movement();
-        animation();
+        if(!isDead) {
+            combat();
+            movement();
+            animation();
+        }
         super.update();
     }
 
+    private function die() {
+        isDead = true;
+        visible = false;
+    }
+
     private function combat() {
+        var _enemyBoomerang = collide("boomerang", x, y);
+        if(_enemyBoomerang != null) {
+            var enemyBoomerang = cast(_enemyBoomerang, Boomerang);
+            if(enemyBoomerang.player.playerNumber != playerNumber) {
+                die();
+            }
+        }
+
         if(Main.inputPressed("act", playerNumber)) {
             var boomerangHeading = new Vector2(sprite.flipX ? -1 : 1, 0);
             if(Main.inputCheck("up", playerNumber)) {
