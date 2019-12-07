@@ -8,7 +8,7 @@ import haxepunk.math.*;
 
 class Boomerang extends MiniEntity
 {
-    public static inline var MAX_SPEED = 200;
+    public static inline var MAX_SPEED = 300;
     public static inline var RETURN_RATE = 0.75;
 
     private var sprite:Spritemap;

@@ -164,7 +164,12 @@ class Player extends MiniEntity
             }
             else {
                 sprite.play("jump");
-                sprite.flipX = velocity.x < 0;
+                if(Input.check("left")) {
+                    sprite.flipX = true;
+                }
+                else if(Input.check("right")) {
+                    sprite.flipX = false;
+                }
             }
         }
         else if(velocity.x != 0) {
