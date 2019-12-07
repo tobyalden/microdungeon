@@ -33,9 +33,13 @@ class Player extends MiniEntity
 
     public function new(x:Float, y:Float) {
         super(x, y);
+        name = "player";
         Key.define("left", [Key.LEFT, Key.LEFT_SQUARE_BRACKET]);
         Key.define("right", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET]);
+        Key.define("up", [Key.UP]);
+        Key.define("down", [Key.DOWN]);
         Key.define("jump", [Key.Z]);
+        Key.define("attack", [Key.X]);
         sprite = new Spritemap("graphics/player.png", 8, 12);
         sprite.add("idle", [0]);
         sprite.add("run", [1, 2, 3, 2], 8);
@@ -50,9 +54,24 @@ class Player extends MiniEntity
     }
 
     override public function update() {
+        combat();
         movement();
         animation();
         super.update();
+    }
+
+    private function combat() {
+        if(Input.pressed("attack")) {
+            var boomerangHeading = new Vector2(sprite.flipX ? -1 : 1, 0);
+            if(Input.check("up")) {
+                boomerangHeading.y = -1;
+            }
+            else if(Input.check("down")) {
+                boomerangHeading.y = 1;
+            }
+            var boomerang = new Boomerang(this, boomerangHeading);
+            scene.add(boomerang);
+        }
     }
 
     private function movement() {
