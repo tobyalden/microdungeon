@@ -63,6 +63,38 @@ class Player extends MiniEntity
     private function die() {
         isDead = true;
         visible = false;
+        collidable = false;
+        explode();
+    }
+
+    private function explode() {
+        var numExplosions = 100;
+        var directions = new Array<Vector2>();
+        for(i in 0...numExplosions) {
+            var angle = (2/numExplosions) * i;
+            directions.push(new Vector2(Math.cos(angle), Math.sin(angle)));
+            directions.push(new Vector2(-Math.cos(angle), Math.sin(angle)));
+            directions.push(new Vector2(Math.cos(angle), -Math.sin(angle)));
+            directions.push(new Vector2(-Math.cos(angle), -Math.sin(angle)));
+        }
+        var count = 0;
+        for(direction in directions) {
+            direction.scale(0.8 * Math.random());
+            direction.normalize(
+                Math.max(0.1 + 0.2 * Math.random(), direction.length)
+            );
+            var explosion = new Particle(
+                centerX, centerY, directions[count]
+            );
+            explosion.layer = -99;
+            scene.add(explosion);
+            count++;
+        }
+
+#if desktop
+        Sys.sleep(0.02);
+#end
+        scene.camera.shake(2, 8);
     }
 
     private function combat() {
