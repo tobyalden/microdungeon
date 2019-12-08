@@ -156,7 +156,10 @@ class Player extends MiniEntity
         var _enemyBoomerang = collide("boomerang", x, y);
         if(_enemyBoomerang != null) {
             var enemyBoomerang = cast(_enemyBoomerang, Boomerang);
-            if(enemyBoomerang.player.playerNumber != playerNumber) {
+            if(
+                enemyBoomerang.player.playerNumber != playerNumber
+                && !dodgeTimer.active
+            ) {
                 die();
             }
         }
@@ -261,6 +264,7 @@ class Player extends MiniEntity
         if(isOnGround()) {
             if(!wasOnGround) {
                 sfx["land"].play();
+                makeDustAtFeet();
             }
             canDoubleJump = true;
             canDodge = true;
@@ -268,6 +272,7 @@ class Player extends MiniEntity
             if(Main.inputPressed("jump", playerNumber)) {
                 velocity.y = -JUMP_POWER;
                 sfx["jump"].play();
+                makeDustAtFeet();
             }
         }
         else if(isOnWall()) {
@@ -283,12 +288,14 @@ class Player extends MiniEntity
                     isOnLeftWall() ? WALL_JUMP_POWER_X : -WALL_JUMP_POWER_X
                 );
                 sfx["jump"].play();
+                makeDustOnWall(isOnLeftWall(), false);
             }
         }
         else {
             if(Main.inputPressed("jump", playerNumber) && canDoubleJump) {
                 velocity.y = -DOUBLE_JUMP_POWER_Y;
                 sfx["doublejump"].play();
+                makeDustAtFeet();
                 if(
                     velocity.x > 0 && Main.inputCheck("left", playerNumber)
                 ) {
@@ -340,6 +347,33 @@ class Player extends MiniEntity
     override public function moveCollideY(_:Entity) {
         velocity.y = 0;
         return true;
+    }
+
+    private function makeDustOnWall(isLeftWall:Bool, fromSlide:Bool) {
+        var dust:Dust;
+        if(fromSlide) {
+            if(isLeftWall) {
+                dust = new Dust(left - 2, centerY - 5, "slide");
+            }
+            else {
+                dust = new Dust(right - 4, centerY - 5, "slide");
+            }
+        }
+        else {
+            if(isLeftWall) {
+                dust = new Dust(x + 1, y + 2, "wall");
+            }
+            else {
+                dust = new Dust(x + width - 3, y + 2, "wall");
+                dust.sprite.flipX = true;
+            }
+        }
+        scene.add(dust);
+    }
+
+    private function makeDustAtFeet() {
+        var dust = new Dust(x, bottom - 4, "ground");
+        scene.add(dust);
     }
 
     private function animation() {
@@ -394,6 +428,20 @@ class Player extends MiniEntity
         }
 
         if(playWallSlideSfx) {
+            if(velocity.y > 0) {
+                if(
+                    isOnLeftWall() &&
+                    scene.collidePoint("walls", left - 1, top) != null
+                ) {
+                    makeDustOnWall(true, true);
+                }
+                else if(
+                    isOnRightWall() &&
+                    scene.collidePoint("walls", x + width + 1, top) != null
+                ) {
+                    makeDustOnWall(false, true);
+                }
+            }
             sfx["wallslide"].volume = Math.abs(
                 velocity.y / MAX_FALL_SPEED_ON_WALL
             );
