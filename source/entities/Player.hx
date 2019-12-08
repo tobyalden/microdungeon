@@ -32,6 +32,7 @@ class Player extends MiniEntity
     public static inline var DOUBLE_JUMP_POWER_X = 0;
     public static inline var DOUBLE_JUMP_POWER_Y = 130;
     public static inline var DODGE_DURATION = 0.13;
+    public static inline var DODGE_COOLDOWN = 0.13;
     public static inline var DODGE_SPEED = 260;
 
     public var playerNumber(default, null):Int;
@@ -40,7 +41,10 @@ class Player extends MiniEntity
     private var velocity:Vector2;
     private var canDoubleJump:Bool;
     private var wasOnGround:Bool;
+    private var wasOnWall:Bool;
     private var dodgeTimer:Alarm;
+    private var dodgeCooldown:Alarm;
+    private var canDodge:Bool;
     private var sfx:Map<String, Sfx>;
 
     public function new(x:Float, y:Float, playerNumber:Int) {
@@ -60,6 +64,7 @@ class Player extends MiniEntity
         velocity = new Vector2();
         canDoubleJump = false;
         wasOnGround = false;
+        wasOnWall = false;
         isDead = false;
         dodgeTimer = new Alarm(DODGE_DURATION);
         dodgeTimer.onComplete.bind(function() {
@@ -69,8 +74,12 @@ class Player extends MiniEntity
             else if(velocity.y > 0) {
                 velocity.y = MAX_FALL_SPEED / 2;
             }
+            dodgeCooldown.start();
         });
-        addTween(dodgeTimer, true);
+        addTween(dodgeTimer);
+        dodgeCooldown = new Alarm(DODGE_COOLDOWN);
+        addTween(dodgeCooldown);
+        canDodge = false;
         sfx = [
             "jump" => new Sfx("audio/jump.wav"),
             "doublejump" => new Sfx("audio/doublejump.wav"),
@@ -79,7 +88,8 @@ class Player extends MiniEntity
             "skid" => new Sfx("audio/skid.wav"),
             "toss" => new Sfx("audio/toss.wav"),
             "wallslide" => new Sfx("audio/wallslide.wav"),
-            "death" => new Sfx("audio/death.wav")
+            "death" => new Sfx("audio/death.wav"),
+            "dodge" => new Sfx("audio/dodge.wav")
         ];
     }
 
@@ -190,7 +200,12 @@ class Player extends MiniEntity
     }
 
     private function movement() {
-        if(Main.inputPressed("dodge", playerNumber)) {
+        if(
+            Main.inputPressed("dodge", playerNumber)
+            && !dodgeTimer.active
+            && !dodgeCooldown.active
+            && canDodge
+        ) {
             var dodgeHeading = new Vector2(sprite.flipX ? -1 : 1, 0);
             if(
                 !Main.inputCheck("left", playerNumber)
@@ -212,6 +227,8 @@ class Player extends MiniEntity
             velocity = dodgeHeading;
             velocity.normalize(DODGE_SPEED);
             dodgeTimer.start();
+            canDodge = false;
+            sfx["dodge"].play();
             return;
         }
 
@@ -246,6 +263,7 @@ class Player extends MiniEntity
                 sfx["land"].play();
             }
             canDoubleJump = true;
+            canDodge = true;
             velocity.y = 0;
             if(Main.inputPressed("jump", playerNumber)) {
                 velocity.y = -JUMP_POWER;
@@ -253,6 +271,9 @@ class Player extends MiniEntity
             }
         }
         else if(isOnWall()) {
+            if(!wasOnWall) {
+                sfx["land"].play();
+            }
             var gravity:Float = velocity.y > 0 ? GRAVITY_ON_WALL : GRAVITY;
             velocity.y += gravity * HXP.elapsed;
             velocity.y = Math.min(velocity.y, MAX_FALL_SPEED_ON_WALL);
@@ -261,6 +282,7 @@ class Player extends MiniEntity
                 velocity.x = (
                     isOnLeftWall() ? WALL_JUMP_POWER_X : -WALL_JUMP_POWER_X
                 );
+                sfx["jump"].play();
             }
         }
         else {
@@ -298,6 +320,7 @@ class Player extends MiniEntity
         }
 
         wasOnGround = isOnGround();
+        wasOnWall = isOnWall();
         moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
     }
 
@@ -320,6 +343,7 @@ class Player extends MiniEntity
     }
 
     private function animation() {
+        sprite.color = dodgeTimer.active ? 0x000000 : 0xFFFFFF;
         var playRunSfx = false;
         var playWallSlideSfx = false;
         if(!isOnGround()) {
