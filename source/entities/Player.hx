@@ -17,6 +17,7 @@ class Player extends MiniEntity
     public static inline var MAX_RUN_SPEED = 100;
     public static inline var MAX_AIR_SPEED = 120;
     public static inline var GRAVITY = 500;
+    public static inline var FASTFALL_GRAVITY = 1200;
     public static inline var GRAVITY_ON_WALL = 150;
     public static inline var JUMP_POWER = 160;
     public static inline var JUMP_CANCEL_POWER = 40;
@@ -25,6 +26,7 @@ class Player extends MiniEntity
     public static inline var WALL_STICKINESS = 60;
     public static inline var MAX_FALL_SPEED = 270;
     public static inline var MAX_FALL_SPEED_ON_WALL = 200;
+    public static inline var MAX_FASTFALL_SPEED = 500;
     public static inline var DOUBLE_JUMP_POWER_X = 0;
     public static inline var DOUBLE_JUMP_POWER_Y = 130;
 
@@ -200,7 +202,7 @@ class Player extends MiniEntity
             }
         }
         else if(isOnWall()) {
-            var gravity = velocity.y > 0 ? GRAVITY_ON_WALL : GRAVITY;
+            var gravity:Float = velocity.y > 0 ? GRAVITY_ON_WALL : GRAVITY;
             velocity.y += gravity * HXP.elapsed;
             velocity.y = Math.min(velocity.y, MAX_FALL_SPEED_ON_WALL);
             if(Main.inputPressed("jump", playerNumber)) {
@@ -229,8 +231,17 @@ class Player extends MiniEntity
             if(Main.inputReleased("jump", playerNumber)) {
                 velocity.y = Math.max(velocity.y, -JUMP_CANCEL_POWER);
             }
-            velocity.y += GRAVITY * HXP.elapsed;
-            velocity.y = Math.min(velocity.y, MAX_FALL_SPEED);
+            var gravity:Float = GRAVITY;
+            var maxFallSpeed:Float = MAX_FALL_SPEED;
+            if(
+                Main.inputCheck("down", playerNumber)
+                && velocity.y > -JUMP_CANCEL_POWER
+            ) {
+                gravity = FASTFALL_GRAVITY;
+                maxFallSpeed = MAX_FASTFALL_SPEED;
+            }
+            velocity.y += gravity * HXP.elapsed;
+            velocity.y = Math.min(velocity.y, maxFallSpeed);
         }
 
         wasOnGround = isOnGround();
