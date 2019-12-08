@@ -5,6 +5,8 @@ import haxepunk.graphics.*;
 import haxepunk.input.*;
 import haxepunk.masks.*;
 import haxepunk.math.*;
+import haxepunk.Tween;
+import haxepunk.tweens.misc.*;
 import scenes.*;
 
 class Player extends MiniEntity
@@ -29,6 +31,8 @@ class Player extends MiniEntity
     public static inline var MAX_FASTFALL_SPEED = 500;
     public static inline var DOUBLE_JUMP_POWER_X = 0;
     public static inline var DOUBLE_JUMP_POWER_Y = 130;
+    public static inline var DODGE_DURATION = 0.13;
+    public static inline var DODGE_SPEED = 260;
 
     public var playerNumber(default, null):Int;
     public var isDead(default, null):Bool;
@@ -36,6 +40,7 @@ class Player extends MiniEntity
     private var velocity:Vector2;
     private var canDoubleJump:Bool;
     private var wasOnGround:Bool;
+    private var dodgeTimer:Alarm;
     private var sfx:Map<String, Sfx>;
 
     public function new(x:Float, y:Float, playerNumber:Int) {
@@ -56,6 +61,16 @@ class Player extends MiniEntity
         canDoubleJump = false;
         wasOnGround = false;
         isDead = false;
+        dodgeTimer = new Alarm(DODGE_DURATION);
+        dodgeTimer.onComplete.bind(function() {
+            if(velocity.y < 0) {
+                velocity.y = -JUMP_CANCEL_POWER;
+            }
+            else if(velocity.y > 0) {
+                velocity.y = MAX_FALL_SPEED / 2;
+            }
+        });
+        addTween(dodgeTimer, true);
         sfx = [
             "jump" => new Sfx("audio/jump.wav"),
             "doublejump" => new Sfx("audio/doublejump.wav"),
@@ -77,7 +92,12 @@ class Player extends MiniEntity
     override public function update() {
         if(!isDead) {
             combat();
-            movement();
+            if(!dodgeTimer.active) {
+                movement();
+            }
+            if(dodgeTimer.active) {
+                dodgeMovement();
+            }
             animation();
         }
         super.update();
@@ -131,7 +151,7 @@ class Player extends MiniEntity
             }
         }
 
-        if(Main.inputPressed("act", playerNumber)) {
+        if(Main.inputPressed("attack", playerNumber)) {
             var boomerangs = new Array<Entity>();
             scene.getType("boomerang", boomerangs);
             for(boomerang in boomerangs) {
@@ -165,7 +185,36 @@ class Player extends MiniEntity
         }
     }
 
+    private function dodgeMovement() {
+        moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
+    }
+
     private function movement() {
+        if(Main.inputPressed("dodge", playerNumber)) {
+            var dodgeHeading = new Vector2(sprite.flipX ? -1 : 1, 0);
+            if(
+                !Main.inputCheck("left", playerNumber)
+                && !Main.inputCheck("right", playerNumber)
+                && (
+                    Main.inputCheck("up", playerNumber)
+                    || Main.inputCheck("down", playerNumber)
+                )
+            ) {
+                dodgeHeading.x = 0;
+            }
+            if(Main.inputCheck("up", playerNumber)) {
+                dodgeHeading.y = -1;
+            }
+            else if(Main.inputCheck("down", playerNumber)) {
+                dodgeHeading.y = 1;
+            }
+
+            velocity = dodgeHeading;
+            velocity.normalize(DODGE_SPEED);
+            dodgeTimer.start();
+            return;
+        }
+
         var accel = isOnGround() ? RUN_ACCEL : AIR_ACCEL;
         if(
             isOnGround() && (
@@ -188,7 +237,9 @@ class Player extends MiniEntity
             );
         }
         var maxSpeed = isOnGround() ? MAX_RUN_SPEED : MAX_AIR_SPEED;
-        velocity.x = MathUtil.clamp(velocity.x, -maxSpeed, maxSpeed);
+        if(!dodgeTimer.active) {
+            velocity.x = MathUtil.clamp(velocity.x, -maxSpeed, maxSpeed);
+        }
 
         if(isOnGround()) {
             if(!wasOnGround) {
@@ -241,7 +292,9 @@ class Player extends MiniEntity
                 maxFallSpeed = MAX_FASTFALL_SPEED;
             }
             velocity.y += gravity * HXP.elapsed;
-            velocity.y = Math.min(velocity.y, maxFallSpeed);
+            if(!dodgeTimer.active) {
+                velocity.y = Math.min(velocity.y, maxFallSpeed);
+            }
         }
 
         wasOnGround = isOnGround();

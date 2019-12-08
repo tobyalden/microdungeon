@@ -11,8 +11,10 @@ class Main extends Engine
 
     private static var previousJumpHeld:Bool = false;
     private static var previousJumpHeld2:Bool = false;
-    private static var previousActHeld:Bool = false;
-    private static var previousActHeld2:Bool = false;
+    private static var previousAttackHeld:Bool = false;
+    private static var previousAttackHeld2:Bool = false;
+    private static var previousDodgeHeld:Bool = false;
+    private static var previousDodgeHeld2:Bool = false;
 
     static function main() {
         new Main();
@@ -24,14 +26,18 @@ class Main extends Engine
         Key.define("up", [Key.UP]);
         Key.define("down", [Key.DOWN]);
         Key.define("jump", [Key.Z, Key.SPACE, Key.ENTER]);
-        Key.define("act", [Key.X]);
+        Key.define("attack", [Key.X]);
+        Key.define("dodge", [Key.C]);
 
         Key.define("2P_left", [Key.A]);
         Key.define("2P_right", [Key.D]);
         Key.define("2P_up", [Key.W]);
         Key.define("2P_down", [Key.S]);
         Key.define("2P_jump", [Key.Q]);
-        Key.define("2P_act", [Key.E]);
+        Key.define("2P_attack", [Key.E]);
+        Key.define("2P_dodge", [Key.R]);
+
+        Key.define("debug", [Key.T]);
 
         gamepad = Gamepad.gamepad(0);
         gamepad2 = Gamepad.gamepad(1);
@@ -49,13 +55,22 @@ class Main extends Engine
 
     override public function update() {
         super.update();
+        if(Input.pressed("debug")) {
+            if(gamepad != null) {
+                for(i in 0...12) {
+                    trace('axis ${i}: ${gamepad.getAxis(i)}');
+                }
+            }
+        }
         if(gamepad != null) {
             previousJumpHeld = gamepad.check(XboxGamepad.A_BUTTON);
-            previousActHeld = gamepad.check(XboxGamepad.X_BUTTON);
+            previousAttackHeld = gamepad.check(XboxGamepad.X_BUTTON);
+            previousDodgeHeld = gamepad.getAxis(5) >= 0.25;
         }
         if(gamepad2 != null) {
             previousJumpHeld2 = gamepad2.check(XboxGamepad.A_BUTTON);
-            previousActHeld2 = gamepad2.check(XboxGamepad.X_BUTTON);
+            previousAttackHeld2 = gamepad2.check(XboxGamepad.X_BUTTON);
+            previousDodgeHeld2 = gamepad2.getAxis(5) >= 0.25;
         }
     }
 
@@ -68,8 +83,11 @@ class Main extends Engine
         var previousJumpHeldToUse = (
             playerNum == 1 ? previousJumpHeld : previousJumpHeld2
         );
-        var previousActHeldToUse = (
-            playerNum == 1 ? previousActHeld : previousActHeld2
+        var previousAttackHeldToUse = (
+            playerNum == 1 ? previousAttackHeld : previousAttackHeld2
+        );
+        var previousDodgeHeldToUse = (
+            playerNum == 1 ? previousDodgeHeld : previousDodgeHeld2
         );
         if(inputName == "jump") {
             if(
@@ -79,10 +97,18 @@ class Main extends Engine
                 return true;
             }
         }
-        if(inputName == "act") {
+        if(inputName == "attack") {
             if(
-                !previousActHeldToUse
+                !previousAttackHeldToUse
                 && checkGamepad.check(XboxGamepad.X_BUTTON)
+            ) {
+                return true;
+            }
+        }
+        if(inputName == "dodge") {
+            if(
+                !previousDodgeHeldToUse
+                && checkGamepad.getAxis(5) >= 0.25
             ) {
                 return true;
             }
@@ -99,8 +125,11 @@ class Main extends Engine
         var previousJumpHeldToUse = (
             playerNum == 1 ? previousJumpHeld : previousJumpHeld2
         );
-        var previousActHeldToUse = (
-            playerNum == 1 ? previousActHeld : previousActHeld2
+        var previousAttackHeldToUse = (
+            playerNum == 1 ? previousAttackHeld : previousAttackHeld2
+        );
+        var previousDodgeHeldToUse = (
+            playerNum == 1 ? previousDodgeHeld : previousDodgeHeld2
         );
         if(inputName == "jump") {
             if(
@@ -110,10 +139,18 @@ class Main extends Engine
                 return true;
             }
         }
-        if(inputName == "act") {
+        if(inputName == "attack") {
             if(
-                previousActHeldToUse
+                previousAttackHeldToUse
                 && !checkGamepad.check(XboxGamepad.X_BUTTON)
+            ) {
+                return true;
+            }
+        }
+        if(inputName == "dodge") {
+            if(
+                previousDodgeHeldToUse
+                && checkGamepad.getAxis(5) < 0.25
             ) {
                 return true;
             }
@@ -136,8 +173,11 @@ class Main extends Engine
         if(inputName == "jump") {
             return checkGamepad.check(XboxGamepad.A_BUTTON);
         }
-        if(inputName == "act") {
+        if(inputName == "attack") {
             return checkGamepad.check(XboxGamepad.X_BUTTON);
+        }
+        if(inputName == "dodge") {
+            return checkGamepad.getAxis(5) >= 0.25;
         }
         if(inputName == "left") {
             return (
