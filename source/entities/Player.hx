@@ -130,7 +130,27 @@ class Player extends MiniEntity
         }
 
         if(Main.inputPressed("act", playerNumber)) {
+            var boomerangs = new Array<Entity>();
+            scene.getType("boomerang", boomerangs);
+            for(boomerang in boomerangs) {
+                if(
+                    cast(boomerang, Boomerang).player.playerNumber
+                    == playerNumber
+                ) {
+                    return;
+                }
+            }
             var boomerangHeading = new Vector2(sprite.flipX ? -1 : 1, 0);
+            if(
+                !Main.inputCheck("left", playerNumber)
+                && !Main.inputCheck("right", playerNumber)
+                && (
+                    Main.inputCheck("up", playerNumber)
+                    || Main.inputCheck("down", playerNumber)
+                )
+            ) {
+                boomerangHeading.x = 0;
+            }
             if(Main.inputCheck("up", playerNumber)) {
                 boomerangHeading.y = -1;
             }
