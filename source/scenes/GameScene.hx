@@ -142,14 +142,14 @@ class GameScene extends Scene
                 HXP.scene = new GameScene();
             });
             addTween(resetTimer, true);
-        }
-        doSequence([
-            {
-                atTime: 2.5,
-                doThis: function() {
-                    curtain.fadeIn(0.5);
+            doSequence([
+                {
+                    atTime: 2.5,
+                    doThis: function() {
+                        curtain.fadeIn(0.5);
+                    }
                 }
-            }
-        ]);
+            ]);
+        }
     }
 }
