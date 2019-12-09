@@ -3,6 +3,7 @@ package entities;
 import haxepunk.*;
 import haxepunk.graphics.tile.*;
 import haxepunk.masks.*;
+import haxepunk.math.*;
 import openfl.Assets;
 
 class Level extends Entity
@@ -20,11 +21,17 @@ class Level extends Entity
         loadLevel(levelName);
 
         tiles = new Tilemap(
-            'graphics/tiles.png',
+            'graphics/stone.png',
             walls.width, walls.height, walls.tileWidth, walls.tileHeight
         );
         tiles.loadFromString(walls.saveToString(',', '\n', '1', '0'));
-
+        for(tileX in 0...tiles.columns) {
+            for(tileY in 0...tiles.rows) {
+                if(tiles.getTile(tileX, tileY) == 1) {
+                    tiles.setTile(tileX, tileY, Random.randInt(3000) + 1);
+                }
+            }
+        }
         graphic = tiles;
         mask = walls;
     }

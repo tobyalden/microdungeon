@@ -18,6 +18,6 @@
   <objects>
     <player1 x="16" y="100"/>
     <player2 x="296" y="100"/>
-    <player3 x="156" y="28"/>
+    <player3 x="158" y="28"/>
   </objects>
 </level>

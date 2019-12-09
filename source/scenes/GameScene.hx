@@ -1,6 +1,7 @@
 package scenes;
 
 import haxepunk.*;
+import haxepunk.graphics.tile.*;
 import haxepunk.Tween;
 import haxepunk.tweens.misc.*;
 import entities.*;
@@ -8,8 +9,16 @@ import entities.*;
 class GameScene extends Scene
 {
     public var allSfxStopped(default, null):Bool;
+    private var clouds:Entity;
+    private var clouds2:Entity;
 
     override public function begin() {
+        clouds = new Entity(0, 0, new Backdrop("graphics/clouds.png"));
+        clouds.layer = 20;
+        add(clouds);
+        clouds2 = new Entity(0, 0, new Backdrop("graphics/clouds2.png"));
+        clouds2.layer = 19;
+        add(clouds2);
         var level = new Level("testlevel");
         add(level);
         for(entity in level.entities) {
@@ -19,6 +28,8 @@ class GameScene extends Scene
     }
 
     override public function update() {
+        clouds.x -= 100 * HXP.elapsed;
+        clouds2.x -= 34 * HXP.elapsed;
         super.update();
     }
 
