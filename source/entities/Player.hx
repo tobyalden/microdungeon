@@ -137,7 +137,7 @@ class Player extends MiniEntity
     }
 
     private function explode() {
-        var numExplosions = 100;
+        var numExplosions = 50;
         var directions = new Array<Vector2>();
         for(i in 0...numExplosions) {
             var angle = (2/numExplosions) * i;
@@ -163,7 +163,7 @@ class Player extends MiniEntity
 #if desktop
         Sys.sleep(0.02);
 #end
-        scene.camera.shake(2, 8);
+        scene.camera.shake(1, 4);
     }
 
     private function combat() {

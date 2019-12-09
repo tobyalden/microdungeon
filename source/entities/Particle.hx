@@ -20,7 +20,7 @@ class Particle extends MiniEntity
 	    super(x, y);
         this.velocity = velocity;
         this.goSlowly = goSlowly;
-        sprite = new Spritemap("graphics/particle.png", 24, 24);
+        sprite = new Spritemap("graphics/particle.png", 12, 12);
         if(goQuickly) {
             sprite.add(
                 "idle", [0, 1, 2, 3], Std.int(Math.random() * 4 + 4), false
@@ -37,8 +37,8 @@ class Particle extends MiniEntity
             );
         }
         sprite.play("idle");
-        sprite.originX = 12;
-        sprite.originY = 12;
+        sprite.originX = 6;
+        sprite.originY = 6;
         graphic = sprite;
     }
 
