@@ -76,9 +76,9 @@ class Level extends Entity
                 ));
             }
             for (e in fastXml.node.objects.nodes.player3) {
-                entities.push(new Player(
-                    Std.parseInt(e.att.x), Std.parseInt(e.att.y), playerNumbers[2]
-                ));
+                //entities.push(new Player(
+                    //Std.parseInt(e.att.x), Std.parseInt(e.att.y), playerNumbers[2]
+                //));
             }
         }
     }

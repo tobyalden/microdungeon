@@ -36,11 +36,15 @@ class GameScene extends Scene
     public function stopAllSfx() {
         cast(getInstance("player1"), Player).stopAllSfx();
         cast(getInstance("player2"), Player).stopAllSfx();
+        cast(getInstance("player3"), Player).stopAllSfx();
         if(getInstance("boomerang1") != null) {
             cast(getInstance("boomerang1"), Boomerang).stopAllSfx();
         }
         if(getInstance("boomerang2") != null) {
             cast(getInstance("boomerang2"), Boomerang).stopAllSfx();
+        }
+        if(getInstance("boomerang3") != null) {
+            cast(getInstance("boomerang3"), Boomerang).stopAllSfx();
         }
         allSfxStopped = true;
     }
