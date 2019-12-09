@@ -50,6 +50,7 @@ class Player extends MiniEntity
     public function new(x:Float, y:Float, playerNumber:Int) {
         super(x, y);
         this.playerNumber = playerNumber;
+        type = "player";
         name = 'player${playerNumber}';
         sprite = new Spritemap('graphics/player${playerNumber}.png', 8, 12);
         sprite.flipX = playerNumber == 2;

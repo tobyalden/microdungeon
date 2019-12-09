@@ -56,6 +56,11 @@ class Level extends Entity
                     Std.parseInt(e.att.x), Std.parseInt(e.att.y), 2
                 ));
             }
+            for (e in fastXml.node.objects.nodes.player3) {
+                entities.push(new Player(
+                    Std.parseInt(e.att.x), Std.parseInt(e.att.y), 3
+                ));
+            }
         }
     }
 

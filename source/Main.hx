@@ -8,13 +8,17 @@ class Main extends Engine
 {
     public static var gamepad:Gamepad;
     public static var gamepad2:Gamepad;
+    public static var gamepad3:Gamepad;
 
     private static var previousJumpHeld:Bool = false;
     private static var previousJumpHeld2:Bool = false;
+    private static var previousJumpHeld3:Bool = false;
     private static var previousAttackHeld:Bool = false;
     private static var previousAttackHeld2:Bool = false;
+    private static var previousAttackHeld3:Bool = false;
     private static var previousDodgeHeld:Bool = false;
     private static var previousDodgeHeld2:Bool = false;
+    private static var previousDodgeHeld3:Bool = false;
 
     static function main() {
         new Main();
@@ -37,16 +41,28 @@ class Main extends Engine
         Key.define("2P_attack", [Key.E]);
         Key.define("2P_dodge", [Key.R]);
 
+        Key.define("3P_left", [Key.J]);
+        Key.define("3P_right", [Key.L]);
+        Key.define("3P_up", [Key.I]);
+        Key.define("3P_down", [Key.K]);
+        Key.define("3P_jump", [Key.U]);
+        Key.define("3P_attack", [Key.O]);
+        Key.define("3P_dodge", [Key.P]);
+
         Key.define("debug", [Key.T]);
 
         gamepad = Gamepad.gamepad(0);
         gamepad2 = Gamepad.gamepad(1);
+        gamepad3 = Gamepad.gamepad(2);
         Gamepad.onConnect.bind(function(newGamepad:Gamepad) {
             if(newGamepad.id == 0) {
                 gamepad = newGamepad;
             }
             if(newGamepad.id == 1) {
                 gamepad2 = newGamepad;
+            }
+            if(newGamepad.id == 2) {
+                gamepad3 = newGamepad;
             }
         });
 
@@ -72,23 +88,34 @@ class Main extends Engine
             previousAttackHeld2 = gamepad2.check(XboxGamepad.X_BUTTON);
             previousDodgeHeld2 = gamepad2.getAxis(5) >= 0.25;
         }
+        if(gamepad3 != null) {
+            previousJumpHeld3 = gamepad3.check(XboxGamepad.A_BUTTON);
+            previousAttackHeld3 = gamepad3.check(XboxGamepad.X_BUTTON);
+            previousDodgeHeld3 = gamepad3.getAxis(5) >= 0.35;
+        }
     }
 
     public static function inputPressed(inputName:String, playerNum:Int = 1) {
-        var playerPrefix = playerNum == 1 ? "" : "2P_";
-        var checkGamepad = playerNum == 1 ? gamepad : gamepad2;
+        var playerPrefix = [1 => "", 2 => "2P_", 3 => "3P_"][playerNum];
+        var checkGamepad = [1 => gamepad, 2 => gamepad2, 3 => gamepad3][playerNum];
         if(checkGamepad == null || Input.pressed(playerPrefix + inputName)) {
             return Input.pressed(playerPrefix + inputName);
         }
-        var previousJumpHeldToUse = (
-            playerNum == 1 ? previousJumpHeld : previousJumpHeld2
-        );
-        var previousAttackHeldToUse = (
-            playerNum == 1 ? previousAttackHeld : previousAttackHeld2
-        );
-        var previousDodgeHeldToUse = (
-            playerNum == 1 ? previousDodgeHeld : previousDodgeHeld2
-        );
+        var previousJumpHeldToUse = [
+            1 => previousJumpHeld,
+            2 => previousJumpHeld2,
+            3 => previousJumpHeld3
+        ][playerNum];
+        var previousAttackHeldToUse = [
+            1 => previousAttackHeld,
+            2 => previousAttackHeld2,
+            3 => previousAttackHeld3
+        ][playerNum];
+        var previousDodgeHeldToUse = [
+            1 => previousDodgeHeld,
+            2 => previousDodgeHeld2,
+            3 => previousDodgeHeld3
+        ][playerNum];
         if(inputName == "jump") {
             if(
                 !previousJumpHeldToUse
@@ -117,20 +144,26 @@ class Main extends Engine
     }
 
     public static function inputReleased(inputName:String, playerNum:Int = 1) {
-        var playerPrefix = playerNum == 1 ? "" : "2P_";
-        var checkGamepad = playerNum == 1 ? gamepad : gamepad2;
+        var playerPrefix = [1 => "", 2 => "2P_", 3 => "3P_"][playerNum];
+        var checkGamepad = [1 => gamepad, 2 => gamepad2, 3 => gamepad3][playerNum];
         if(checkGamepad == null || Input.released(playerPrefix + inputName)) {
             return Input.released(playerPrefix + inputName);
         }
-        var previousJumpHeldToUse = (
-            playerNum == 1 ? previousJumpHeld : previousJumpHeld2
-        );
-        var previousAttackHeldToUse = (
-            playerNum == 1 ? previousAttackHeld : previousAttackHeld2
-        );
-        var previousDodgeHeldToUse = (
-            playerNum == 1 ? previousDodgeHeld : previousDodgeHeld2
-        );
+        var previousJumpHeldToUse = [
+            1 => previousJumpHeld,
+            2 => previousJumpHeld2,
+            3 => previousJumpHeld3
+        ][playerNum];
+        var previousAttackHeldToUse = [
+            1 => previousAttackHeld,
+            2 => previousAttackHeld2,
+            3 => previousAttackHeld3
+        ][playerNum];
+        var previousDodgeHeldToUse = [
+            1 => previousDodgeHeld,
+            2 => previousDodgeHeld2,
+            3 => previousDodgeHeld3
+        ][playerNum];
         if(inputName == "jump") {
             if(
                 previousJumpHeldToUse
@@ -159,8 +192,8 @@ class Main extends Engine
     }
 
     public static function inputCheck(inputName:String, playerNum:Int = 1) {
-        var playerPrefix = playerNum == 1 ? "" : "2P_";
-        var checkGamepad = playerNum == 1 ? gamepad : gamepad2;
+        var playerPrefix = [1 => "", 2 => "2P_", 3 => "3P_"][playerNum];
+        var checkGamepad = [1 => gamepad, 2 => gamepad2, 3 => gamepad3][playerNum];
         if(checkGamepad == null || Input.check(playerPrefix + inputName)) {
             if(inputName == "left" && Input.check(playerPrefix + "right")) {
                 return false;

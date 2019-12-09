@@ -8,6 +8,7 @@
 	<objects>
 		<object name="player1" image="player1icon.png" width="8" height="12" limit="1"/>
 		<object name="player2" image="player2icon.png" width="8" height="12" limit="1"/>
+		<object name="player3" image="player3icon.png" width="8" height="12" limit="1"/>
 	</objects>
 	<layers> 
 		<grid name="walls" gridSize="4" exportAsObjects="true"/>

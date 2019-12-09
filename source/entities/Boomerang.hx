@@ -75,7 +75,7 @@ class Boomerang extends MiniEntity
             Math.min(age * RETURN_RATE, 1)
         );
         towardsPlayer.scale(HXP.elapsed);
-        if(age > 0.1 && towardsPlayer.length > distanceFromPlayer) {
+        if(age > 0.1 && towardsPlayer.length >= distanceFromPlayer) {
             destroy();
             sfx["catch"].play();
         }

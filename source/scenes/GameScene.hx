@@ -34,12 +34,26 @@ class GameScene extends Scene
         allSfxStopped = true;
     }
 
+    private function getNumberOfAlivePlayers() {
+        var players = new Array<Entity>();
+        getType("player", players);
+        var numberOfAlivePlayers = 0;
+        for(player in players) {
+            if(!cast(player, Player).isDead) {
+                numberOfAlivePlayers++;
+            }
+        }
+        return numberOfAlivePlayers;
+    }
+
     public function onDeath() {
-        var resetTimer = new Alarm(3);
-        resetTimer.onComplete.bind(function() {
-            stopAllSfx();
-            HXP.scene = new GameScene();
-        });
-        addTween(resetTimer, true);
+        if(getNumberOfAlivePlayers() <= 1) {
+            var resetTimer = new Alarm(3);
+            resetTimer.onComplete.bind(function() {
+                stopAllSfx();
+                HXP.scene = new GameScene();
+            });
+            addTween(resetTimer, true);
+        }
     }
 }
