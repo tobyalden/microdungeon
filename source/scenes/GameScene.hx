@@ -4,6 +4,7 @@ import haxepunk.*;
 import haxepunk.graphics.*;
 import haxepunk.graphics.text.*;
 import haxepunk.graphics.tile.*;
+import haxepunk.input.*;
 import haxepunk.Tween;
 import haxepunk.tweens.misc.*;
 import haxepunk.utils.*;
@@ -16,15 +17,20 @@ typedef SequenceStep = {
 
 class GameScene extends Scene
 {
+    static public var threePlayerMode:Bool = false;
+
     public var allSfxStopped(default, null):Bool;
     private var clouds:Entity;
     private var clouds2:Entity;
     private var centerDisplayText:Text;
     private var centerDisplay:Entity;
+    private var debugDisplayText:Text;
+    private var debugDisplay:Entity;
     private var curtain:Curtain;
     private var sfx:Map<String, Sfx>;
 
     override public function begin() {
+        Key.define("togglethirdplayer", [Key.DIGIT_3]);
         clouds = new Entity(0, 0, new Backdrop("graphics/clouds.png"));
         clouds.layer = 20;
         add(clouds);
@@ -46,6 +52,14 @@ class GameScene extends Scene
         );
         centerDisplay.layer = -999;
         add(centerDisplay);
+
+        debugDisplayText = new Text(" ", { size: 12, color: 0xFF0000 });
+        debugDisplay = new Entity(
+            0, HXP.height - debugDisplayText.textHeight,
+            debugDisplayText
+        );
+        debugDisplay.layer = -999;
+        add(debugDisplay);
 
         curtain = new Curtain();
         add(curtain);
@@ -99,6 +113,18 @@ class GameScene extends Scene
     }
 
     override public function update() {
+        if(Input.pressed("togglethirdplayer")) {
+            threePlayerMode = !threePlayerMode;
+            debugDisplayText.text = '3 PLAYER MODE ${threePlayerMode ? "ON" : "OFF"}';
+            doSequence([
+                {
+                    atTime: 1,
+                    doThis: function() {
+                        debugDisplayText.text = "";
+                    }
+                }
+            ]);
+        }
         clouds.x -= 100 * HXP.elapsed;
         clouds2.x -= 34 * HXP.elapsed;
         super.update();

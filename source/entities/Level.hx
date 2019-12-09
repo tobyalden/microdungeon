@@ -5,6 +5,7 @@ import haxepunk.graphics.tile.*;
 import haxepunk.masks.*;
 import haxepunk.math.*;
 import openfl.Assets;
+import scenes.*;
 
 class Level extends Entity
 {
@@ -76,10 +77,12 @@ class Level extends Entity
                 ));
             }
             for (e in fastXml.node.objects.nodes.player3) {
-                //entities.push(new Player(
-                    //Std.parseInt(e.att.x), Std.parseInt(e.att.y),
-                    //playerNumbers[2]
-                //));
+                if(GameScene.threePlayerMode) {
+                    entities.push(new Player(
+                        Std.parseInt(e.att.x), Std.parseInt(e.att.y),
+                        playerNumbers[2]
+                    ));
+                }
             }
         }
     }
