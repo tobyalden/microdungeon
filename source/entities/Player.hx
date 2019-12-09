@@ -57,6 +57,7 @@ class Player extends MiniEntity
     private var lastWallWasRight:Bool;
     private var dodgeCooldown:Alarm;
     private var canDodge:Bool;
+    private var canMove:Bool;
     private var sfx:Map<String, Sfx>;
 
     public function new(x:Float, y:Float, playerNumber:Int) {
@@ -76,7 +77,7 @@ class Player extends MiniEntity
         mask = new Hitbox(6, 12, -1, 0);
         velocity = new Vector2();
         canDoubleJump = false;
-        wasOnGround = false;
+        wasOnGround = true;
         wasOnWall = false;
         lastWallWasRight = false;
         isDead = false;
@@ -94,6 +95,7 @@ class Player extends MiniEntity
         dodgeCooldown = new Alarm(DODGE_COOLDOWN);
         addTween(dodgeCooldown);
         canDodge = false;
+        canMove = false;
         sfx = [
             "jump" => new Sfx("audio/jump.wav"),
             "doublejump" => new Sfx("audio/doublejump.wav"),
@@ -107,6 +109,10 @@ class Player extends MiniEntity
         ];
     }
 
+    public function setCanMove(newCanMove:Bool) {
+        canMove = newCanMove;
+    }
+
     public function stopAllSfx() {
         for(s in sfx) {
             s.stop();
@@ -114,7 +120,7 @@ class Player extends MiniEntity
     }
 
     override public function update() {
-        if(!isDead) {
+        if(!isDead && canMove) {
             combat();
             if(!dodgeTimer.active) {
                 movement();
