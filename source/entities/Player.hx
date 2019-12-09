@@ -47,6 +47,7 @@ class Player extends MiniEntity
     public static inline var WALL_JUMP_STRETCH_Y = 1.4;
 
     public var playerNumber(default, null):Int;
+    public var dodgeTimer(default, null):Alarm;
     public var isDead(default, null):Bool;
     private var sprite:Spritemap;
     private var velocity:Vector2;
@@ -54,7 +55,6 @@ class Player extends MiniEntity
     private var wasOnGround:Bool;
     private var wasOnWall:Bool;
     private var lastWallWasRight:Bool;
-    private var dodgeTimer:Alarm;
     private var dodgeCooldown:Alarm;
     private var canDodge:Bool;
     private var sfx:Map<String, Sfx>;
@@ -178,6 +178,18 @@ class Player extends MiniEntity
             }
         }
 
+        var _enemyPlayer = collide("player", x, y);
+        if(_enemyPlayer != null) {
+            var enemyPlayer = cast(_enemyPlayer, Player);
+            if(
+                enemyPlayer.playerNumber != playerNumber
+                && !dodgeTimer.active
+                && enemyPlayer.dodgeTimer.active
+            ) {
+                die();
+            }
+        }
+
         if(Main.inputPressed("attack", playerNumber)) {
             var boomerangs = new Array<Entity>();
             scene.getType("boomerang", boomerangs);
@@ -190,6 +202,12 @@ class Player extends MiniEntity
                 }
             }
             var boomerangHeading = new Vector2(sprite.flipX ? -1 : 1, 0);
+            if(Main.inputCheck("left", playerNumber)) {
+                boomerangHeading.x = -1;
+            }
+            else if(Main.inputCheck("right", playerNumber)) {
+                boomerangHeading.x = 1;
+            }
             if(
                 !Main.inputCheck("left", playerNumber)
                 && !Main.inputCheck("right", playerNumber)
@@ -224,6 +242,12 @@ class Player extends MiniEntity
             && canDodge
         ) {
             var dodgeHeading = new Vector2(sprite.flipX ? -1 : 1, 0);
+            if(Main.inputCheck("left", playerNumber)) {
+                dodgeHeading.x = -1;
+            }
+            else if(Main.inputCheck("right", playerNumber)) {
+                dodgeHeading.x = 1;
+            }
             if(
                 !Main.inputCheck("left", playerNumber)
                 && !Main.inputCheck("right", playerNumber)

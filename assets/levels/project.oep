@@ -12,6 +12,7 @@
 	</objects>
 	<layers> 
 		<grid name="walls" gridSize="4" exportAsObjects="true"/>
+		<grid name="optionalWalls" gridSize="4" exportAsObjects="true" color="#FFFF0000"/>
 		<objects name="objects" gridSize="4"/>
 	</layers> 
 </project>

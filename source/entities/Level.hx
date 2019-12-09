@@ -50,22 +50,34 @@ class Level extends Entity
                 Std.int(Std.parseInt(r.att.h) / TILE_SIZE)
             );
         }
+        for (r in fastXml.node.optionalWalls.nodes.rect) {
+            if(Math.random() > 0.5) {
+                walls.setRect(
+                    Std.int(Std.parseInt(r.att.x) / TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.y) / TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.w) / TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.h) / TILE_SIZE)
+                );
+            }
+        }
 
         entities = new Array<Entity>();
         if(fastXml.hasNode.objects) {
+            var playerNumbers = [1, 2, 3];
+            //HXP.shuffle(playerNumbers);
             for (e in fastXml.node.objects.nodes.player1) {
                 entities.push(new Player(
-                    Std.parseInt(e.att.x), Std.parseInt(e.att.y), 1
+                    Std.parseInt(e.att.x), Std.parseInt(e.att.y), playerNumbers[0]
                 ));
             }
             for (e in fastXml.node.objects.nodes.player2) {
                 entities.push(new Player(
-                    Std.parseInt(e.att.x), Std.parseInt(e.att.y), 2
+                    Std.parseInt(e.att.x), Std.parseInt(e.att.y), playerNumbers[1]
                 ));
             }
             for (e in fastXml.node.objects.nodes.player3) {
                 entities.push(new Player(
-                    Std.parseInt(e.att.x), Std.parseInt(e.att.y), 3
+                    Std.parseInt(e.att.x), Std.parseInt(e.att.y), playerNumbers[2]
                 ));
             }
         }
