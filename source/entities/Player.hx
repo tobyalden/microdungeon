@@ -35,6 +35,17 @@ class Player extends MiniEntity
     public static inline var DODGE_COOLDOWN = 0.13;
     public static inline var DODGE_SPEED = 260;
 
+    // Animation constants
+    public static inline var CROUCH_SQUASH = 0.85;
+    public static inline var LAND_SQUASH = 0.5;
+    public static inline var SQUASH_RECOVERY = 0.05 * 60;
+    public static inline var HORIZONTAL_SQUASH_RECOVERY = 0.07 * 60;
+    public static inline var AIR_SQUASH_RECOVERY = 0.03 * 60;
+    public static inline var JUMP_STRETCH = 1.5;
+    public static inline var WALL_SQUASH = 0.5;
+    public static inline var WALL_JUMP_STRETCH_X = 1.4;
+    public static inline var WALL_JUMP_STRETCH_Y = 1.4;
+
     public var playerNumber(default, null):Int;
     public var isDead(default, null):Bool;
     private var sprite:Spritemap;
@@ -42,6 +53,7 @@ class Player extends MiniEntity
     private var canDoubleJump:Bool;
     private var wasOnGround:Bool;
     private var wasOnWall:Bool;
+    private var lastWallWasRight:Bool;
     private var dodgeTimer:Alarm;
     private var dodgeCooldown:Alarm;
     private var canDodge:Bool;
@@ -66,6 +78,7 @@ class Player extends MiniEntity
         canDoubleJump = false;
         wasOnGround = false;
         wasOnWall = false;
+        lastWallWasRight = false;
         isDead = false;
         dodgeTimer = new Alarm(DODGE_DURATION);
         dodgeTimer.onComplete.bind(function() {
@@ -265,6 +278,7 @@ class Player extends MiniEntity
         if(isOnGround()) {
             if(!wasOnGround) {
                 sfx["land"].play();
+                scaleY(LAND_SQUASH);
                 makeDustAtFeet();
             }
             canDoubleJump = true;
@@ -273,12 +287,20 @@ class Player extends MiniEntity
             if(Main.inputPressed("jump", playerNumber)) {
                 velocity.y = -JUMP_POWER;
                 sfx["jump"].play();
+                scaleY(JUMP_STRETCH);
                 makeDustAtFeet();
             }
         }
         else if(isOnWall()) {
             if(!wasOnWall) {
                 sfx["land"].play();
+                if(isOnRightWall()) {
+                    lastWallWasRight = true;
+                }
+                else {
+                    lastWallWasRight = false;
+                }
+                scaleX(WALL_SQUASH, lastWallWasRight);
             }
             var gravity:Float = velocity.y > 0 ? GRAVITY_ON_WALL : GRAVITY;
             velocity.y += gravity * HXP.elapsed;
@@ -290,12 +312,15 @@ class Player extends MiniEntity
                 );
                 sfx["jump"].play();
                 makeDustOnWall(isOnLeftWall(), false);
+                scaleX(WALL_JUMP_STRETCH_X, isOnRightWall());
+                scaleY(WALL_JUMP_STRETCH_Y);
             }
         }
         else {
             if(Main.inputPressed("jump", playerNumber) && canDoubleJump) {
                 velocity.y = -DOUBLE_JUMP_POWER_Y;
                 sfx["doublejump"].play();
+                scaleY(JUMP_STRETCH);
                 makeDustAtFeet();
                 if(
                     velocity.x > 0 && Main.inputCheck("left", playerNumber)
@@ -377,7 +402,47 @@ class Player extends MiniEntity
         scene.add(dust);
     }
 
+    private function scaleX(newScaleX:Float, toLeft:Bool) {
+        // Scales sprite horizontally in the specified direction
+        sprite.scaleX = newScaleX;
+        if(toLeft) {
+            sprite.originX = width - (width / sprite.scaleX);
+        }
+    }
+
+    private function scaleY(newScaleY:Float) {
+        // Scales sprite vertically upwards
+        sprite.scaleY = newScaleY;
+        sprite.originY = height - (height / sprite.scaleY);
+    }
+
     private function animation() {
+        var squashRecovery:Float = AIR_SQUASH_RECOVERY;
+        if(isOnGround()) {
+            squashRecovery = SQUASH_RECOVERY;
+        }
+        squashRecovery *= HXP.elapsed;
+
+        if(sprite.scaleY > 1) {
+            scaleY(Math.max(sprite.scaleY - squashRecovery, 1));
+        }
+        else if(sprite.scaleY < 1) {
+            scaleY(Math.min(sprite.scaleY + squashRecovery, 1));
+        }
+
+        squashRecovery = HORIZONTAL_SQUASH_RECOVERY * HXP.elapsed;
+
+        if(sprite.scaleX > 1) {
+            scaleX(
+                Math.max(sprite.scaleX - squashRecovery, 1), lastWallWasRight
+            );
+        }
+        else if(sprite.scaleX < 1) {
+            scaleX(
+                Math.min(sprite.scaleX + squashRecovery, 1), lastWallWasRight
+            );
+        }
+
         sprite.color = dodgeTimer.active ? 0x000000 : 0xFFFFFF;
         var playRunSfx = false;
         var playWallSlideSfx = false;
