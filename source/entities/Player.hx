@@ -17,6 +17,7 @@ class Player extends MiniEntity
     public static inline var AIR_ACCEL = 360;
     public static inline var AIR_DECEL = 360;
     public static inline var MAX_RUN_SPEED = 100;
+    public static inline var MAX_SUPERJUMP_SPEED_X = 250;
     public static inline var MAX_AIR_SPEED = 120;
     public static inline var GRAVITY = 500;
     public static inline var FASTFALL_GRAVITY = 1200;
@@ -62,6 +63,7 @@ class Player extends MiniEntity
     private var canMove:Bool;
     private var isCrouching:Bool;
     private var isSliding:Bool;
+    private var isSuperJumping:Bool;
     private var sfx:Map<String, Sfx>;
 
     public function new(x:Float, y:Float, playerNumber:Int) {
@@ -88,13 +90,15 @@ class Player extends MiniEntity
         isDead = false;
         dodgeTimer = new Alarm(DODGE_DURATION);
         dodgeTimer.onComplete.bind(function() {
-            if(velocity.y < 0) {
+            if(isSliding) {
+                isSliding = false;
+            }
+            else if(velocity.y < 0) {
                 velocity.y = -JUMP_CANCEL_POWER;
             }
             else if(velocity.y > 0) {
                 velocity.y = MAX_FALL_SPEED / 2;
             }
-            isSliding = false;
             dodgeCooldown.start();
         });
         addTween(dodgeTimer);
@@ -104,6 +108,7 @@ class Player extends MiniEntity
         canMove = false;
         isCrouching = false;
         isSliding = false;
+        isSuperJumping = false;
         sfx = [
             "jump" => new Sfx("audio/jump.wav"),
             "doublejump" => new Sfx("audio/doublejump.wav"),
@@ -258,6 +263,15 @@ class Player extends MiniEntity
             velocity.x = MathUtil.approach(
                 velocity.x, 0, SLIDE_DECEL * HXP.elapsed
             );
+
+            if(Main.inputPressed("jump", playerNumber)) {
+                velocity.y = -JUMP_POWER / 1.25;
+                velocity.x *= 1.25;
+                sfx["jump"].play();
+                scaleY(JUMP_STRETCH);
+                makeDustAtFeet();
+                isSuperJumping = true;
+            }
         }
         moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
     }
@@ -315,6 +329,11 @@ class Player extends MiniEntity
             isCrouching = false;
         }
 
+
+        if(isOnGround() || isOnWall()) {
+            isSuperJumping = false;
+        }
+
         var accel = isOnGround() ? RUN_ACCEL : AIR_ACCEL;
         if(
             isOnGround() && (
@@ -337,6 +356,9 @@ class Player extends MiniEntity
             );
         }
         var maxSpeed = isOnGround() ? MAX_RUN_SPEED : MAX_AIR_SPEED;
+        if(isSuperJumping) {
+            maxSpeed = MAX_SUPERJUMP_SPEED_X;
+        }
         if(!dodgeTimer.active) {
             velocity.x = MathUtil.clamp(velocity.x, -maxSpeed, maxSpeed);
         }
@@ -400,7 +422,7 @@ class Player extends MiniEntity
                 }
                 canDoubleJump = false;
             }
-            if(Main.inputReleased("jump", playerNumber)) {
+            if(Main.inputReleased("jump", playerNumber) && !isSuperJumping) {
                 velocity.y = Math.max(velocity.y, -JUMP_CANCEL_POWER);
             }
             var gravity:Float = GRAVITY;
@@ -408,6 +430,7 @@ class Player extends MiniEntity
             if(
                 Main.inputCheck("down", playerNumber)
                 && velocity.y > -JUMP_CANCEL_POWER
+                && !isSuperJumping
             ) {
                 gravity = FASTFALL_GRAVITY;
                 maxFallSpeed = MAX_FASTFALL_SPEED;
