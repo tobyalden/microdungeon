@@ -560,9 +560,15 @@ class Player extends MiniEntity
         scene.add(dust);
     }
 
-    private function makeDustAtFeet() {
-        var dust = new Dust(x, bottom - 4, "ground");
-        scene.add(dust);
+    private function makeDustAtFeet(isFromSlide:Bool = false) {
+        if(isFromSlide) {
+            var dust = new Dust(x, bottom - 7, "slide");
+            scene.add(dust);
+        }
+        else {
+            var dust = new Dust(x, bottom - 4, "ground");
+            scene.add(dust);
+        }
     }
 
     private function scaleX(newScaleX:Float, toLeft:Bool) {
@@ -662,7 +668,7 @@ class Player extends MiniEntity
         }
 
         if(playWallSlideSfx) {
-            if(velocity.y > 0) {
+            if(velocity.y > 0 || isWallSliding) {
                 if(
                     isOnLeftWall() &&
                     scene.collidePoint("walls", left - 1, top) != null
@@ -677,6 +683,7 @@ class Player extends MiniEntity
                 }
             }
             if(isSliding) {
+                makeDustAtFeet(true);
                 sfx["wallslide"].volume = Math.abs(
                     velocity.x / DODGE_SPEED
                 );
