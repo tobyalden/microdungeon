@@ -32,6 +32,8 @@ class Player extends MiniEntity
     public static inline var DOUBLE_JUMP_POWER_X = 0;
     public static inline var DOUBLE_JUMP_POWER_Y = 130;
     public static inline var DODGE_DURATION = 0.13;
+    public static inline var SLIDE_DURATION = 0.3;
+    public static inline var SLIDE_DECEL = 100;
     public static inline var DODGE_COOLDOWN = 0.13;
     public static inline var DODGE_SPEED = 260;
 
@@ -58,6 +60,8 @@ class Player extends MiniEntity
     private var dodgeCooldown:Alarm;
     private var canDodge:Bool;
     private var canMove:Bool;
+    private var isCrouching:Bool;
+    private var isSliding:Bool;
     private var sfx:Map<String, Sfx>;
 
     public function new(x:Float, y:Float, playerNumber:Int) {
@@ -72,6 +76,7 @@ class Player extends MiniEntity
         sprite.add("jump", [4]);
         sprite.add("wall", [5]);
         sprite.add("skid", [6]);
+        sprite.add("slide", [7]);
         sprite.play("idle");
         graphic = sprite;
         mask = new Hitbox(6, 12, -1, 0);
@@ -89,6 +94,7 @@ class Player extends MiniEntity
             else if(velocity.y > 0) {
                 velocity.y = MAX_FALL_SPEED / 2;
             }
+            isSliding = false;
             dodgeCooldown.start();
         });
         addTween(dodgeTimer);
@@ -96,6 +102,8 @@ class Player extends MiniEntity
         addTween(dodgeCooldown);
         canDodge = false;
         canMove = false;
+        isCrouching = false;
+        isSliding = false;
         sfx = [
             "jump" => new Sfx("audio/jump.wav"),
             "doublejump" => new Sfx("audio/doublejump.wav"),
@@ -237,6 +245,20 @@ class Player extends MiniEntity
     }
 
     private function dodgeMovement() {
+        if(isSliding) {
+            var gravity:Float = GRAVITY;
+            if(
+                Main.inputCheck("down", playerNumber)
+                && velocity.y > -JUMP_CANCEL_POWER
+            ) {
+                gravity = FASTFALL_GRAVITY;
+            }
+            velocity.y += gravity * HXP.elapsed;
+            velocity.y = Math.min(velocity.y, MAX_FASTFALL_SPEED);
+            velocity.x = MathUtil.approach(
+                velocity.x, 0, SLIDE_DECEL * HXP.elapsed
+            );
+        }
         moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
     }
 
@@ -273,10 +295,24 @@ class Player extends MiniEntity
 
             velocity = dodgeHeading;
             velocity.normalize(DODGE_SPEED);
-            dodgeTimer.start();
+            if(isCrouching) {
+                dodgeTimer.reset(SLIDE_DURATION);
+                isSliding = true;
+            }
+            else {
+                dodgeTimer.reset(DODGE_DURATION);
+                isSliding = false;
+            }
             canDodge = false;
             sfx["dodge"].play();
             return;
+        }
+
+        if(Main.inputCheck("down", playerNumber) && isOnGround()) {
+            isCrouching = true;
+        }
+        else {
+            isCrouching = false;
         }
 
         var accel = isOnGround() ? RUN_ACCEL : AIR_ACCEL;
@@ -476,7 +512,11 @@ class Player extends MiniEntity
         sprite.color = dodgeTimer.active ? 0x000000 : 0xFFFFFF;
         var playRunSfx = false;
         var playWallSlideSfx = false;
-        if(!isOnGround()) {
+        if(isSliding) {
+            sprite.play("slide");
+            playWallSlideSfx = true;
+        }
+        else if(!isOnGround()) {
             if(isOnWall()) {
                 sprite.play("wall");
                 playWallSlideSfx = true;
@@ -538,9 +578,16 @@ class Player extends MiniEntity
                     makeDustOnWall(false, true);
                 }
             }
-            sfx["wallslide"].volume = Math.abs(
-                velocity.y / MAX_FALL_SPEED_ON_WALL
-            );
+            if(isSliding) {
+                sfx["wallslide"].volume = Math.abs(
+                    velocity.x / DODGE_SPEED
+                );
+            }
+            else {
+                sfx["wallslide"].volume = Math.abs(
+                    velocity.y / MAX_FALL_SPEED_ON_WALL
+                );
+            }
             if(!sfx["wallslide"].playing) {
                 if(!cast(scene, GameScene).allSfxStopped) {
                     sfx["wallslide"].loop();
