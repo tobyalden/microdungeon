@@ -265,12 +265,17 @@ class Player extends MiniEntity
             );
 
             if(Main.inputPressed("jump", playerNumber)) {
-                velocity.y = -JUMP_POWER / 1.25;
-                velocity.x *= 1.25;
+                var jumpModifier = MathUtil.lerp(0.75, 1.25, 1 - dodgeTimer.percent);
+                velocity.y = -JUMP_POWER / jumpModifier;
+                velocity.x *= jumpModifier;
                 sfx["jump"].play();
                 scaleY(JUMP_STRETCH);
                 makeDustAtFeet();
-                isSuperJumping = true;
+                dodgeTimer.active = false;
+                isSliding = false;
+                if(dodgeTimer.percent < 0.5) {
+                    isSuperJumping = true;
+                }
             }
         }
         moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
