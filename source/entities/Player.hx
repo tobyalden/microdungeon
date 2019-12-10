@@ -18,6 +18,7 @@ class Player extends MiniEntity
     public static inline var AIR_DECEL = 360;
     public static inline var MAX_RUN_SPEED = 100;
     public static inline var MAX_SUPERJUMP_SPEED_X = 250;
+    public static inline var MAX_SUPERJUMP_SPEED_X_OFF_WALL_SLIDE = 150;
     public static inline var MAX_AIR_SPEED = 120;
     public static inline var GRAVITY = 500;
     public static inline var FASTFALL_GRAVITY = 1200;
@@ -63,7 +64,9 @@ class Player extends MiniEntity
     private var canMove:Bool;
     private var isCrouching:Bool;
     private var isSliding:Bool;
+    private var isWallSliding:Bool;
     private var isSuperJumping:Bool;
+    private var isSuperJumpingOffWallSlide:Bool;
     private var sfx:Map<String, Sfx>;
 
     public function new(x:Float, y:Float, playerNumber:Int) {
@@ -93,6 +96,9 @@ class Player extends MiniEntity
             if(isSliding) {
                 isSliding = false;
             }
+            else if(isWallSliding) {
+                isWallSliding = false;
+            }
             else if(velocity.y < 0) {
                 velocity.y = -JUMP_CANCEL_POWER;
             }
@@ -108,7 +114,9 @@ class Player extends MiniEntity
         canMove = false;
         isCrouching = false;
         isSliding = false;
+        isWallSliding = false;
         isSuperJumping = false;
+        isSuperJumpingOffWallSlide = false;
         sfx = [
             "jump" => new Sfx("audio/jump.wav"),
             "doublejump" => new Sfx("audio/doublejump.wav"),
@@ -140,6 +148,12 @@ class Player extends MiniEntity
             }
             if(dodgeTimer.active) {
                 dodgeMovement();
+            }
+            if(isWallSliding && !isOnWall()) {
+                isWallSliding = false;
+                if(wasOnWall && velocity.y <= 0) {
+                    velocity.y = -JUMP_CANCEL_POWER * 2;
+                }
             }
             animation();
         }
@@ -265,7 +279,9 @@ class Player extends MiniEntity
             );
 
             if(Main.inputPressed("jump", playerNumber)) {
-                var jumpModifier = MathUtil.lerp(0.75, 1.25, 1 - dodgeTimer.percent);
+                var jumpModifier = MathUtil.lerp(
+                    0.75, 1.25, 1 - dodgeTimer.percent
+                );
                 velocity.y = -JUMP_POWER / jumpModifier;
                 velocity.x *= jumpModifier;
                 sfx["jump"].play();
@@ -278,6 +294,39 @@ class Player extends MiniEntity
                 }
             }
         }
+        else if(isWallSliding) {
+            var gravity:Float = GRAVITY;
+            if(
+                Main.inputCheck("down", playerNumber)
+                && velocity.y > -JUMP_CANCEL_POWER
+            ) {
+                gravity = FASTFALL_GRAVITY;
+            }
+            velocity.y += gravity * HXP.elapsed;
+            velocity.y = Math.min(velocity.y, MAX_FASTFALL_SPEED);
+
+            if(Main.inputPressed("jump", playerNumber)) {
+                var jumpModifier = 1.75;
+                if(velocity.y < 0) {
+                    velocity.y = -WALL_JUMP_POWER_Y * jumpModifier;
+                }
+                velocity.x = (
+                    isOnLeftWall()
+                    ? WALL_JUMP_POWER_X / jumpModifier
+                    : -WALL_JUMP_POWER_X / jumpModifier
+                );
+                sfx["jump"].play();
+                scaleX(WALL_JUMP_STRETCH_X, isOnRightWall());
+                scaleY(WALL_JUMP_STRETCH_Y);
+                makeDustOnWall(isOnLeftWall(), false);
+                dodgeTimer.active = false;
+                isWallSliding = false;
+                isSuperJumping = true;
+                isSuperJumpingOffWallSlide = true;
+            }
+        }
+        wasOnGround = isOnGround();
+        wasOnWall = isOnWall();
         moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
     }
 
@@ -312,16 +361,24 @@ class Player extends MiniEntity
                 dodgeHeading.y = 1;
             }
 
-            velocity = dodgeHeading;
-            velocity.normalize(DODGE_SPEED);
             if(isCrouching) {
                 dodgeTimer.reset(SLIDE_DURATION);
                 isSliding = true;
+            }
+            else if(
+                isOnLeftWall() && dodgeHeading.x < 0
+                || isOnRightWall() && dodgeHeading.x > 0
+            ) {
+                dodgeHeading.y *= 2;
+                dodgeTimer.reset(DODGE_DURATION);
+                isWallSliding = true;
             }
             else {
                 dodgeTimer.reset(DODGE_DURATION);
                 isSliding = false;
             }
+            velocity = dodgeHeading;
+            velocity.normalize(DODGE_SPEED);
             canDodge = false;
             sfx["dodge"].play();
             return;
@@ -337,6 +394,7 @@ class Player extends MiniEntity
 
         if(isOnGround() || isOnWall()) {
             isSuperJumping = false;
+            isSuperJumpingOffWallSlide = false;
         }
 
         var accel = isOnGround() ? RUN_ACCEL : AIR_ACCEL;
@@ -362,7 +420,12 @@ class Player extends MiniEntity
         }
         var maxSpeed = isOnGround() ? MAX_RUN_SPEED : MAX_AIR_SPEED;
         if(isSuperJumping) {
-            maxSpeed = MAX_SUPERJUMP_SPEED_X;
+            if(isSuperJumpingOffWallSlide) {
+                maxSpeed = MAX_SUPERJUMP_SPEED_X_OFF_WALL_SLIDE;
+            }
+            else {
+                maxSpeed = MAX_SUPERJUMP_SPEED_X;
+            }
         }
         if(!dodgeTimer.active) {
             velocity.x = MathUtil.clamp(velocity.x, -maxSpeed, maxSpeed);
@@ -457,9 +520,15 @@ class Player extends MiniEntity
         }
         else if(isOnLeftWall()) {
             velocity.x = Math.max(velocity.x, -WALL_STICKINESS);
+            if(dodgeTimer.active) {
+                isWallSliding = true;
+            }
         }
         else if(isOnRightWall()) {
             velocity.x = Math.min(velocity.x, WALL_STICKINESS);
+            if(dodgeTimer.active) {
+                isWallSliding = true;
+            }
         }
         return true;
     }
@@ -538,6 +607,7 @@ class Player extends MiniEntity
         }
 
         sprite.color = dodgeTimer.active ? 0x000000 : 0xFFFFFF;
+
         var playRunSfx = false;
         var playWallSlideSfx = false;
         if(isSliding) {
