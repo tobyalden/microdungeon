@@ -17,7 +17,8 @@ typedef SequenceStep = {
 
 class GameScene extends Scene
 {
-    static public var threePlayerMode:Bool = false;
+    static public var numberOfPlayers:Int = 2;
+    static public var matchPoint:Int = 7;
 
     public var allSfxStopped(default, null):Bool;
     private var clouds:Entity;
@@ -27,6 +28,7 @@ class GameScene extends Scene
     private var debugDisplayText:Text;
     private var debugDisplay:Entity;
     private var curtain:Curtain;
+    private var scoreboard:Scoreboard;
     private var sfx:Map<String, Sfx>;
 
     override public function begin() {
@@ -64,6 +66,9 @@ class GameScene extends Scene
         curtain = new Curtain();
         add(curtain);
         curtain.fadeOut(0.5);
+
+        scoreboard = new Scoreboard();
+        add(scoreboard);
 
         doSequence([
             {
@@ -114,8 +119,10 @@ class GameScene extends Scene
 
     override public function update() {
         if(Input.pressed("togglethirdplayer")) {
-            threePlayerMode = !threePlayerMode;
-            debugDisplayText.text = '3 PLAYER MODE ${threePlayerMode ? "ON" : "OFF"}';
+            numberOfPlayers = numberOfPlayers == 2 ? 3 : 2;
+            debugDisplayText.text = '3 PLAYER MODE ${
+                numberOfPlayers == 3 ? "ON" : "OFF"
+            }';
             doSequence([
                 {
                     atTime: 1,
