@@ -67,7 +67,7 @@ class Main extends Engine
             }
         });
 
-        HXP.scene = new GameScene();
+        HXP.scene = new MainMenu();
     }
 
     override public function update() {
