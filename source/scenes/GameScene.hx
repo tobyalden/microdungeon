@@ -33,8 +33,6 @@ class GameScene extends Scene
     private var centerDisplay:Entity;
     private var centerDisplaySmallText:Text;
     private var centerDisplaySmall:Entity;
-    private var debugDisplayText:Text;
-    private var debugDisplay:Entity;
     private var curtain:Curtain;
     private var scoreboard:Scoreboard;
     private var sfx:Map<String, Sfx>;
@@ -74,14 +72,6 @@ class GameScene extends Scene
         );
         centerDisplaySmall.layer = -999;
         add(centerDisplaySmall);
-
-        debugDisplayText = new Text(" ", { size: 12, color: 0xFF0000 });
-        debugDisplay = new Entity(
-            0, HXP.height - debugDisplayText.textHeight,
-            debugDisplayText
-        );
-        debugDisplay.layer = -999;
-        add(debugDisplay);
 
         curtain = new Curtain();
         add(curtain);
@@ -150,20 +140,6 @@ class GameScene extends Scene
     }
 
     override public function update() {
-        if(Input.pressed("togglethirdplayer")) {
-            numberOfPlayers = numberOfPlayers == 2 ? 3 : 2;
-            debugDisplayText.text = '3 PLAYER MODE ${
-                numberOfPlayers == 3 ? "ON" : "OFF"
-            }';
-            doSequence([
-                {
-                    atTime: 1,
-                    doThis: function() {
-                        debugDisplayText.text = "";
-                    }
-                }
-            ]);
-        }
         clouds.x -= 100 * HXP.elapsed;
         clouds2.x -= 34 * HXP.elapsed;
         if(
