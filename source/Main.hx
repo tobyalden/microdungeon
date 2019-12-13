@@ -29,9 +29,10 @@ class Main extends Engine
         Key.define("right", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET]);
         Key.define("up", [Key.UP]);
         Key.define("down", [Key.DOWN]);
-        Key.define("jump", [Key.Z, Key.SPACE, Key.ENTER]);
+        Key.define("jump", [Key.Z, Key.SPACE]);
         Key.define("attack", [Key.X]);
         Key.define("dodge", [Key.C]);
+        Key.define("start", [Key.ENTER]);
 
         Key.define("2P_left", [Key.A]);
         Key.define("2P_right", [Key.D]);
@@ -73,9 +74,10 @@ class Main extends Engine
         super.update();
         if(Input.pressed("debug")) {
             if(gamepad != null) {
-                for(i in 0...12) {
-                    trace('axis ${i}: ${gamepad.getAxis(i)}');
-                }
+                trace(gamepad.buttons);
+                //for(i in 0...12) {
+                    //trace('axis ${i}: ${gamepad.getAxis(i)}');
+                //}
             }
         }
         if(gamepad != null) {
@@ -137,6 +139,11 @@ class Main extends Engine
                 !previousDodgeHeldToUse
                 && checkGamepad.getAxis(5) >= 0.25
             ) {
+                return true;
+            }
+        }
+        if(inputName == "start") {
+            if(checkGamepad.pressed(6)) {
                 return true;
             }
         }

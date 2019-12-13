@@ -18,18 +18,28 @@ typedef SequenceStep = {
 class GameScene extends Scene
 {
     static public var numberOfPlayers:Int = 2;
-    static public var matchPoint:Int = 7;
+    static public var matchPoint:Int = 2;
+    static public var victoriesByPlayer:Map<Int, Int> = [
+        1 => 0,
+        2 => 0,
+        3 => 0,
+        4 => 0
+    ];
 
     public var allSfxStopped(default, null):Bool;
     private var clouds:Entity;
     private var clouds2:Entity;
     private var centerDisplayText:Text;
     private var centerDisplay:Entity;
+    private var centerDisplaySmallText:Text;
+    private var centerDisplaySmall:Entity;
     private var debugDisplayText:Text;
     private var debugDisplay:Entity;
     private var curtain:Curtain;
     private var scoreboard:Scoreboard;
     private var sfx:Map<String, Sfx>;
+    private var isMatchOver:Bool;
+    private var isRestarting:Bool;
 
     override public function begin() {
         Key.define("togglethirdplayer", [Key.DIGIT_3]);
@@ -55,6 +65,16 @@ class GameScene extends Scene
         centerDisplay.layer = -999;
         add(centerDisplay);
 
+        centerDisplaySmallText = new Text("Press START to fight again", { size: 12 });
+        centerDisplaySmallText.alpha = 0;
+        centerDisplaySmall = new Entity(
+            HXP.width / 2 - centerDisplaySmallText.textWidth / 2,
+            centerDisplay.y + centerDisplayText.textHeight - 10,
+            centerDisplaySmallText
+        );
+        centerDisplaySmall.layer = -999;
+        add(centerDisplaySmall);
+
         debugDisplayText = new Text(" ", { size: 12, color: 0xFF0000 });
         debugDisplay = new Entity(
             0, HXP.height - debugDisplayText.textHeight,
@@ -68,6 +88,7 @@ class GameScene extends Scene
         curtain.fadeOut(0.5);
 
         scoreboard = new Scoreboard();
+        scoreboard.visible = false;
         add(scoreboard);
 
         doSequence([
@@ -97,8 +118,17 @@ class GameScene extends Scene
 
         sfx = [
             "ready" => new Sfx("audio/ready.wav"),
-            "fight" => new Sfx("audio/fight.wav")
+            "fight" => new Sfx("audio/fight.wav"),
+            "showscoreboard" => new Sfx("audio/showscoreboard.wav"),
+            "addpoint" => new Sfx("audio/addpoint.wav")
         ];
+        isMatchOver = false;
+        isRestarting = false;
+    }
+
+    private function realignCenterDisplay() {
+        centerDisplay.x = HXP.width / 2 - centerDisplayText.textWidth / 2;
+        centerDisplay.y = HXP.height / 2 - centerDisplayText.textHeight / 2;
     }
 
     private function doSequence(sequence:Array<SequenceStep>) {
@@ -134,6 +164,25 @@ class GameScene extends Scene
         }
         clouds.x -= 100 * HXP.elapsed;
         clouds2.x -= 34 * HXP.elapsed;
+        if(
+            isMatchOver && !isRestarting && (
+                Main.inputPressed("start", 1)
+                || Main.inputPressed("start", 2)
+                || Main.inputPressed("start", 3)
+            )
+        ) {
+            isRestarting = true;
+            curtain.fadeIn(0.5);
+            doSequence([
+                {
+                    atTime: 0.5,
+                    doThis: function() {
+                        stopAllSfx();
+                        HXP.scene = new GameScene();
+                    }
+                }
+            ]);
+        }
         super.update();
     }
 
@@ -167,19 +216,74 @@ class GameScene extends Scene
         return numberOfAlivePlayers;
     }
 
+    private function getNumberOfLastAlivePlayer() {
+        var players = new Array<Entity>();
+        getType("player", players);
+        for(_player in players) {
+            var player = cast(_player, Player);
+            if(!player.isDead) {
+                return player.playerNumber;
+            }
+        }
+        return 0;
+    }
+
     public function onDeath() {
         if(getNumberOfAlivePlayers() <= 1) {
-            var resetTimer = new Alarm(3);
-            resetTimer.onComplete.bind(function() {
-                stopAllSfx();
-                HXP.scene = new GameScene();
-            });
-            addTween(resetTimer, true);
+            var endOfMatch:Bool;
             doSequence([
+                {
+                    atTime: 1.5,
+                    doThis: function() {
+                        scoreboard.visible = true;
+                        sfx["showscoreboard"].play();
+                    }
+                },
                 {
                     atTime: 2.5,
                     doThis: function() {
-                        curtain.fadeIn(0.5);
+                        victoriesByPlayer[getNumberOfLastAlivePlayer()] += 1;
+                        endOfMatch = victoriesByPlayer[
+                            getNumberOfLastAlivePlayer()
+                        ] == matchPoint;
+                        sfx["addpoint"].play();
+                    }
+                },
+                {
+                    atTime: 4.5,
+                    doThis: function() {
+                        if(!endOfMatch) {
+                            curtain.fadeIn(0.5);
+                        }
+                        else {
+                            scoreboard.visible = false;
+                        }
+                    }
+                },
+                {
+                    atTime: 5,
+                    doThis: function() {
+                        if(endOfMatch) {
+                            centerDisplayText.text = 'PLAYER ${
+                                getNumberOfLastAlivePlayer()
+                            } WINS';
+                            centerDisplayText.color = 0xFFFFFF;
+                            centerDisplayText.alpha = 1;
+                            realignCenterDisplay();
+                            isMatchOver = true;
+                        }
+                        else {
+                            stopAllSfx();
+                            HXP.scene = new GameScene();
+                        }
+                    }
+                },
+                {
+                    atTime: 10,
+                    doThis: function() {
+                        if(endOfMatch) {
+                            centerDisplaySmallText.alpha = 1;
+                        }
                     }
                 }
             ]);

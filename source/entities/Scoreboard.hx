@@ -59,6 +59,16 @@ class Scoreboard extends MiniEntity
     }
 
     override public function update() {
+        for(playerNumber in 0...GameScene.numberOfPlayers) {
+            for(i in 0...GameScene.matchPoint) {
+                if(i < GameScene.victoriesByPlayer[playerNumber + 1]) {
+                    victoriesByPlayer[playerNumber][i].play("checked");
+                }
+                else {
+                    victoriesByPlayer[playerNumber][i].play("unchecked");
+                }
+            }
+        }
         super.update();
     }
 }
