@@ -260,7 +260,7 @@ class GameScene extends Scene
                     }
                 },
                 {
-                    atTime: 7,
+                    atTime: 9,
                     doThis: function() {
                         if(endOfMatch) {
                             centerDisplaySmallText.alpha = 1;

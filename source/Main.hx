@@ -22,6 +22,7 @@ class Main extends Engine
     private static var previousDodgeHeld3:Bool = false;
 
     private static var p1PreviousAxis:Vector2 = new Vector2();
+    private static var p1PreviousDpad:Vector2 = new Vector2();
 
     static function main() {
         new Main();
@@ -88,7 +89,21 @@ class Main extends Engine
             previousAttackHeld = gamepad.check(XboxGamepad.X_BUTTON);
             previousDodgeHeld = gamepad.getAxis(5) >= 0.25;
             p1PreviousAxis.x = gamepad.getAxis(0);
-            p1PreviousAxis.y =gamepad.getAxis(1);
+            p1PreviousAxis.y = gamepad.getAxis(1);
+            p1PreviousDpad.x = 0;
+            if(gamepad.check(XboxGamepad.DPAD_LEFT)) {
+                p1PreviousDpad.x = -1;
+            }
+            else if(gamepad.check(XboxGamepad.DPAD_RIGHT)) {
+                p1PreviousDpad.x = 1;
+            }
+            p1PreviousDpad.y = 0;
+            if(gamepad.check(XboxGamepad.DPAD_UP)) {
+                p1PreviousDpad.y = -1;
+            }
+            else if(gamepad.check(XboxGamepad.DPAD_DOWN)) {
+                p1PreviousDpad.y = 1;
+            }
         }
         if(gamepad2 != null) {
             previousJumpHeld2 = gamepad2.check(XboxGamepad.A_BUTTON);
@@ -156,28 +171,32 @@ class Main extends Engine
             return (
                 checkGamepad.getAxis(0) < -0.5
                 && p1PreviousAxis.x > -0.5
-                || checkGamepad.pressed(XboxGamepad.DPAD_LEFT)
+                || checkGamepad.check(XboxGamepad.DPAD_LEFT)
+                && p1PreviousDpad.x == 0
             );
         }
         if(inputName == "right") {
             return (
                 checkGamepad.getAxis(0) > 0.5
                 && p1PreviousAxis.x < 0.5
-                || checkGamepad.pressed(XboxGamepad.DPAD_RIGHT)
+                || checkGamepad.check(XboxGamepad.DPAD_RIGHT)
+                && p1PreviousDpad.x == 0
             );
         }
         if(inputName == "up") {
             return (
                 checkGamepad.getAxis(1) < -0.5
                 && p1PreviousAxis.y > -0.5
-                || checkGamepad.pressed(XboxGamepad.DPAD_UP)
+                || checkGamepad.check(XboxGamepad.DPAD_UP)
+                && p1PreviousDpad.y == 0
             );
         }
         if(inputName == "down") {
             return (
                 checkGamepad.getAxis(1) > 0.5
                 && p1PreviousAxis.y < 0.5
-                || checkGamepad.pressed(XboxGamepad.DPAD_DOWN)
+                || checkGamepad.check(XboxGamepad.DPAD_DOWN)
+                && p1PreviousDpad.y == 0
             );
         }
         return false;
