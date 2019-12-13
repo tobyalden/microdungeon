@@ -173,6 +173,9 @@ class GameScene extends Scene
             )
         ) {
             isRestarting = true;
+            for(playerNumber in victoriesByPlayer.keys()) {
+                victoriesByPlayer[playerNumber] = 0;
+            }
             curtain.fadeIn(0.5);
             doSequence([
                 {
