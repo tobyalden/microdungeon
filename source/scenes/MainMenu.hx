@@ -56,6 +56,9 @@ class MainMenu extends Scene
             'Players: ${GameScene.numberOfPlayers}', { size: 16 }
         ));
         menu.push(new Text(
+            'Match Point: ${GameScene.matchPoint}', { size: 16 }
+        ));
+        menu.push(new Text(
             'START MATCH', { size: 16 }
         ));
         var count = 0;
@@ -63,7 +66,7 @@ class MainMenu extends Scene
             menuItem.x = 100;
             menuItem.y = 100 + menu[0].textHeight * count;
             if(menuItem.textWidth > background.width) {
-                background.width = menuItem.textWidth;
+                background.width = menuItem.textWidth + 15;
             }
             addGraphic(menuItem);
             count++;
@@ -141,6 +144,32 @@ class MainMenu extends Scene
             }
         }
         else if(cursorPosition == 1) {
+            // Match Point
+            var oldMatchPoint = GameScene.matchPoint;
+            if(Input.pressed("jump")) {
+                GameScene.matchPoint += 1;
+                if(
+                    GameScene.matchPoint
+                    > GameScene.MAX_MATCH_POINT
+                ) {
+                    GameScene.matchPoint = 1;
+                }
+            }
+            else if(Input.pressed("left")) {
+                GameScene.matchPoint -= 1;
+            }
+            else if(Input.pressed("right")) {
+                GameScene.matchPoint += 1;
+            }
+            GameScene.matchPoint = Std.int(MathUtil.clamp(
+                GameScene.matchPoint, 1, GameScene.MAX_MATCH_POINT
+            ));
+            if(GameScene.matchPoint != oldMatchPoint) {
+                sfx["menuselect"].play();
+                menu[1].text = 'Match Point: ${GameScene.matchPoint}';
+            }
+        }
+        else if(cursorPosition == 2) {
             // Start game
             if(Input.pressed("jump")) {
                 isStarting = true;

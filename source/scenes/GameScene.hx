@@ -18,6 +18,7 @@ typedef SequenceStep = {
 class GameScene extends Scene
 {
     public static inline var MAX_NUMBER_OF_PLAYERS = 3;
+    public static inline var MAX_MATCH_POINT = 12;
 
     static public var numberOfPlayers:Int = 2;
     static public var matchPoint:Int = 3;
