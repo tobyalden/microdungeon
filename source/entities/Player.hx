@@ -161,7 +161,7 @@ class Player extends MiniEntity
         super.update();
     }
 
-    public function die() {
+    private function die() {
         isDead = true;
         visible = false;
         collidable = false;
@@ -442,8 +442,6 @@ class Player extends MiniEntity
             canDodge = true;
             velocity.y = 0;
             if(Main.inputPressed("jump", playerNumber)) {
-                die();
-                cast(scene.getInstance("player2"), Player).die();
                 velocity.y = -JUMP_POWER;
                 sfx["jump"].play();
                 scaleY(JUMP_STRETCH);
