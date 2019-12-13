@@ -1,6 +1,7 @@
 import haxepunk.*;
 import haxepunk.input.*;
 import haxepunk.input.gamepads.*;
+import haxepunk.math.*;
 import haxepunk.utils.*;
 import scenes.*;
 
@@ -19,6 +20,8 @@ class Main extends Engine
     private static var previousDodgeHeld:Bool = false;
     private static var previousDodgeHeld2:Bool = false;
     private static var previousDodgeHeld3:Bool = false;
+
+    private static var p1PreviousAxis:Vector2 = new Vector2();
 
     static function main() {
         new Main();
@@ -84,6 +87,8 @@ class Main extends Engine
             previousJumpHeld = gamepad.check(XboxGamepad.A_BUTTON);
             previousAttackHeld = gamepad.check(XboxGamepad.X_BUTTON);
             previousDodgeHeld = gamepad.getAxis(5) >= 0.25;
+            p1PreviousAxis.x = gamepad.getAxis(0);
+            p1PreviousAxis.y =gamepad.getAxis(1);
         }
         if(gamepad2 != null) {
             previousJumpHeld2 = gamepad2.check(XboxGamepad.A_BUTTON);
@@ -146,6 +151,34 @@ class Main extends Engine
             if(checkGamepad.pressed(6)) {
                 return true;
             }
+        }
+        if(inputName == "left") {
+            return (
+                checkGamepad.getAxis(0) < -0.5
+                && p1PreviousAxis.x > -0.5
+                || checkGamepad.check(XboxGamepad.DPAD_LEFT)
+            );
+        }
+        if(inputName == "right") {
+            return (
+                checkGamepad.getAxis(0) > 0.5
+                && p1PreviousAxis.x < 0.5
+                || checkGamepad.check(XboxGamepad.DPAD_RIGHT)
+            );
+        }
+        if(inputName == "up") {
+            return (
+                checkGamepad.getAxis(1) < -0.5
+                && p1PreviousAxis.y > -0.5
+                || checkGamepad.check(XboxGamepad.DPAD_UP)
+            );
+        }
+        if(inputName == "down") {
+            return (
+                checkGamepad.getAxis(1) > 0.5
+                && p1PreviousAxis.y < 0.5
+                || checkGamepad.check(XboxGamepad.DPAD_DOWN)
+            );
         }
         return false;
     }

@@ -101,10 +101,10 @@ class MainMenu extends Scene
         if(isStarting) {
             // Do nothing
         }
-        else if(Input.pressed("up")) {
+        else if(Main.inputPressed("up")) {
             cursorPosition -= 1;
         }
-        else if(Input.pressed("down")) {
+        else if(Main.inputPressed("down")) {
             cursorPosition += 1;
         }
         cursorPosition = Std.int(
@@ -120,7 +120,7 @@ class MainMenu extends Scene
         else if(cursorPosition == 0) {
             // Number of players
             var oldNumberOfPlayers = GameScene.numberOfPlayers;
-            if(Input.pressed("jump")) {
+            if(Main.inputPressed("jump")) {
                 GameScene.numberOfPlayers += 1;
                 if(
                     GameScene.numberOfPlayers
@@ -129,10 +129,10 @@ class MainMenu extends Scene
                     GameScene.numberOfPlayers = 2;
                 }
             }
-            else if(Input.pressed("left")) {
+            else if(Main.inputPressed("left")) {
                 GameScene.numberOfPlayers -= 1;
             }
-            else if(Input.pressed("right")) {
+            else if(Main.inputPressed("right")) {
                 GameScene.numberOfPlayers += 1;
             }
             GameScene.numberOfPlayers = Std.int(MathUtil.clamp(
@@ -146,7 +146,7 @@ class MainMenu extends Scene
         else if(cursorPosition == 1) {
             // Match Point
             var oldMatchPoint = GameScene.matchPoint;
-            if(Input.pressed("jump")) {
+            if(Main.inputPressed("jump")) {
                 GameScene.matchPoint += 1;
                 if(
                     GameScene.matchPoint
@@ -155,10 +155,10 @@ class MainMenu extends Scene
                     GameScene.matchPoint = 1;
                 }
             }
-            else if(Input.pressed("left")) {
+            else if(Main.inputPressed("left")) {
                 GameScene.matchPoint -= 1;
             }
-            else if(Input.pressed("right")) {
+            else if(Main.inputPressed("right")) {
                 GameScene.matchPoint += 1;
             }
             GameScene.matchPoint = Std.int(MathUtil.clamp(
@@ -171,7 +171,7 @@ class MainMenu extends Scene
         }
         else if(cursorPosition == 2) {
             // Start game
-            if(Input.pressed("jump")) {
+            if(Main.inputPressed("jump")) {
                 isStarting = true;
                 sfx["menustart"].play();
                 cursor.graphic = new Image("graphics/thumbsup.png");

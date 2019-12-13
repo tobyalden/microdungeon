@@ -63,17 +63,17 @@ class GameScene extends Scene
             HXP.height / 2 - centerDisplayText.textHeight / 2,
             centerDisplayText
         );
-        centerDisplay.layer = -999;
+        centerDisplay.layer = -50;
         add(centerDisplay);
 
-        centerDisplaySmallText = new Text("Press START to fight again", { size: 12 });
+        centerDisplaySmallText = new Text("Returning to menu...", { size: 12 });
         centerDisplaySmallText.alpha = 0;
         centerDisplaySmall = new Entity(
             HXP.width / 2 - centerDisplaySmallText.textWidth / 2,
             centerDisplay.y + centerDisplayText.textHeight - 10,
             centerDisplaySmallText
         );
-        centerDisplaySmall.layer = -999;
+        centerDisplaySmall.layer = -50;
         add(centerDisplaySmall);
 
         curtain = new Curtain();
@@ -145,30 +145,24 @@ class GameScene extends Scene
     override public function update() {
         clouds.x -= 100 * HXP.elapsed;
         clouds2.x -= 34 * HXP.elapsed;
-        if(
-            isMatchOver && !isRestarting && (
-                Main.inputPressed("start", 1)
-                || Main.inputPressed("start", 2)
-                || Main.inputPressed("start", 3)
-            )
-        ) {
-            isRestarting = true;
-            for(playerNumber in victoriesByPlayer.keys()) {
-                victoriesByPlayer[playerNumber] = 0;
-            }
-            curtain.fadeIn(0.5);
-            doSequence([
-                {
-                    atTime: 0.5,
-                    doThis: function() {
-                        stopAllSfx();
-                        HXP.scene = new GameScene();
-                        sfx["gameover"].stop();
-                    }
-                }
-            ]);
-        }
         super.update();
+    }
+
+    public function returnToMenu() {
+        for(playerNumber in victoriesByPlayer.keys()) {
+            victoriesByPlayer[playerNumber] = 0;
+        }
+        curtain.fadeIn(3);
+        doSequence([
+            {
+                atTime: 3,
+                doThis: function() {
+                    stopAllSfx();
+                    HXP.scene = new MainMenu();
+                    sfx["gameover"].stop();
+                }
+            }
+        ]);
     }
 
     public function stopAllSfx() {
@@ -266,10 +260,11 @@ class GameScene extends Scene
                     }
                 },
                 {
-                    atTime: 8,
+                    atTime: 7,
                     doThis: function() {
                         if(endOfMatch) {
                             centerDisplaySmallText.alpha = 1;
+                            returnToMenu();
                         }
                     }
                 }
