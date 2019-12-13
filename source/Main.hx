@@ -156,28 +156,28 @@ class Main extends Engine
             return (
                 checkGamepad.getAxis(0) < -0.5
                 && p1PreviousAxis.x > -0.5
-                || checkGamepad.check(XboxGamepad.DPAD_LEFT)
+                || checkGamepad.pressed(XboxGamepad.DPAD_LEFT)
             );
         }
         if(inputName == "right") {
             return (
                 checkGamepad.getAxis(0) > 0.5
                 && p1PreviousAxis.x < 0.5
-                || checkGamepad.check(XboxGamepad.DPAD_RIGHT)
+                || checkGamepad.pressed(XboxGamepad.DPAD_RIGHT)
             );
         }
         if(inputName == "up") {
             return (
                 checkGamepad.getAxis(1) < -0.5
                 && p1PreviousAxis.y > -0.5
-                || checkGamepad.check(XboxGamepad.DPAD_UP)
+                || checkGamepad.pressed(XboxGamepad.DPAD_UP)
             );
         }
         if(inputName == "down") {
             return (
                 checkGamepad.getAxis(1) > 0.5
                 && p1PreviousAxis.y < 0.5
-                || checkGamepad.check(XboxGamepad.DPAD_DOWN)
+                || checkGamepad.pressed(XboxGamepad.DPAD_DOWN)
             );
         }
         return false;
