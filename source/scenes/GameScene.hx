@@ -121,6 +121,7 @@ class GameScene extends Scene
             "fight" => new Sfx("audio/fight.wav"),
             "showscoreboard" => new Sfx("audio/showscoreboard.wav"),
             "addpoint" => new Sfx("audio/addpoint.wav"),
+            "addfinalpoint" => new Sfx("audio/addfinalpoint.wav"),
             "gameover" => new Sfx("audio/gameover.ogg")
         ];
         isMatchOver = false;
@@ -253,7 +254,7 @@ class GameScene extends Scene
                     atTime: 2.5,
                     doThis: function() {
                         victoriesByPlayer[getNumberOfLastAlivePlayer()] += 1;
-                        sfx["addpoint"].play();
+                        sfx[endOfMatch ? "addfinalpoint" : "addpoint"].play();
                     }
                 },
                 {

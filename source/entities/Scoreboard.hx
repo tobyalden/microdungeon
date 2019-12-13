@@ -28,6 +28,7 @@ class Scoreboard extends MiniEntity
                 var victory = new Spritemap("graphics/checkbox.png", 15, 15);
                 victory.add("unchecked", [0]);
                 victory.add("checked", [1]);
+                victory.add("victorychecked", [2, 3], 3);
                 victory.play("unchecked");
                 victory.x = i * 20;
                 victory.y = playerNumber * 20;
@@ -62,7 +63,13 @@ class Scoreboard extends MiniEntity
         for(playerNumber in 0...GameScene.numberOfPlayers) {
             for(i in 0...GameScene.matchPoint) {
                 if(i < GameScene.victoriesByPlayer[playerNumber + 1]) {
-                    victoriesByPlayer[playerNumber][i].play("checked");
+                    var victory = victoriesByPlayer[playerNumber][i];
+                    if(i == GameScene.matchPoint - 1) {
+                        victory.play("victorychecked");
+                    }
+                    else {
+                        victory.play("checked");
+                    }
                 }
                 else {
                     victoriesByPlayer[playerNumber][i].play("unchecked");
