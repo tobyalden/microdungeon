@@ -120,7 +120,8 @@ class GameScene extends Scene
             "ready" => new Sfx("audio/ready.wav"),
             "fight" => new Sfx("audio/fight.wav"),
             "showscoreboard" => new Sfx("audio/showscoreboard.wav"),
-            "addpoint" => new Sfx("audio/addpoint.wav")
+            "addpoint" => new Sfx("audio/addpoint.wav"),
+            "gameover" => new Sfx("audio/gameover.ogg")
         ];
         isMatchOver = false;
         isRestarting = false;
@@ -179,6 +180,7 @@ class GameScene extends Scene
                     doThis: function() {
                         stopAllSfx();
                         HXP.scene = new GameScene();
+                        sfx["gameover"].stop();
                     }
                 }
             ]);
@@ -230,7 +232,12 @@ class GameScene extends Scene
 
     public function onDeath() {
         if(getNumberOfAlivePlayers() <= 1) {
-            var endOfMatch:Bool;
+            var endOfMatch = victoriesByPlayer[
+                getNumberOfLastAlivePlayer()
+            ] + 1 == matchPoint;
+            if(endOfMatch) {
+                sfx["gameover"].play();
+            }
             doSequence([
                 {
                     atTime: 1.5,
@@ -243,9 +250,6 @@ class GameScene extends Scene
                     atTime: 2.5,
                     doThis: function() {
                         victoriesByPlayer[getNumberOfLastAlivePlayer()] += 1;
-                        endOfMatch = victoriesByPlayer[
-                            getNumberOfLastAlivePlayer()
-                        ] == matchPoint;
                         sfx["addpoint"].play();
                     }
                 },
