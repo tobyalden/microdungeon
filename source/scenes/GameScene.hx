@@ -18,7 +18,7 @@ typedef SequenceStep = {
 class GameScene extends Scene
 {
     static public var numberOfPlayers:Int = 2;
-    static public var matchPoint:Int = 2;
+    static public var matchPoint:Int = 3;
     static public var victoriesByPlayer:Map<Int, Int> = [
         1 => 0,
         2 => 0,
@@ -287,7 +287,7 @@ class GameScene extends Scene
                     }
                 },
                 {
-                    atTime: 10,
+                    atTime: 8,
                     doThis: function() {
                         if(endOfMatch) {
                             centerDisplaySmallText.alpha = 1;
