@@ -209,13 +209,21 @@ class GameScene extends Scene
 
     public function onDeath() {
         if(getNumberOfAlivePlayers() <= 1) {
-            var endOfMatch = victoriesByPlayer[
-                getNumberOfLastAlivePlayer()
-            ] + 1 == matchPoint;
-            if(endOfMatch) {
-                sfx["gameover"].play();
-            }
+            var endOfMatch = false;
             doSequence([
+                {
+                    atTime: 0.001,
+                    doThis: function() {
+                        if(getNumberOfLastAlivePlayer() != 0) {
+                            endOfMatch = victoriesByPlayer[
+                                getNumberOfLastAlivePlayer()
+                            ] + 1 == matchPoint;
+                        }
+                        if(endOfMatch) {
+                            sfx["gameover"].play();
+                        }
+                    }
+                },
                 {
                     atTime: 1.5,
                     doThis: function() {
@@ -226,8 +234,14 @@ class GameScene extends Scene
                 {
                     atTime: 2.5,
                     doThis: function() {
-                        victoriesByPlayer[getNumberOfLastAlivePlayer()] += 1;
-                        sfx[endOfMatch ? "addfinalpoint" : "addpoint"].play();
+                        if(getNumberOfLastAlivePlayer() != 0) {
+                            victoriesByPlayer[
+                                getNumberOfLastAlivePlayer()
+                            ] += 1;
+                            sfx[
+                                endOfMatch ? "addfinalpoint" : "addpoint"
+                            ].play();
+                        }
                     }
                 },
                 {

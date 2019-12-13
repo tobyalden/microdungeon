@@ -119,6 +119,7 @@ class Player extends MiniEntity
         isSuperJumpingOffWallSlide = false;
         sfx = [
             "jump" => new Sfx("audio/jump.wav"),
+            "superjump" => new Sfx("audio/superjump.wav"),
             "doublejump" => new Sfx("audio/doublejump.wav"),
             "land" => new Sfx("audio/land.wav"),
             "run" => new Sfx("audio/run.wav"),
@@ -126,7 +127,7 @@ class Player extends MiniEntity
             "toss" => new Sfx("audio/toss.wav"),
             "wallslide" => new Sfx("audio/wallslide.wav"),
             "death" => new Sfx("audio/death.wav"),
-            "dodge" => new Sfx("audio/dodge.wav")
+            "dodge" => new Sfx('audio/dodge${playerNumber}.wav')
         ];
     }
 
@@ -160,7 +161,7 @@ class Player extends MiniEntity
         super.update();
     }
 
-    private function die() {
+    public function die() {
         isDead = true;
         visible = false;
         collidable = false;
@@ -284,7 +285,7 @@ class Player extends MiniEntity
                 );
                 velocity.y = -JUMP_POWER / jumpModifier;
                 velocity.x *= jumpModifier;
-                sfx["jump"].play();
+                sfx["superjump"].play();
                 scaleY(JUMP_STRETCH);
                 makeDustAtFeet();
                 dodgeTimer.active = false;
@@ -315,7 +316,7 @@ class Player extends MiniEntity
                     ? WALL_JUMP_POWER_X / jumpModifier
                     : -WALL_JUMP_POWER_X / jumpModifier
                 );
-                sfx["jump"].play();
+                sfx["superjump"].play();
                 scaleX(WALL_JUMP_STRETCH_X, isOnRightWall());
                 scaleY(WALL_JUMP_STRETCH_Y);
                 makeDustOnWall(isOnLeftWall(), false);
@@ -441,6 +442,8 @@ class Player extends MiniEntity
             canDodge = true;
             velocity.y = 0;
             if(Main.inputPressed("jump", playerNumber)) {
+                die();
+                cast(scene.getInstance("player2"), Player).die();
                 velocity.y = -JUMP_POWER;
                 sfx["jump"].play();
                 scaleY(JUMP_STRETCH);
