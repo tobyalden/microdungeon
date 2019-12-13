@@ -63,7 +63,7 @@ class MainMenu extends Scene
         ));
         var count = 0;
         for(menuItem in menu) {
-            menuItem.x = 100;
+            menuItem.x = 170;
             menuItem.y = 100 + menu[0].textHeight * count;
             if(menuItem.textWidth > background.width) {
                 background.width = menuItem.textWidth + 15;
