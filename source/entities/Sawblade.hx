@@ -12,7 +12,7 @@ import haxepunk.utils.*;
 
 class Sawblade extends MiniEntity
 {
-    public static inline var CYCLE_TIME = 1;
+    public static inline var CYCLE_TIME = 2.5;
 
     private var sprite:Spritemap;
     private var path:LinearMotion;
@@ -26,7 +26,7 @@ class Sawblade extends MiniEntity
         graphic = sprite;
         path = new LinearMotion(TweenType.PingPong);
         path.setMotion(
-            startX, startY, pathEnd.x, pathEnd.y, CYCLE_TIME, Ease.sineInOut
+            startX, startY, pathEnd.x, pathEnd.y, CYCLE_TIME
         );
         addTween(path, true);
     }

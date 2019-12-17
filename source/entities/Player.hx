@@ -44,8 +44,8 @@ class Player extends MiniEntity
         sprite.add("throw_fall", [11, 12], 2);
         sprite.play("idle");
         graphic = sprite;
-        //mask = new Hitbox(12, 24, -4);
-        mask = new Hitbox(16, 24);
+        mask = new Hitbox(12, 24);
+        sprite.x = -2;
         velocity = new Vector2();
         isDead = false;
     }

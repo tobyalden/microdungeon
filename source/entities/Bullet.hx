@@ -15,16 +15,20 @@ class Bullet extends MiniEntity
     private var sprite:Spritemap;
     private var velocity:Vector2;
 
-    public function new(x:Float, y:Float, heading:Vector2, speed:Float) {
+    public function new(
+        x:Float, y:Float, heading:Vector2, speed:Float, bulletColor:Int, size:Int
+    ) {
         super(x, y);
         type = "hazard";
-        var hitbox = new Hitbox(20, 20);
+        var hitbox = new Hitbox(size, size);
         x -= hitbox.width;
         y -= hitbox.height;
         mask = hitbox;
-        layer = 1;
+        layer = -1;
         sprite = new Spritemap("graphics/bullet.png", 20, 20);
+        sprite.scale = size / 20;
         sprite.add("idle", [0]);
+        sprite.color = bulletColor;
         graphic = sprite;
         velocity = heading;
         velocity.normalize(speed);
