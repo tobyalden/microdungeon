@@ -20,7 +20,7 @@ class Sawblade extends MiniEntity
     public function new(startX:Float, startY:Float, pathEnd:Vector2) {
         super(startX, startY);
         type = "hazard";
-        mask = new Circle(50);
+        mask = new Circle(25);
         sprite = new Spritemap("graphics/sawblade.png", 50, 50);
         sprite.add("idle", [0]);
         graphic = sprite;
