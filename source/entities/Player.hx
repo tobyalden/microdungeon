@@ -8,51 +8,58 @@ import haxepunk.math.*;
 
 class Player extends MiniEntity
 {
-    public static inline var RUN_ACCEL = 400;
+    public static inline var RUN_ACCEL = 9999;
     public static inline var RUN_ACCEL_TURN_MULTIPLIER = 2;
     public static inline var RUN_DECEL = RUN_ACCEL * RUN_ACCEL_TURN_MULTIPLIER;
-    public static inline var AIR_ACCEL = 360;
-    public static inline var AIR_DECEL = 360;
+    public static inline var AIR_ACCEL = RUN_ACCEL;
+    public static inline var AIR_DECEL = RUN_ACCEL;
     public static inline var MAX_RUN_SPEED = 100;
-    public static inline var MAX_AIR_SPEED = 120;
-    public static inline var GRAVITY = 500;
-    public static inline var GRAVITY_ON_WALL = 150;
-    public static inline var JUMP_POWER = 160;
-    public static inline var JUMP_CANCEL_POWER = 40;
-    public static inline var WALL_JUMP_POWER_X = 130;
-    public static inline var WALL_JUMP_POWER_Y = 120;
-    public static inline var WALL_STICKINESS = 60;
+    public static inline var MAX_AIR_SPEED = MAX_RUN_SPEED;
+    public static inline var GRAVITY = 600;
+    public static inline var JUMP_POWER = 300;
+    public static inline var JUMP_CANCEL_POWER = 20;
     public static inline var MAX_FALL_SPEED = 270;
-    public static inline var MAX_FALL_SPEED_ON_WALL = 200;
-    public static inline var DOUBLE_JUMP_POWER_X = 0;
-    public static inline var DOUBLE_JUMP_POWER_Y = 130;
+    public static inline var GLIDE_FACTOR = 7;
 
     private var sprite:Spritemap;
     private var velocity:Vector2;
-    private var canDoubleJump:Bool;
 
     public function new(x:Float, y:Float) {
         super(x, y);
         Key.define("left", [Key.LEFT, Key.LEFT_SQUARE_BRACKET]);
         Key.define("right", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET]);
         Key.define("jump", [Key.Z]);
-        sprite = new Spritemap("graphics/player.png", 8, 12);
+        Key.define("shoot", [Key.X]);
+        sprite = new Spritemap("graphics/player.png", 16, 24);
         sprite.add("idle", [0]);
         sprite.add("run", [1, 2, 3, 2], 8);
         sprite.add("jump", [4]);
-        sprite.add("wall", [5]);
-        sprite.add("skid", [6]);
+        sprite.add("fall", [5]);
+        sprite.add("crouch", [6]);
+        sprite.add("throw", [7, 8], 2);
+        sprite.add("throw_jump", [9, 10], 2);
+        sprite.add("throw_fall", [11, 12], 2);
         sprite.play("idle");
         graphic = sprite;
-        mask = new Hitbox(6, 12, -1, 0);
+        //mask = new Hitbox(12, 24, -4);
+        mask = new Hitbox(16, 24);
         velocity = new Vector2();
-        canDoubleJump = false;
     }
 
     override public function update() {
+        shooting();
         movement();
         animation();
         super.update();
+    }
+
+    private function shooting() {
+        if(Input.check("shoot")) {
+            var heading = new Vector2();
+            heading.x = sprite.flipX ? -1 : 1;
+            var bullet = new PlayerBullet(centerX, y + 11, heading);
+            scene.add(bullet);
+        }
     }
 
     private function movement() {
@@ -72,7 +79,7 @@ class Player extends MiniEntity
         else if(Input.check("right") && !isOnRightWall()) {
             velocity.x += accel * HXP.elapsed;
         }
-        else if(!isOnWall()) {
+        else {
             velocity.x = MathUtil.approach(
                 velocity.x, 0, decel * HXP.elapsed
             );
@@ -81,39 +88,23 @@ class Player extends MiniEntity
         velocity.x = MathUtil.clamp(velocity.x, -maxSpeed, maxSpeed);
 
         if(isOnGround()) {
-            canDoubleJump = true;
             velocity.y = 0;
             if(Input.pressed("jump")) {
                 velocity.y = -JUMP_POWER;
             }
         }
-        else if(isOnWall()) {
-            var gravity = velocity.y > 0 ? GRAVITY_ON_WALL : GRAVITY;
-            velocity.y += gravity * HXP.elapsed;
-            velocity.y = Math.min(velocity.y, MAX_FALL_SPEED_ON_WALL);
-            if(Input.pressed("jump")) {
-                velocity.y = -WALL_JUMP_POWER_Y;
-                velocity.x = (
-                    isOnLeftWall() ? WALL_JUMP_POWER_X : -WALL_JUMP_POWER_X
-                );
-            }
-        }
         else {
-            if(Input.pressed("jump") && canDoubleJump) {
-                velocity.y = -DOUBLE_JUMP_POWER_Y;
-                if(velocity.x > 0 && Input.check("left")) {
-                    velocity.x = -DOUBLE_JUMP_POWER_X;
-                }
-                else if(velocity.x < 0 && Input.check("right")) {
-                    velocity.x = DOUBLE_JUMP_POWER_X;
-                }
-                canDoubleJump = false;
-            }
             if(Input.released("jump")) {
                 velocity.y = Math.max(velocity.y, -JUMP_CANCEL_POWER);
             }
-            velocity.y += GRAVITY * HXP.elapsed;
-            velocity.y = Math.min(velocity.y, MAX_FALL_SPEED);
+            if(Input.check("shoot")) {
+                velocity.y += GRAVITY * HXP.elapsed;
+                velocity.y = Math.min(velocity.y, MAX_FALL_SPEED / GLIDE_FACTOR);
+            }
+            else {
+                velocity.y += GRAVITY * HXP.elapsed;
+                velocity.y = Math.min(velocity.y, MAX_FALL_SPEED);
+            }
         }
 
         moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
@@ -123,42 +114,27 @@ class Player extends MiniEntity
         if(isOnGround()) {
             velocity.x = 0;
         }
-        else if(isOnLeftWall()) {
-            velocity.x = Math.max(velocity.x, -WALL_STICKINESS);
-        }
-        else if(isOnRightWall()) {
-            velocity.x = Math.min(velocity.x, WALL_STICKINESS);
-        }
         return true;
     }
 
     override public function moveCollideY(_:Entity) {
+        if(isOnCeiling()) {
+            velocity.y = -velocity.y;
+        }
         velocity.y = 0;
         return true;
     }
 
     private function animation() {
+        if(velocity.x != 0 && !Input.check("shoot")) {
+        //if(velocity.x != 0) {
+            sprite.flipX = velocity.x < 0;
+        }
         if(!isOnGround()) {
-            if(isOnWall()) {
-                sprite.play("wall");
-                sprite.flipX = isOnLeftWall();
-            }
-            else {
-                sprite.play("jump");
-                sprite.flipX = velocity.x < 0;
-            }
+            sprite.play("jump");
         }
         else if(velocity.x != 0) {
-            if(
-                velocity.x > 0 && Input.check("left")
-                || velocity.x < 0 && Input.check("right")
-            ) {
-                sprite.play("skid");
-            }
-            else {
-                sprite.play("run");
-            }
-            sprite.flipX = velocity.x < 0;
+            sprite.play("run");
         }
         else {
             sprite.play("idle");
