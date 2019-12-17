@@ -12,6 +12,15 @@ class MiniEntity extends Entity
         super(x, y);
     }
 
+    private function isOffScreen() {
+        return (
+            right < scene.camera.x
+            || left > scene.camera.x + HXP.width
+            || top < scene.camera.y
+            || bottom > scene.camera.y + HXP.height
+        );
+    }
+
     private function isOnGround() {
         return collide("walls", x, y + 1) != null;
     }

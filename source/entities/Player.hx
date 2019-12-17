@@ -20,7 +20,7 @@ class Player extends MiniEntity
     public static inline var JUMP_POWER = 300;
     public static inline var JUMP_CANCEL_POWER = 20;
     public static inline var MAX_FALL_SPEED = 270;
-    public static inline var GLIDE_FACTOR = 7;
+    public static inline var GLIDE_FACTOR = 1;
 
     private var sprite:Spritemap;
     private var velocity:Vector2;
@@ -28,6 +28,7 @@ class Player extends MiniEntity
 
     public function new(x:Float, y:Float) {
         super(x, y);
+        name = "player";
         Key.define("left", [Key.LEFT, Key.LEFT_SQUARE_BRACKET]);
         Key.define("right", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET]);
         Key.define("jump", [Key.Z]);
