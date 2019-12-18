@@ -20,13 +20,14 @@ class Bullet extends MiniEntity
     ) {
         super(x, y);
         type = "hazard";
-        var hitbox = new Hitbox(size, size);
-        x -= hitbox.width;
-        y -= hitbox.height;
+        var hitbox = new Circle(
+            Std.int(size / 2), Std.int(-size / 2), Std.int(-size / 2)
+        );
         mask = hitbox;
         layer = -1;
         sprite = new Spritemap("graphics/bullet.png", 20, 20);
         sprite.scale = size / 20;
+        sprite.centerOrigin();
         sprite.add("idle", [0]);
         sprite.color = bulletColor;
         graphic = sprite;

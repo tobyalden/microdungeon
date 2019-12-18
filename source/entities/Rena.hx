@@ -61,14 +61,12 @@ class Rena extends MiniEntity
     }
 
     private function spoutShot() {
-        var bulletSize = 20;
-        var shotAngle = getAngleTowardsPlayer(bulletSize);
+        var shotAngle = getAngleTowardsPlayer();
         var shotVector = new Vector2(
             Math.cos(shotAngle), Math.sin(shotAngle)
         );
         scene.add(new Bullet(
-            centerX, centerY, shotVector, SPOUT_SHOT_SPEED, 0x00FD00,
-            bulletSize
+            centerX, centerY, shotVector, SPOUT_SHOT_SPEED, 0x00FD00, 20
         ));
     }
 
@@ -112,12 +110,12 @@ class Rena extends MiniEntity
         return sprayAngles;
     }
 
-    public function getAngleTowardsPlayer(bulletSize:Float) {
+    public function getAngleTowardsPlayer() {
         var player = scene.getInstance("player");
         return (
             Math.atan2(
-                player.centerY - centerY - bulletSize / 2,
-                player.centerX - centerX - bulletSize / 2
+                player.centerY - centerY,
+                player.centerX - centerX
             )
         );
     }
