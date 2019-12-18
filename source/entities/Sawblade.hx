@@ -12,27 +12,29 @@ import haxepunk.utils.*;
 
 class Sawblade extends MiniEntity
 {
-    public static inline var CYCLE_TIME = 2.5;
-
     private var sprite:Spritemap;
-    private var path:LinearMotion;
+    private var path:LinearPath;
 
-    public function new(startX:Float, startY:Float, pathEnd:Vector2) {
+    public function new(
+        startX:Float, startY:Float, speed:Float, pathPoints:Array<Vector2>
+    ) {
         super(startX, startY);
+        layer = 1;
         type = "hazard";
-        mask = new Circle(25);
-        sprite = new Spritemap("graphics/sawblade.png", 50, 50);
+        mask = new Circle(24);
+        sprite = new Spritemap("graphics/sawblade.png", 48, 48);
         sprite.add("idle", [0]);
         graphic = sprite;
-        path = new LinearMotion(TweenType.PingPong);
-        path.setMotion(
-            startX, startY, pathEnd.x, pathEnd.y, CYCLE_TIME
-        );
+        path = new LinearPath(TweenType.Looping);
+        for(point in pathPoints) {
+            path.addPoint(point.x, point.y);
+        }
+        path.setMotionSpeed(speed);
         addTween(path, true);
     }
 
     override public function update() {
-        moveTo(path.x, path.y);
         super.update();
+        moveTo(path.x, path.y);
     }
 }

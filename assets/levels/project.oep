@@ -9,10 +9,16 @@
 	</settings> 
 	<layers> 
 		<grid name="walls" gridSize="4" exportAsObjects="true"/>
-		<objects name="objects" gridSize="8"/>
+		<objects name="objects" gridSize="4"/>
 	</layers> 
 	<objects>
 		<object name="player" image="player_icon.png" width="16" height="24"></object>
+		<object name="sawblade" image="sawblade_small.png" width="8" height="8" resizableX="true" resizableY="true" tile="true">
+            <nodes drawObject="true" lineMode="2"/>
+			<values>
+				<number name="speed" default="10"/>
+			</values>
+        </object>
 		<object name="rena" image="rena.png" width="75" height="75"></object>
 		<object name="mion" image="mion.png" width="75" height="75"></object>
 	</objects>
