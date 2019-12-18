@@ -19,9 +19,10 @@ class GameScene extends Scene
         add(new Player(10, 50));
         add(new Rena(220, 20));
         add(new Sawblade(
-            52, HXP.height - 25, new Vector2(252, HXP.height - 25)
+            52, HXP.height - 25 - 8, new Vector2(252, HXP.height - 25 - 8)
         ));
         add(new Level("testlevel"));
+        add(new UI());
     }
 
     override public function update() {

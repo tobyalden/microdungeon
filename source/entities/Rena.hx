@@ -12,6 +12,7 @@ import haxepunk.utils.*;
 
 class Rena extends MiniEntity
 {
+    public static inline var MAX_HEALTH = 1000;
     public static inline var SPOUT_SHOT_SPEED = 150;
     public static inline var SPOUT_SHOT_INTERVAL = 1.5;
 
@@ -20,14 +21,17 @@ class Rena extends MiniEntity
     public static inline var RIPPLE_SHOT_INTERVAL = 2.7;
     public static inline var RIPPLE_BULLETS_PER_SHOT = 13;
 
+    public var health(default, null):Int;
     private var sprite:Spritemap;
     private var spoutShotInterval:Alarm;
     private var rippleShotInterval:Alarm;
 
     public function new(startX:Float, startY:Float) {
         super(startX, startY);
-        type = "hazard";
+        name = "rena";
+        type = "rena";
         mask = new Hitbox(75, 75);
+        health = MAX_HEALTH;
         sprite = new Spritemap("graphics/rena.png", 75, 75);
         sprite.add("idle", [0]);
         graphic = sprite;
@@ -47,6 +51,13 @@ class Rena extends MiniEntity
             rippleShot();
         });
         addTween(rippleShotInterval, true);
+    }
+
+    public function takeHit() {
+        health -= 1;
+        if(health <= 0) {
+            scene.remove(this);
+        }
     }
 
     private function spoutShot() {

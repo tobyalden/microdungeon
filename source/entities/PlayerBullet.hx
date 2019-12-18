@@ -26,15 +26,25 @@ class PlayerBullet extends MiniEntity
 
     override public function update() {
         super.update();
-        moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
+        moveBy(
+            velocity.x * HXP.elapsed,
+            velocity.y * HXP.elapsed,
+            ["walls", "rena"]
+        );
     }
 
-    override public function moveCollideX(_:Entity) {
+    override public function moveCollideX(e:Entity) {
+        if(e.name == "rena") {
+            cast(e, Rena).takeHit();
+        }
         scene.remove(this);
         return true;
     }
 
-    override public function moveCollideY(_:Entity) {
+    override public function moveCollideY(e:Entity) {
+        if(e.name == "rena") {
+            cast(e, Rena).takeHit();
+        }
         scene.remove(this);
         return true;
     }
