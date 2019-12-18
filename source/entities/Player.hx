@@ -36,7 +36,7 @@ class Player extends MiniEntity
         name = "player";
         Key.define("left", [Key.LEFT, Key.LEFT_SQUARE_BRACKET, Key.J]);
         Key.define("right", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET, Key.L]);
-        Key.define("up", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET, Key.I]);
+        Key.define("up", [Key.I]);
         Key.define("jump", [Key.Z, Key.A]);
         Key.define("shoot", [Key.X, Key.S]);
         sprite = new Spritemap("graphics/player.png", 16, 24);
@@ -59,8 +59,8 @@ class Player extends MiniEntity
         });
         addTween(shotTimer);
         isDead = false;
-        inventory = ["hanginggloves"];
-        //inventory = [];
+        //inventory = ["hanginggloves"];
+        inventory = [];
     }
 
     private function firePeashooter() {
