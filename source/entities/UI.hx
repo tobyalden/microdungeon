@@ -24,10 +24,11 @@ class UI extends MiniEntity
     }
 
     override public function update() {
-        var rena = scene.getInstance("rena");
-        if(rena != null) {
+        followCamera = scene.camera;
+        var mion = scene.getInstance("mion");
+        if(mion != null) {
             bossHealth.width = (
-                cast(rena, Rena).health / Rena.MAX_HEALTH
+                cast(mion, Mion).health / Mion.MAX_HEALTH
                 * (HXP.width - 10)
             );
         }

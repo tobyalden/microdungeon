@@ -17,10 +17,15 @@
   </walls>
   <objects>
     <rena x="224" y="24"/>
-    <mion x="552" y="8"/>
-    <player x="8" y="56"/>
+    <mion x="552" y="8">
+      <node x="332" y="8"/>
+    </mion>
+    <player x="380" y="112"/>
     <sawblade x="52" y="144" width="48" height="24" speed="80">
       <node x="224" y="144"/>
+    </sawblade>
+    <sawblade x="400" y="156" width="52" height="12" speed="80">
+      <node x="584" y="156"/>
     </sawblade>
   </objects>
 </level>

@@ -65,6 +65,30 @@ class Level extends Entity
                     entities.push(rena);
                 }
             }
+            if(fastXml.node.objects.hasNode.mion) {
+                for(mion in fastXml.node.objects.nodes.mion) {
+                    var nodes = new Array<Vector2>();
+                    nodes.push(new Vector2(
+                        Std.parseInt(mion.att.x),
+                        Std.parseInt(mion.att.y)
+                    ));
+                    for(n in mion.nodes.node) {
+                        nodes.push(new Vector2(
+                            Std.parseInt(n.att.x), Std.parseInt(n.att.y)
+                        ));
+                    }
+                    nodes.push(new Vector2(
+                        Std.parseInt(mion.att.x),
+                        Std.parseInt(mion.att.y)
+                    ));
+                    var mion = new Mion(
+                        Std.parseInt(mion.att.x),
+                        Std.parseInt(mion.att.y),
+                        nodes
+                    );
+                    entities.push(mion);
+                }
+            }
             if(fastXml.node.objects.hasNode.sawblade) {
                 for(sawblade in fastXml.node.objects.nodes.sawblade) {
                     var nodes = new Array<Vector2>();

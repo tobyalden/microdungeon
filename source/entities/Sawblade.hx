@@ -34,7 +34,7 @@ class Sawblade extends MiniEntity
     }
 
     override public function update() {
-        super.update();
         moveTo(path.x, path.y);
+        super.update();
     }
 }
