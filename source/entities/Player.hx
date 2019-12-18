@@ -5,6 +5,8 @@ import haxepunk.graphics.*;
 import haxepunk.input.*;
 import haxepunk.masks.*;
 import haxepunk.math.*;
+import haxepunk.Tween;
+import haxepunk.tweens.misc.*;
 import scenes.*;
 
 class Player extends MiniEntity
@@ -21,9 +23,11 @@ class Player extends MiniEntity
     public static inline var JUMP_CANCEL_POWER = 20;
     public static inline var MAX_FALL_SPEED = 270;
     public static inline var GLIDE_FACTOR = 1;
+    public static inline var PEASHOOTER_SHOT_INTERVAL = 1 / 60;
 
     private var sprite:Spritemap;
     private var velocity:Vector2;
+    private var shotTimer:Alarm;
     private var isDead:Bool;
 
     public function new(x:Float, y:Float) {
@@ -47,7 +51,19 @@ class Player extends MiniEntity
         mask = new Hitbox(12, 24);
         sprite.x = -2;
         velocity = new Vector2();
+        shotTimer = new Alarm(PEASHOOTER_SHOT_INTERVAL, TweenType.Looping);
+        shotTimer.onComplete.bind(function() {
+            firePeashooter();
+        });
+        addTween(shotTimer);
         isDead = false;
+    }
+
+    private function firePeashooter() {
+        var heading = new Vector2();
+        heading.x = sprite.flipX ? -1 : 1;
+        var bullet = new PlayerBullet(centerX, y + 11, heading);
+        scene.add(bullet);
     }
 
     override public function update() {
@@ -106,11 +122,12 @@ class Player extends MiniEntity
     }
 
     private function shooting() {
-        if(Input.check("shoot")) {
-            var heading = new Vector2();
-            heading.x = sprite.flipX ? -1 : 1;
-            var bullet = new PlayerBullet(centerX, y + 11, heading);
-            scene.add(bullet);
+        if(Input.pressed("shoot")) {
+            firePeashooter();
+            shotTimer.start();
+        }
+        if(Input.released("shoot")) {
+            shotTimer.active = false;
         }
     }
 
