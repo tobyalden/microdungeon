@@ -3,12 +3,15 @@ package entities;
 import haxepunk.*;
 import haxepunk.graphics.tile.*;
 import haxepunk.masks.*;
+import haxepunk.math.*;
 import openfl.Assets;
 
 class Level extends Entity
 {
     public static inline var TILE_SIZE = 4;
 
+    public var entities(default, null):Array<Entity>;
+    public var playerStart(default, null):Vector2;
     private var walls:Grid;
     private var tiles:Tilemap;
 
@@ -41,6 +44,27 @@ class Level extends Entity
                 Std.int(Std.parseInt(r.att.w) / TILE_SIZE),
                 Std.int(Std.parseInt(r.att.h) / TILE_SIZE)
             );
+        }
+
+        entities = new Array<Entity>();
+        if(fastXml.hasNode.objects) {
+            if(fastXml.node.objects.hasNode.player) {
+                for(player in fastXml.node.objects.nodes.player) {
+                    playerStart = new Vector2(
+                        Std.parseInt(player.att.x),
+                        Std.parseInt(player.att.y)
+                    );
+                }
+            }
+            if(fastXml.node.objects.hasNode.rena) {
+                for(rena in fastXml.node.objects.nodes.rena) {
+                    var rena = new Rena(
+                        Std.parseInt(rena.att.x),
+                        Std.parseInt(rena.att.y)
+                    );
+                    entities.push(rena);
+                }
+            }
         }
     }
 

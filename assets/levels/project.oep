@@ -5,9 +5,16 @@
 		<defaultHeight>180</defaultHeight>
 		<maxWidth>32000</maxWidth> 
 		<maxHeight>24000</maxHeight> 
+		<workingDirectory>../graphics</workingDirectory>
 	</settings> 
 	<layers> 
 		<grid name="walls" gridSize="4" exportAsObjects="true"/>
+		<objects name="objects" gridSize="8"/>
 	</layers> 
+	<objects>
+		<object name="player" image="player_icon.png" width="16" height="24"></object>
+		<object name="rena" image="rena.png" width="75" height="75"></object>
+		<object name="mion" image="mion.png" width="75" height="75"></object>
+	</objects>
 </project>
 

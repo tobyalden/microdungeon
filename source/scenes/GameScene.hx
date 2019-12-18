@@ -18,13 +18,16 @@ class GameScene extends Scene
     private var player:Player;
 
     override public function begin() {
-        player = new Player(340, 100);
+        //add(new Sawblade(
+            //52, HXP.height - 25 - 8, new Vector2(252, HXP.height - 25 - 8)
+        //));
+        var level = new Level("testlevel");
+        player = new Player(level.playerStart.x, level.playerStart.y);
         add(player);
-        add(new Rena(220, 20));
-        add(new Sawblade(
-            52, HXP.height - 25 - 8, new Vector2(252, HXP.height - 25 - 8)
-        ));
-        add(new Level("testlevel"));
+        add(level);
+        for(entity in level.entities) {
+            add(entity);
+        }
         add(new UI());
     }
 
