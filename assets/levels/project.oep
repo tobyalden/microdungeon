@@ -3,6 +3,8 @@
 	<settings> 
 		<defaultWidth>320</defaultWidth>
 		<defaultHeight>180</defaultHeight>
+		<maxWidth>32000</maxWidth> 
+		<maxHeight>24000</maxHeight> 
 	</settings> 
 	<layers> 
 		<grid name="walls" gridSize="4" exportAsObjects="true"/>

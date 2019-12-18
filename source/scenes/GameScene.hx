@@ -15,8 +15,11 @@ typedef SequenceStep = {
 
 class GameScene extends Scene
 {
+    private var player:Player;
+
     override public function begin() {
-        add(new Player(10, 50));
+        player = new Player(340, 100);
+        add(player);
         add(new Rena(220, 20));
         add(new Sawblade(
             52, HXP.height - 25 - 8, new Vector2(252, HXP.height - 25 - 8)
@@ -26,6 +29,7 @@ class GameScene extends Scene
     }
 
     override public function update() {
+        camera.x = Math.floor(player.centerX / HXP.width) * HXP.width;
         super.update();
     }
 
