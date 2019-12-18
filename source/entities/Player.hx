@@ -29,14 +29,16 @@ class Player extends MiniEntity
     private var velocity:Vector2;
     private var shotTimer:Alarm;
     private var isDead:Bool;
+    private var inventory:Array<String>;
 
     public function new(x:Float, y:Float) {
         super(x, y);
         name = "player";
-        Key.define("left", [Key.LEFT, Key.LEFT_SQUARE_BRACKET]);
-        Key.define("right", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET]);
-        Key.define("jump", [Key.Z]);
-        Key.define("shoot", [Key.X]);
+        Key.define("left", [Key.LEFT, Key.LEFT_SQUARE_BRACKET, Key.J]);
+        Key.define("right", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET, Key.L]);
+        Key.define("up", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET, Key.I]);
+        Key.define("jump", [Key.Z, Key.A]);
+        Key.define("shoot", [Key.X, Key.S]);
         sprite = new Spritemap("graphics/player.png", 16, 24);
         sprite.add("idle", [0]);
         sprite.add("run", [1, 2, 3, 2], 8);
@@ -57,6 +59,8 @@ class Player extends MiniEntity
         });
         addTween(shotTimer);
         isDead = false;
+        inventory = ["hanginggloves"];
+        //inventory = [];
     }
 
     private function firePeashooter() {
@@ -132,6 +136,14 @@ class Player extends MiniEntity
     }
 
     private function movement() {
+        if(
+            inventory.indexOf("hanginggloves") != -1
+            && isOnCeiling()
+            && Input.check("up")
+        ) {
+            velocity.y = 0;
+            return;
+        }
         var accel = isOnGround() ? RUN_ACCEL : AIR_ACCEL;
         if(
             isOnGround() && (
