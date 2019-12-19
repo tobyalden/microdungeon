@@ -25,8 +25,12 @@ class Boss extends MiniEntity
     public function takeHit() {
         health -= 1;
         if(health <= 0) {
-            scene.remove(this);
+            die();
         }
+    }
+
+    public function die() {
+        scene.remove(this);
     }
 
     public function getSpreadAngles(numAngles:Int, maxSpread:Float) {

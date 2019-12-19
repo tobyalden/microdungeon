@@ -14,17 +14,12 @@ class Satoko extends Boss
 {
     public static inline var SPEED = 50;
 
-    public static inline var SPOUT_SHOT_SPEED = 100;
-    public static inline var SPOUT_SHOT_SPREAD = 3.1415 / 5;
-    public static inline var SPOUT_SHOT_INTERVAL = 2.5;
-
     public static inline var RIPPLE_SHOT_SPEED = 60;
-    public static inline var RIPPLE_SHOT_INTERVAL = 7;
+    public static inline var RIPPLE_SHOT_INTERVAL = 2.5;
     public static inline var RIPPLE_BULLETS_PER_SHOT = 8;
 
     private var sprite:Spritemap;
     private var path:LinearPath;
-    private var spoutShotInterval:Alarm;
     private var rippleShotInterval:Alarm;
 
     public function new(startX:Float, startY:Float, pathPoints:Array<Vector2>) {
@@ -32,9 +27,11 @@ class Satoko extends Boss
         name = "satoko";
         mask = new Hitbox(48, 48);
         sprite = new Spritemap("graphics/satoko.png", 48, 48);
-        startingHealth = 1000;
+        //startingHealth = 1000;
+        startingHealth = 10;
         health = startingHealth;
         sprite.add("idle", [0]);
+        sprite.add("enrage", [1]);
         graphic = sprite;
 
         path = new LinearPath(TweenType.Looping);
@@ -44,34 +41,31 @@ class Satoko extends Boss
         path.setMotionSpeed(SPEED);
         addTween(path, true);
         
-        spoutShotInterval = new Alarm(
-            SPOUT_SHOT_INTERVAL, TweenType.Looping
-        );
-        spoutShotInterval.onComplete.bind(function() {
-            spoutShot();
-        });
-        addTween(spoutShotInterval, true);
-
         rippleShotInterval = new Alarm(
             RIPPLE_SHOT_INTERVAL, TweenType.Looping
         );
         rippleShotInterval.onComplete.bind(function() {
             rippleShot();
         });
-        addTween(rippleShotInterval, true);
+        var startDelay = new Alarm(RIPPLE_SHOT_INTERVAL / 2);
+        startDelay.onComplete.bind(function() {
+            rippleShot();
+            addTween(rippleShotInterval, true);
+        });
+        addTween(startDelay, true);
     }
 
-    private function spoutShot() {
-        var spreadAngles = getSpreadAngles(3, SPOUT_SHOT_SPREAD);
-        for(spreadAngle in spreadAngles) {
-            var shotAngle = getAngleTowardsPlayer() + spreadAngle;
-            var shotVector = new Vector2(
-                Math.cos(shotAngle), Math.sin(shotAngle)
-            );
-            scene.add(new Bullet(
-                centerX, centerY, shotVector, SPOUT_SHOT_SPEED, 0x00FD00, 10
-            ));
+    override public function die() {
+        if(scene.getInstance("rika") != null) {
+            cast(scene.getInstance("rika"), Rika).enrage();
         }
+        super.die();
+    }
+
+    public function enrage() {
+        rippleShotInterval.multiplySpeed(2);
+        path.multiplySpeed(2);
+        sprite.play("enrage");
     }
 
     private function rippleShot() {
@@ -85,9 +79,7 @@ class Satoko extends Boss
                 Math.cos(shotAngle), Math.sin(shotAngle)
             );
             scene.add(new Bullet(
-                centerX, centerY, shotVector,
-                RIPPLE_SHOT_SPEED * (i % 2 == 0 ? 0.66 : 1.33),
-                0x00FDFF, (i % 2 == 0 ? 12 : 16)
+                centerX, centerY, shotVector, RIPPLE_SHOT_SPEED, 0x00FDFF, 12
             ));
         }
     }

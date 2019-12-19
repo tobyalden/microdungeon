@@ -18,23 +18,20 @@ class Rika extends Boss
     public static inline var SPOUT_SHOT_SPREAD = 3.1415 / 5;
     public static inline var SPOUT_SHOT_INTERVAL = 2.5;
 
-    public static inline var RIPPLE_SHOT_SPEED = 60;
-    public static inline var RIPPLE_SHOT_INTERVAL = 7;
-    public static inline var RIPPLE_BULLETS_PER_SHOT = 8;
-
     private var sprite:Spritemap;
     private var path:LinearPath;
     private var spoutShotInterval:Alarm;
-    private var rippleShotInterval:Alarm;
 
     public function new(startX:Float, startY:Float, pathPoints:Array<Vector2>) {
         super(startX, startY);
         name = "rika";
         mask = new Hitbox(48, 48);
-        startingHealth = 1000;
+        //startingHealth = 1000;
+        startingHealth = 10;
         health = startingHealth;
         sprite = new Spritemap("graphics/rika.png", 48, 48);
         sprite.add("idle", [0]);
+        sprite.add("enrage", [1]);
         graphic = sprite;
 
         path = new LinearPath(TweenType.Looping);
@@ -51,14 +48,6 @@ class Rika extends Boss
             spoutShot();
         });
         addTween(spoutShotInterval, true);
-
-        rippleShotInterval = new Alarm(
-            RIPPLE_SHOT_INTERVAL, TweenType.Looping
-        );
-        rippleShotInterval.onComplete.bind(function() {
-            rippleShot();
-        });
-        addTween(rippleShotInterval, true);
     }
 
     private function spoutShot() {
@@ -74,22 +63,17 @@ class Rika extends Boss
         }
     }
 
-    private function rippleShot() {
-        var spreadAngles = getSpreadAngles(
-            RIPPLE_BULLETS_PER_SHOT, Math.PI * 2
-        );
-        var offset = Math.random() * Math.PI * 2;
-        for(i in 0...RIPPLE_BULLETS_PER_SHOT) {
-            var shotAngle = spreadAngles[i] + Math.PI / 2  + offset;
-            var shotVector = new Vector2(
-                Math.cos(shotAngle), Math.sin(shotAngle)
-            );
-            scene.add(new Bullet(
-                centerX, centerY, shotVector,
-                RIPPLE_SHOT_SPEED * (i % 2 == 0 ? 0.66 : 1.33),
-                0x00FDFF, (i % 2 == 0 ? 12 : 16)
-            ));
+    override public function die() {
+        if(scene.getInstance("satoko") != null) {
+            cast(scene.getInstance("satoko"), Satoko).enrage();
         }
+        super.die();
+    }
+
+    public function enrage() {
+        spoutShotInterval.multiplySpeed(2);
+        path.multiplySpeed(2);
+        sprite.play("enrage");
     }
 
     override public function update() {
@@ -98,4 +82,3 @@ class Rika extends Boss
         super.update();
     }
 }
-
