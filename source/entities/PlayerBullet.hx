@@ -34,7 +34,7 @@ class PlayerBullet extends MiniEntity
     }
 
     override public function moveCollideX(e:Entity) {
-        if(e.name == "boss") {
+        if(e.type == "boss") {
             cast(e, Boss).takeHit();
         }
         scene.remove(this);
@@ -42,7 +42,7 @@ class PlayerBullet extends MiniEntity
     }
 
     override public function moveCollideY(e:Entity) {
-        if(e.name == "boss") {
+        if(e.type == "boss") {
             cast(e, Boss).takeHit();
         }
         scene.remove(this);

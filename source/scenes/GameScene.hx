@@ -33,6 +33,19 @@ class GameScene extends Scene
         super.update();
     }
 
+    public function getCurrentBosses() {
+        var _bosses = new Array<Entity>();
+        var bosses = new Array<Boss>();
+        getType("boss", _bosses);
+        for(_boss in _bosses) {
+            var boss = cast(_boss, Boss);
+            if(!boss.isOffScreen()) {
+                bosses.push(boss);
+            }
+        }
+        return bosses;
+    }
+
     public function onDeath() {
         doSequence([{
             atTime: 3,

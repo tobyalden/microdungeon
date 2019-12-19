@@ -12,32 +12,32 @@ class MiniEntity extends Entity
         super(x, y);
     }
 
-    private function isOffScreen() {
+    public function isOffScreen() {
         return (
-            right < scene.camera.x
-            || left > scene.camera.x + HXP.width
-            || top < scene.camera.y
-            || bottom > scene.camera.y + HXP.height
+            x + width < scene.camera.x
+            || x > scene.camera.x + HXP.width
+            || y + height < scene.camera.y
+            || y > scene.camera.y + HXP.height
         );
     }
 
-    private function isOnGround() {
+    public function isOnGround() {
         return collide("walls", x, y + 1) != null;
     }
 
-    private function isOnCeiling() {
+    public function isOnCeiling() {
         return collide("walls", x, y - 1) != null;
     }
 
-    private function isOnWall() {
+    public function isOnWall() {
         return isOnRightWall() || isOnLeftWall();
     }
 
-    private function isOnRightWall() {
+    public function isOnRightWall() {
         return collide("walls", x + 1, y) != null;
     }
 
-    private function isOnLeftWall() {
+    public function isOnLeftWall() {
         return collide("walls", x - 1, y) != null;
     }
 }

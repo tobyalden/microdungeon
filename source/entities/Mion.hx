@@ -12,7 +12,6 @@ import haxepunk.utils.*;
 
 class Mion extends Boss
 {
-    public static inline var MAX_HEALTH = 1000;
     public static inline var SPEED = 50;
 
     public static inline var SPOUT_SHOT_SPEED = 100;
@@ -33,7 +32,8 @@ class Mion extends Boss
         super(startX, startY);
         name = "mion";
         mask = new Hitbox(75, 75);
-        health = MAX_HEALTH;
+        startingHealth = 1000;
+        health = startingHealth;
         sprite = new Spritemap("graphics/mion.png", 75, 75);
         sprite.add("idle", [0]);
         graphic = sprite;

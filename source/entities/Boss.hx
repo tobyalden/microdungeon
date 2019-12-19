@@ -13,6 +13,7 @@ import haxepunk.utils.*;
 class Boss extends MiniEntity
 {
     public var health(default, null):Int;
+    public var startingHealth(default, null):Int;
     private var startPosition:Vector2;
 
     public function new(startX:Float, startY:Float) {

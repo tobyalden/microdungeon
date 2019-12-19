@@ -10,30 +10,40 @@ import haxepunk.tweens.motion.*;
 import haxepunk.tweens.misc.*;
 import haxepunk.utils.*;
 
-class Rena extends Boss
+class Rika extends Boss
 {
-    public static inline var SPOUT_SHOT_SPEED = 150;
-    public static inline var SPOUT_SHOT_INTERVAL = 1.5;
+    public static inline var SPEED = 50;
 
-    public static inline var RIPPLE_SHOT_SPEED = 100;
-    public static inline var RIPPLE_SHOT_SPREAD = 15;
-    public static inline var RIPPLE_SHOT_INTERVAL = 2.7;
-    public static inline var RIPPLE_BULLETS_PER_SHOT = 13;
+    public static inline var SPOUT_SHOT_SPEED = 100;
+    public static inline var SPOUT_SHOT_SPREAD = 3.1415 / 5;
+    public static inline var SPOUT_SHOT_INTERVAL = 2.5;
+
+    public static inline var RIPPLE_SHOT_SPEED = 60;
+    public static inline var RIPPLE_SHOT_INTERVAL = 7;
+    public static inline var RIPPLE_BULLETS_PER_SHOT = 8;
 
     private var sprite:Spritemap;
+    private var path:LinearPath;
     private var spoutShotInterval:Alarm;
     private var rippleShotInterval:Alarm;
 
-    public function new(startX:Float, startY:Float) {
+    public function new(startX:Float, startY:Float, pathPoints:Array<Vector2>) {
         super(startX, startY);
-        name = "rena";
-        mask = new Hitbox(75, 75);
+        name = "rika";
+        mask = new Hitbox(48, 48);
         startingHealth = 1000;
         health = startingHealth;
-        sprite = new Spritemap("graphics/rena.png", 75, 75);
+        sprite = new Spritemap("graphics/rika.png", 48, 48);
         sprite.add("idle", [0]);
         graphic = sprite;
 
+        path = new LinearPath(TweenType.Looping);
+        for(point in pathPoints) {
+            path.addPoint(point.x, point.y);
+        }
+        path.setMotionSpeed(SPEED);
+        addTween(path, true);
+        
         spoutShotInterval = new Alarm(
             SPOUT_SHOT_INTERVAL, TweenType.Looping
         );
@@ -52,13 +62,16 @@ class Rena extends Boss
     }
 
     private function spoutShot() {
-        var shotAngle = getAngleTowardsPlayer();
-        var shotVector = new Vector2(
-            Math.cos(shotAngle), Math.sin(shotAngle)
-        );
-        scene.add(new Bullet(
-            centerX, centerY, shotVector, SPOUT_SHOT_SPEED, 0x00FD00, 20
-        ));
+        var spreadAngles = getSpreadAngles(3, SPOUT_SHOT_SPREAD);
+        for(spreadAngle in spreadAngles) {
+            var shotAngle = getAngleTowardsPlayer() + spreadAngle;
+            var shotVector = new Vector2(
+                Math.cos(shotAngle), Math.sin(shotAngle)
+            );
+            scene.add(new Bullet(
+                centerX, centerY, shotVector, SPOUT_SHOT_SPEED, 0x00FD00, 10
+            ));
+        }
     }
 
     private function rippleShot() {
@@ -80,6 +93,9 @@ class Rena extends Boss
     }
 
     override public function update() {
+        x = path.x;
+        y = path.y;
         super.update();
     }
 }
+

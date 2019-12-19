@@ -89,6 +89,54 @@ class Level extends Entity
                     entities.push(mion);
                 }
             }
+            if(fastXml.node.objects.hasNode.satoko) {
+                for(satoko in fastXml.node.objects.nodes.satoko) {
+                    var nodes = new Array<Vector2>();
+                    nodes.push(new Vector2(
+                        Std.parseInt(satoko.att.x),
+                        Std.parseInt(satoko.att.y)
+                    ));
+                    for(n in satoko.nodes.node) {
+                        nodes.push(new Vector2(
+                            Std.parseInt(n.att.x), Std.parseInt(n.att.y)
+                        ));
+                    }
+                    nodes.push(new Vector2(
+                        Std.parseInt(satoko.att.x),
+                        Std.parseInt(satoko.att.y)
+                    ));
+                    var satoko = new Satoko(
+                        Std.parseInt(satoko.att.x),
+                        Std.parseInt(satoko.att.y),
+                        nodes
+                    );
+                    entities.push(satoko);
+                }
+            }
+            if(fastXml.node.objects.hasNode.rika) {
+                for(rika in fastXml.node.objects.nodes.rika) {
+                    var nodes = new Array<Vector2>();
+                    nodes.push(new Vector2(
+                        Std.parseInt(rika.att.x),
+                        Std.parseInt(rika.att.y)
+                    ));
+                    for(n in rika.nodes.node) {
+                        nodes.push(new Vector2(
+                            Std.parseInt(n.att.x), Std.parseInt(n.att.y)
+                        ));
+                    }
+                    nodes.push(new Vector2(
+                        Std.parseInt(rika.att.x),
+                        Std.parseInt(rika.att.y)
+                    ));
+                    var rika = new Rika(
+                        Std.parseInt(rika.att.x),
+                        Std.parseInt(rika.att.y),
+                        nodes
+                    );
+                    entities.push(rika);
+                }
+            }
             if(fastXml.node.objects.hasNode.sawblade) {
                 for(sawblade in fastXml.node.objects.nodes.sawblade) {
                     var nodes = new Array<Vector2>();
