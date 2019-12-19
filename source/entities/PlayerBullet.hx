@@ -29,27 +29,21 @@ class PlayerBullet extends MiniEntity
         moveBy(
             velocity.x * HXP.elapsed,
             velocity.y * HXP.elapsed,
-            ["walls", "rena", "mion"]
+            ["walls", "boss"]
         );
     }
 
     override public function moveCollideX(e:Entity) {
-        if(e.name == "rena") {
-            cast(e, Rena).takeHit();
-        }
-        else if(e.name == "mion") {
-            cast(e, Mion).takeHit();
+        if(e.name == "boss") {
+            cast(e, Boss).takeHit();
         }
         scene.remove(this);
         return true;
     }
 
     override public function moveCollideY(e:Entity) {
-        if(e.name == "rena") {
-            cast(e, Rena).takeHit();
-        }
-        else if(e.name == "mion") {
-            cast(e, Mion).takeHit();
+        if(e.name == "boss") {
+            cast(e, Boss).takeHit();
         }
         scene.remove(this);
         return true;

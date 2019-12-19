@@ -79,7 +79,7 @@ class Player extends MiniEntity
     }
 
     private function collisions() {
-        for(hazardType in ["hazard", "rena", "mion"]) {
+        for(hazardType in ["hazard", "boss"]) {
             if(collide(hazardType, x, y) != null) {
                 die();
             }

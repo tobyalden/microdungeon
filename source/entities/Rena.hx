@@ -10,7 +10,7 @@ import haxepunk.tweens.motion.*;
 import haxepunk.tweens.misc.*;
 import haxepunk.utils.*;
 
-class Rena extends MiniEntity
+class Rena extends Boss
 {
     public static inline var MAX_HEALTH = 1000;
     public static inline var SPOUT_SHOT_SPEED = 150;
@@ -21,7 +21,6 @@ class Rena extends MiniEntity
     public static inline var RIPPLE_SHOT_INTERVAL = 2.7;
     public static inline var RIPPLE_BULLETS_PER_SHOT = 13;
 
-    public var health(default, null):Int;
     private var sprite:Spritemap;
     private var spoutShotInterval:Alarm;
     private var rippleShotInterval:Alarm;
@@ -29,7 +28,6 @@ class Rena extends MiniEntity
     public function new(startX:Float, startY:Float) {
         super(startX, startY);
         name = "rena";
-        type = "rena";
         mask = new Hitbox(75, 75);
         health = MAX_HEALTH;
         sprite = new Spritemap("graphics/rena.png", 75, 75);
@@ -51,13 +49,6 @@ class Rena extends MiniEntity
             rippleShot();
         });
         addTween(rippleShotInterval, true);
-    }
-
-    public function takeHit() {
-        health -= 1;
-        if(health <= 0) {
-            scene.remove(this);
-        }
     }
 
     private function spoutShot() {
@@ -90,33 +81,5 @@ class Rena extends MiniEntity
 
     override public function update() {
         super.update();
-    }
-
-    public function getSpreadAngles(numAngles:Int, maxSpread:Float) {
-        var spreadAngles = new Array<Float>();
-        var startAngle = -maxSpread / 2;
-        var angleIncrement = maxSpread / (numAngles - 1);
-        for(i in 0...numAngles) {
-            spreadAngles.push(startAngle + angleIncrement * i);
-        }
-        return spreadAngles;
-    }
-
-    public function getSprayAngles(numAngles:Int, maxSpread:Float) {
-        var sprayAngles = new Array<Float>();
-        for(i in 0...numAngles) {
-            sprayAngles.push(-maxSpread / 2 + Random.random * maxSpread);
-        }
-        return sprayAngles;
-    }
-
-    public function getAngleTowardsPlayer() {
-        var player = scene.getInstance("player");
-        return (
-            Math.atan2(
-                player.centerY - centerY,
-                player.centerX - centerX
-            )
-        );
     }
 }

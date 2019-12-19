@@ -10,7 +10,7 @@ import haxepunk.tweens.motion.*;
 import haxepunk.tweens.misc.*;
 import haxepunk.utils.*;
 
-class Mion extends MiniEntity
+class Mion extends Boss
 {
     public static inline var MAX_HEALTH = 1000;
     public static inline var SPEED = 50;
@@ -23,19 +23,15 @@ class Mion extends MiniEntity
     public static inline var RIPPLE_SHOT_INTERVAL = 7;
     public static inline var RIPPLE_BULLETS_PER_SHOT = 8;
 
-    public var health(default, null):Int;
     private var sprite:Spritemap;
     private var path:LinearPath;
     private var wave:NumTween;
     private var spoutShotInterval:Alarm;
     private var rippleShotInterval:Alarm;
-    private var startY:Float;
 
     public function new(startX:Float, startY:Float, pathPoints:Array<Vector2>) {
         super(startX, startY);
-        this.startY = startY;
         name = "mion";
-        type = "mion";
         mask = new Hitbox(75, 75);
         health = MAX_HEALTH;
         sprite = new Spritemap("graphics/mion.png", 75, 75);
@@ -68,13 +64,6 @@ class Mion extends MiniEntity
             rippleShot();
         });
         addTween(rippleShotInterval, true);
-    }
-
-    public function takeHit() {
-        health -= 1;
-        if(health <= 0) {
-            scene.remove(this);
-        }
     }
 
     private function spoutShot() {
@@ -110,36 +99,7 @@ class Mion extends MiniEntity
 
     override public function update() {
         x = path.x;
-        y = startY + wave.value;
+        y = startPosition.y + wave.value;
         super.update();
     }
-
-    public function getSpreadAngles(numAngles:Int, maxSpread:Float) {
-        var spreadAngles = new Array<Float>();
-        var startAngle = -maxSpread / 2;
-        var angleIncrement = maxSpread / (numAngles - 1);
-        for(i in 0...numAngles) {
-            spreadAngles.push(startAngle + angleIncrement * i);
-        }
-        return spreadAngles;
-    }
-
-    public function getSprayAngles(numAngles:Int, maxSpread:Float) {
-        var sprayAngles = new Array<Float>();
-        for(i in 0...numAngles) {
-            sprayAngles.push(-maxSpread / 2 + Random.random * maxSpread);
-        }
-        return sprayAngles;
-    }
-
-    public function getAngleTowardsPlayer() {
-        var player = scene.getInstance("player");
-        return (
-            Math.atan2(
-                player.centerY - centerY,
-                player.centerX - centerX
-            )
-        );
-    }
 }
-
