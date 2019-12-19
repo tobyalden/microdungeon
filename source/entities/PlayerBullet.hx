@@ -12,6 +12,7 @@ class PlayerBullet extends MiniEntity
 
     private var sprite:Spritemap;
     private var velocity:Vector2;
+    private var sfx:Map<String, Sfx>;
 
     public function new(x:Float, y:Float, heading:Vector2) {
         super(x, y);
@@ -22,6 +23,11 @@ class PlayerBullet extends MiniEntity
         graphic = sprite;
         velocity = heading;
         velocity.normalize(SPEED);
+        sfx = [
+            "bullethit1" => new Sfx("audio/bullethit1.wav"),
+            "bullethit2" => new Sfx("audio/bullethit2.wav"),
+            "bullethit3" => new Sfx("audio/bullethit3.wav")
+        ];
     }
 
     override public function update() {
@@ -36,6 +42,10 @@ class PlayerBullet extends MiniEntity
     override public function moveCollideX(e:Entity) {
         if(e.type == "boss") {
             cast(e, Boss).takeHit();
+            var sfxName = 'bullethit${HXP.choose(1, 2, 3)}';
+            if(!sfx[sfxName].playing) {
+                sfx[sfxName].play(0.15);
+            }
         }
         scene.remove(this);
         return true;
@@ -44,6 +54,10 @@ class PlayerBullet extends MiniEntity
     override public function moveCollideY(e:Entity) {
         if(e.type == "boss") {
             cast(e, Boss).takeHit();
+            var sfxName = 'bullethit${HXP.choose(1, 2, 3)}';
+            if(!sfx[sfxName].playing) {
+                sfx[sfxName].play(0.15);
+            }
         }
         scene.remove(this);
         return true;

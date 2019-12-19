@@ -15,11 +15,15 @@ class Boss extends MiniEntity
     public var health(default, null):Int;
     public var startingHealth(default, null):Int;
     private var startPosition:Vector2;
+    private var sfx:Map<String, Sfx>;
 
     public function new(startX:Float, startY:Float) {
         super(startX, startY);
         type = "boss";
         startPosition = new Vector2(startX, startY);
+        sfx = [
+            "bossdeath" => new Sfx("audio/bossdeath.wav")
+        ];
     }
 
     public function takeHit() {
@@ -30,6 +34,8 @@ class Boss extends MiniEntity
     }
 
     public function die() {
+        sfx["bossdeath"].play();
+        explode();
         scene.remove(this);
     }
 

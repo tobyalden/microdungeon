@@ -29,7 +29,9 @@ class Player extends MiniEntity
     private var velocity:Vector2;
     private var shotTimer:Alarm;
     private var isDead:Bool;
+    private var wasOnGround:Bool;
     private var inventory:Array<String>;
+    private var sfx:Map<String, Sfx>;
 
     public function new(x:Float, y:Float) {
         super(x, y);
@@ -59,8 +61,15 @@ class Player extends MiniEntity
         });
         addTween(shotTimer);
         isDead = false;
+        wasOnGround = false;
         //inventory = ["hanginggloves"];
         inventory = [];
+        sfx = [
+            "jump" => new Sfx("audio/jump.wav"),
+            "land" => new Sfx("audio/land.wav"),
+            "shoot" => new Sfx("audio/shoot.wav"),
+            "death" => new Sfx("audio/death.wav")
+        ];
     }
 
     private function firePeashooter() {
@@ -72,9 +81,11 @@ class Player extends MiniEntity
 
     override public function update() {
         collisions();
-        shooting();
-        movement();
-        animation();
+        if(!isDead) {
+            shooting();
+            movement();
+            animation();
+        }
         super.update();
     }
 
@@ -91,47 +102,21 @@ class Player extends MiniEntity
         visible = false;
         collidable = false;
         explode();
-        //sfx["death"].play();
+        sfx["death"].play();
+        sfx["shoot"].stop();
+        shotTimer.cancel();
         cast(scene, GameScene).onDeath();
-    }
-
-    private function explode() {
-        var numExplosions = 50;
-        var directions = new Array<Vector2>();
-        for(i in 0...numExplosions) {
-            var angle = (2/numExplosions) * i;
-            directions.push(new Vector2(Math.cos(angle), Math.sin(angle)));
-            directions.push(new Vector2(-Math.cos(angle), Math.sin(angle)));
-            directions.push(new Vector2(Math.cos(angle), -Math.sin(angle)));
-            directions.push(new Vector2(-Math.cos(angle), -Math.sin(angle)));
-        }
-        var count = 0;
-        for(direction in directions) {
-            direction.scale(0.8 * Math.random());
-            direction.normalize(
-                Math.max(0.1 + 0.2 * Math.random(), direction.length)
-            );
-            var explosion = new Particle(
-                centerX, centerY, directions[count]
-            );
-            explosion.layer = -99;
-            scene.add(explosion);
-            count++;
-        }
-
-#if desktop
-        Sys.sleep(0.02);
-#end
-        scene.camera.shake(1, 4);
     }
 
     private function shooting() {
         if(Input.pressed("shoot")) {
             firePeashooter();
             shotTimer.start();
+            sfx["shoot"].loop();
         }
         if(Input.released("shoot")) {
             shotTimer.active = false;
+            sfx["shoot"].stop();
         }
     }
 
@@ -172,6 +157,7 @@ class Player extends MiniEntity
             velocity.y = 0;
             if(Input.pressed("jump")) {
                 velocity.y = -JUMP_POWER;
+                sfx["jump"].play();
             }
         }
         else {
@@ -188,6 +174,7 @@ class Player extends MiniEntity
             }
         }
 
+        wasOnGround = isOnGround();
         moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
     }
 
@@ -207,6 +194,9 @@ class Player extends MiniEntity
     }
 
     private function animation() {
+        if(!wasOnGround && isOnGround()) {
+            sfx["land"].play();
+        }
         if(velocity.x != 0 && !Input.check("shoot")) {
         //if(velocity.x != 0) {
             sprite.flipX = velocity.x < 0;

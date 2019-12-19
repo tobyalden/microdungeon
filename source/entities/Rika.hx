@@ -26,8 +26,7 @@ class Rika extends Boss
         super(startX, startY);
         name = "rika";
         mask = new Hitbox(48, 48);
-        //startingHealth = 1000;
-        startingHealth = 10;
+        startingHealth = 1000;
         health = startingHealth;
         sprite = new Spritemap("graphics/rika.png", 48, 48);
         sprite.add("idle", [0]);
