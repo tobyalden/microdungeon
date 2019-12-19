@@ -13,24 +13,39 @@ import haxepunk.utils.*;
 class Boss extends MiniEntity
 {
     public var health(default, null):Int;
+    public var sfx(default, null):Map<String, Sfx>;
     public var startingHealth(default, null):Int;
     private var startPosition:Vector2;
-    private var sfx:Map<String, Sfx>;
 
     public function new(startX:Float, startY:Float) {
         super(startX, startY);
         type = "boss";
         startPosition = new Vector2(startX, startY);
         sfx = [
-            "bossdeath" => new Sfx("audio/bossdeath.wav")
+            "bossdeath" => new Sfx("audio/bossdeath.wav"),
+            "klaxon" => new Sfx("audio/klaxon.wav")
         ];
     }
 
     public function takeHit() {
         health -= 1;
+        if(health <= startingHealth / 4) {
+            if(!sfx["klaxon"].playing) {
+                sfx["klaxon"].loop();
+            }
+        }
         if(health <= 0) {
             die();
+            sfx["klaxon"].stop();
         }
+    }
+
+    override public function update() {
+        if(sfx["klaxon"].playing) {
+            graphic.x = Math.random() * 3;
+            graphic.y = Math.random() * 3;
+        }
+        super.update();
     }
 
     public function die() {

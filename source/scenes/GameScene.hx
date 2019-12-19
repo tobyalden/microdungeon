@@ -49,7 +49,12 @@ class GameScene extends Scene
     public function onDeath() {
         doSequence([{
             atTime: 3,
-            doThis: function() { HXP.scene = new GameScene(); }
+            doThis: function() {
+                for(boss in getCurrentBosses()) {
+                    boss.sfx["klaxon"].stop();
+                }
+                HXP.scene = new GameScene();
+            }
         }]);
     }
 

@@ -50,7 +50,6 @@ class UI extends MiniEntity
             );
         }
         else if(bosses.length == 2) {
-            trace('two bosses');
             primaryBossHealthBar.width = (
                 bosses[0].health / bosses[0].startingHealth
                 * DOUBLE_BOSS_HEALTHBAR_LENGTH
