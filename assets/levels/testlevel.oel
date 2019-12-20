@@ -18,7 +18,7 @@
     <rect x="324" y="92" w="48" h="4"/>
     <rect x="436" y="124" w="60" h="8"/>
     <rect x="516" y="104" w="100" h="8"/>
-    <rect x="636" y="4" w="8" h="164"/>
+    <rect x="636" y="4" w="8" h="124"/>
     <rect x="724" y="104" w="44" h="8"/>
     <rect x="832" y="104" w="56" h="8"/>
     <rect x="956" y="4" w="4" h="164"/>
@@ -28,7 +28,7 @@
     <mion x="552" y="8">
       <node x="332" y="8"/>
     </mion>
-    <player x="660" y="144"/>
+    <player x="608" y="144"/>
     <sawblade x="52" y="144" width="48" height="24" speed="80">
       <node x="224" y="144"/>
     </sawblade>
@@ -45,11 +45,12 @@
       <node x="648" y="8"/>
       <node x="904" y="8"/>
     </rika>
-    <player x="268" y="324"/>
     <elevator x="4" y="348">
       <node x="4" y="80"/>
     </elevator>
     <bosstrigger x="4" y="4" width="24" height="76" bossname="rena"/>
     <bosstrigger x="348" y="96" width="24" height="40" bossname="mion"/>
+    <bosstrigger x="652" y="68" width="40" height="100" bossname="satoko"/>
+    <bosstrigger x="652" y="68" width="40" height="100" bossname="rika"/>
   </objects>
 </level>

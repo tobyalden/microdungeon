@@ -125,6 +125,7 @@ class Player extends MiniEntity
                     bossTrigger.centerX - width / 2,
                     bossTrigger.bottom - height
                 );
+                bossTrigger.collidable = false;
             }
         }
     }
