@@ -19,6 +19,11 @@
 				<number name="speed" default="80"/>
 			</values>
         </object>
+		<object name="bosstrigger" image="bosstrigger.png" width="8" height="8" resizableX="true" resizableY="true" tile="true">
+			<values>
+				<string name="bossname" default=""/>
+			</values>
+        </object>
 		<object name="elevator" image="elevator.png" width="16" height="4">
             <nodes drawObject="true" lineMode="2"/>
         </object>

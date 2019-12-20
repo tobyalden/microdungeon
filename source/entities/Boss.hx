@@ -25,6 +25,7 @@ class Boss extends MiniEntity
             "bossdeath" => new Sfx("audio/bossdeath.wav"),
             "klaxon" => new Sfx("audio/klaxon.wav")
         ];
+        active = false;
     }
 
     public function takeHit() {

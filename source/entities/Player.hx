@@ -25,6 +25,7 @@ class Player extends MiniEntity
     public static inline var GLIDE_FACTOR = 1;
     public static inline var PEASHOOTER_SHOT_INTERVAL = 1 / 60;
 
+    public var activeElevator(default, null):Elevator;
     private var sprite:Spritemap;
     private var velocity:Vector2;
     private var shotTimer:Alarm;
@@ -32,7 +33,6 @@ class Player extends MiniEntity
     private var wasOnGround:Bool;
     private var inventory:Array<String>;
     private var sfx:Map<String, Sfx>;
-    private var activeElevator:Elevator;
 
     public function new(x:Float, y:Float) {
         super(x, y);
@@ -110,6 +110,15 @@ class Player extends MiniEntity
             activeElevator.activate();
             sprite.flipX = false;
             sprite.play("idle");
+        }
+        var bossTrigger = collide("bosstrigger", x, y);
+        if(bossTrigger != null && activeElevator == null) {
+            var boss = scene.getInstance(
+                cast(bossTrigger, BossTrigger).bossName
+            );
+            if(boss != null) {
+                boss.active = true;
+            }
         }
     }
 

@@ -36,6 +36,10 @@ class GameScene extends Scene
         camera.x = Math.floor(player.centerX / HXP.width) * HXP.width;
         camera.y = Math.floor(player.centerY / HXP.height) * HXP.height;
 
+        for(boss in getAllBosses()) {
+            boss.graphic.color = boss.active ? 0xFFFFFF : 0x0000FF;
+        }
+
         var updateLast = new Array<Entity>();
         var updateFirst = new Array<Entity>();
         for(e in _update) {
@@ -57,6 +61,17 @@ class GameScene extends Scene
         }
 
         super.update();
+    }
+
+    public function getAllBosses() {
+        var _bosses = new Array<Entity>();
+        var bosses = new Array<Boss>();
+        getType("boss", _bosses);
+        for(_boss in _bosses) {
+            var boss = cast(_boss, Boss);
+            bosses.push(boss);
+        }
+        return bosses;
     }
 
     public function getCurrentBosses() {
