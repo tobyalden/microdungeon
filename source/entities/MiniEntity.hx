@@ -51,12 +51,24 @@ class MiniEntity extends Entity
         );
     }
 
+    public function collideMultiple(
+        collideTypes:Array<String>, collideX:Float, collideY:Float
+    ) {
+        for(collideType in collideTypes) {
+            var collided = collide(collideType, collideX, collideY);
+            if(collided != null) {
+                return collided;
+            }
+        }
+        return null;
+    }
+
     public function isOnGround() {
-        return collide("walls", x, y + 1) != null;
+        return collideMultiple(["walls", "elevator"], x, y + 1) != null;
     }
 
     public function isOnCeiling() {
-        return collide("walls", x, y - 1) != null;
+        return collideMultiple(["walls", "elevator"], x, y - 1) != null;
     }
 
     public function isOnWall() {
@@ -64,10 +76,10 @@ class MiniEntity extends Entity
     }
 
     public function isOnRightWall() {
-        return collide("walls", x + 1, y) != null;
+        return collideMultiple(["walls", "elevator"], x + 1, y) != null;
     }
 
     public function isOnLeftWall() {
-        return collide("walls", x - 1, y) != null;
+        return collideMultiple(["walls", "elevator"], x - 1, y) != null;
     }
 }

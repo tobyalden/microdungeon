@@ -34,6 +34,28 @@ class GameScene extends Scene
 
     override public function update() {
         camera.x = Math.floor(player.centerX / HXP.width) * HXP.width;
+        camera.y = Math.floor(player.centerY / HXP.height) * HXP.height;
+
+        var updateLast = new Array<Entity>();
+        var updateFirst = new Array<Entity>();
+        for(e in _update) {
+            if(Type.getClass(e) == Player) {
+                _update.remove(e);
+                updateLast.push(e);
+            }
+            if(Type.getClass(e) == Elevator) {
+                _update.remove(e);
+                updateFirst.push(e);
+            }
+        }
+
+        for(e in updateFirst) {
+            _update.push(e);
+        }
+        for(e in updateLast) {
+            _update.add(e);
+        }
+
         super.update();
     }
 

@@ -162,6 +162,26 @@ class Level extends Entity
                     entities.push(sawblade);
                 }
             }
+            if(fastXml.node.objects.hasNode.elevator) {
+                for(elevator in fastXml.node.objects.nodes.elevator) {
+                    var nodes = new Array<Vector2>();
+                    nodes.push(new Vector2(
+                        Std.parseInt(elevator.att.x),
+                        Std.parseInt(elevator.att.y)
+                    ));
+                    for(n in elevator.nodes.node) {
+                        nodes.push(new Vector2(
+                            Std.parseInt(n.att.x), Std.parseInt(n.att.y)
+                        ));
+                    }
+                    var elevator = new Elevator(
+                        Std.parseInt(elevator.att.x),
+                        Std.parseInt(elevator.att.y),
+                        nodes
+                    );
+                    entities.push(elevator);
+                }
+            }
         }
     }
 

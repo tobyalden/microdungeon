@@ -32,6 +32,7 @@ class Player extends MiniEntity
     private var wasOnGround:Bool;
     private var inventory:Array<String>;
     private var sfx:Map<String, Sfx>;
+    private var activeElevator:Elevator;
 
     public function new(x:Float, y:Float) {
         super(x, y);
@@ -65,6 +66,7 @@ class Player extends MiniEntity
             "shoot" => new Sfx("audio/shoot.wav"),
             "death" => new Sfx("audio/death.wav")
         ];
+        activeElevator = null;
     }
 
     private function firePeashooter() {
@@ -77,9 +79,17 @@ class Player extends MiniEntity
     override public function update() {
         collisions();
         if(!isDead) {
-            shooting();
-            movement();
-            animation();
+            if(activeElevator != null) {
+                moveTo(
+                    activeElevator.centerX - width / 2,
+                    activeElevator.y - height
+                );
+            }
+            else {
+                shooting();
+                movement();
+                animation();
+            }
         }
         super.update();
     }
@@ -90,6 +100,25 @@ class Player extends MiniEntity
                 die();
             }
         }
+        var elevator = collide("elevator", x, y + 1);
+        if(
+            Input.pressed("up")
+            && elevator != null
+            && !cast(elevator, Elevator).isUsed
+        ) {
+            activeElevator = cast(elevator, Elevator);
+            activeElevator.activate();
+            sprite.flipX = false;
+            sprite.play("idle");
+        }
+    }
+
+    public function getOffElevator() {
+        moveTo(
+            activeElevator.centerX - width / 2,
+            activeElevator.y - height
+        );
+        activeElevator = null;
     }
 
     private function die() {
@@ -170,7 +199,11 @@ class Player extends MiniEntity
         }
 
         wasOnGround = isOnGround();
-        moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
+        moveBy(
+            velocity.x * HXP.elapsed,
+            velocity.y * HXP.elapsed,
+            ["walls", "elevator"]
+        );
     }
 
     override public function moveCollideX(_:Entity) {

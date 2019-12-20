@@ -180,6 +180,7 @@ class MainMenu extends Scene
                         // Yes
                         startGame();
                         sfx["synthsting1"].play();
+                        cursorSprite.play("select");
                     }
                 }
             }
@@ -188,6 +189,7 @@ class MainMenu extends Scene
                 if(Input.pressed("jump")) {
                     startGame();
                     sfx["synthsting2"].play();
+                    cursorSprite.play("select");
                 }
             }
         }
