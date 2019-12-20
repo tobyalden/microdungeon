@@ -15,6 +15,7 @@ class Elevator extends MiniEntity
     public static inline var SPEED = 40;
 
     public var isUsed(default, null):Bool;
+    public var sfx(default, null):Map<String, Sfx>;
     private var path:LinearPath;
 
     public function new(
@@ -39,11 +40,15 @@ class Elevator extends MiniEntity
         });
         addTween(path);
         isUsed = false;
+        sfx = [
+            "elevator" => new Sfx("audio/elevator.wav")
+        ];
     }
 
     public function activate() {
         path.start();
         isUsed = true;
+        sfx["elevator"].loop();
     }
 
     override public function update() {

@@ -112,7 +112,10 @@ class Player extends MiniEntity
             sprite.play("idle");
         }
         var bossTrigger = collide("bosstrigger", x, y);
-        if(bossTrigger != null && activeElevator == null) {
+        if(
+            bossTrigger != null
+            && activeElevator == null
+        ) {
             var boss = scene.getInstance(
                 cast(bossTrigger, BossTrigger).bossName
             );
@@ -131,6 +134,7 @@ class Player extends MiniEntity
             activeElevator.centerX - width / 2,
             activeElevator.y - height
         );
+        activeElevator.sfx["elevator"].stop();
         activeElevator = null;
     }
 
