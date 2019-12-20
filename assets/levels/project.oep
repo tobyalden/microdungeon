@@ -24,7 +24,7 @@
 				<string name="bossname" default=""/>
 			</values>
         </object>
-		<object name="lock" image="lock.png" width="8" height="8" resizableX="true" resizableY="true" tile="true">
+		<object name="lock" image="lock.png" width="4" height="4" resizableX="true" resizableY="true" tile="true">
 			<values>
 				<string name="bossname" default=""/>
 			</values>

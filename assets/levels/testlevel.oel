@@ -29,7 +29,6 @@
     <mion x="552" y="8">
       <node x="332" y="8"/>
     </mion>
-    <player x="32" y="108"/>
     <sawblade x="52" y="144" width="48" height="24" speed="80">
       <node x="224" y="144"/>
     </sawblade>
@@ -51,11 +50,14 @@
     </elevator>
     <bosstrigger x="4" y="4" width="24" height="76" bossname="rena"/>
     <bosstrigger x="348" y="96" width="24" height="40" bossname="mion"/>
-    <bosstrigger x="652" y="68" width="40" height="100" bossname="satoko"/>
-    <bosstrigger x="652" y="68" width="40" height="100" bossname="rika"/>
+    <bosstrigger x="660" y="68" width="40" height="100" bossname="satoko"/>
+    <bosstrigger x="660" y="68" width="40" height="100" bossname="rika"/>
+    <lock x="320" y="96" width="4" height="40" bossname="mion"/>
+    <lock x="636" y="128" width="4" height="40" bossname="mion"/>
+    <lock x="640" y="128" width="4" height="40" bossname="rika"/>
+    <lock x="640" y="128" width="4" height="40" bossname="satoko"/>
     <lock x="956" y="128" width="8" height="40" bossname="rika"/>
-    <lock x="316" y="96" width="8" height="40" bossname="rena"/>
-    <lock x="636" y="128" width="8" height="40" bossname="mion"/>
     <lock x="956" y="128" width="8" height="40" bossname="satoko"/>
+    <player x="328" y="112"/>
   </objects>
 </level>

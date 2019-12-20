@@ -22,11 +22,13 @@ class Lock extends MiniEntity
         type = "walls";
         this.bossName = bossName;
         mask = new Hitbox(startWidth, startHeight);
-        graphic = new ColoredRect(startWidth, startHeight, 0xFFFFFF);
+        graphic = new ColoredRect(startWidth, startHeight, 0x808080);
     }
 
     override public function update() {
-        enabled = scene.getInstance(bossName) != null;
+        var boss = scene.getInstance(bossName);
+        visible = boss != null && boss.active;
+        collidable = boss != null && boss.active;
         super.update();
     }
 }
