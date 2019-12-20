@@ -118,6 +118,10 @@ class Player extends MiniEntity
             );
             if(boss != null) {
                 boss.active = true;
+                GameScene.checkpoint = new Vector2(
+                    bossTrigger.centerX - width / 2,
+                    bossTrigger.bottom - height
+                );
             }
         }
     }

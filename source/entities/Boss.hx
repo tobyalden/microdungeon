@@ -29,6 +29,9 @@ class Boss extends MiniEntity
     }
 
     public function takeHit() {
+        if(!active) {
+            return;
+        }
         health -= 1;
         if(health <= startingHealth / 4) {
             if(!sfx["klaxon"].playing) {

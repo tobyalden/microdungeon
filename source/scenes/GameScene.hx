@@ -15,12 +15,19 @@ typedef SequenceStep = {
 
 class GameScene extends Scene
 {
+    public static var checkpoint:Vector2 = null;
+
     private var player:Player;
     private var curtain:Curtain;
 
     override public function begin() {
         var level = new Level("testlevel");
-        player = new Player(level.playerStart.x, level.playerStart.y);
+        if(checkpoint != null) {
+            player = new Player(checkpoint.x, checkpoint.y);
+        }
+        else {
+            player = new Player(level.playerStart.x, level.playerStart.y);
+        }
         add(player);
         add(level);
         for(entity in level.entities) {
