@@ -16,6 +16,7 @@ typedef SequenceStep = {
 class GameScene extends Scene
 {
     private var player:Player;
+    private var curtain:Curtain;
 
     override public function begin() {
         var level = new Level("testlevel");
@@ -26,6 +27,9 @@ class GameScene extends Scene
             add(entity);
         }
         add(new UI());
+        curtain = new Curtain();
+        add(curtain);
+        curtain.fadeOut(0.5);
     }
 
     override public function update() {

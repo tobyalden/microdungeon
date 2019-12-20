@@ -36,11 +36,6 @@ class Player extends MiniEntity
     public function new(x:Float, y:Float) {
         super(x, y);
         name = "player";
-        Key.define("left", [Key.LEFT, Key.LEFT_SQUARE_BRACKET, Key.J]);
-        Key.define("right", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET, Key.L]);
-        Key.define("up", [Key.I]);
-        Key.define("jump", [Key.Z, Key.A]);
-        Key.define("shoot", [Key.X, Key.S]);
         sprite = new Spritemap("graphics/player.png", 16, 24);
         sprite.add("idle", [0]);
         sprite.add("run", [1, 2, 3, 2], 8);
