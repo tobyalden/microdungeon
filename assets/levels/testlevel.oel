@@ -1,15 +1,15 @@
 <level>
-  <width>960</width>
+  <width>1280</width>
   <height>360</height>
   <walls>
-    <rect x="0" y="0" w="960" h="4"/>
+    <rect x="0" y="0" w="1280" h="4"/>
     <rect x="0" y="4" w="4" h="356"/>
     <rect x="4" y="80" w="24" h="4"/>
     <rect x="4" y="352" w="316" h="8"/>
     <rect x="20" y="84" w="8" h="128"/>
     <rect x="20" y="348" w="300" h="4"/>
     <rect x="28" y="132" w="24" h="80"/>
-    <rect x="52" y="168" w="908" h="12"/>
+    <rect x="52" y="168" w="1228" h="12"/>
     <rect x="52" y="180" w="268" h="32"/>
     <rect x="92" y="64" w="16" h="16"/>
     <rect x="272" y="136" w="128" h="32"/>
@@ -21,14 +21,15 @@
     <rect x="636" y="4" w="8" h="124"/>
     <rect x="724" y="104" w="44" h="8"/>
     <rect x="832" y="104" w="56" h="8"/>
-    <rect x="956" y="4" w="4" h="164"/>
+    <rect x="956" y="4" w="8" h="124"/>
+    <rect x="1276" y="4" w="4" h="164"/>
   </walls>
   <objects>
     <rena x="224" y="24"/>
     <mion x="552" y="8">
       <node x="332" y="8"/>
     </mion>
-    <player x="608" y="144"/>
+    <player x="32" y="108"/>
     <sawblade x="52" y="144" width="48" height="24" speed="80">
       <node x="224" y="144"/>
     </sawblade>
@@ -52,5 +53,9 @@
     <bosstrigger x="348" y="96" width="24" height="40" bossname="mion"/>
     <bosstrigger x="652" y="68" width="40" height="100" bossname="satoko"/>
     <bosstrigger x="652" y="68" width="40" height="100" bossname="rika"/>
+    <lock x="956" y="128" width="8" height="40" bossname="rika"/>
+    <lock x="316" y="96" width="8" height="40" bossname="rena"/>
+    <lock x="636" y="128" width="8" height="40" bossname="mion"/>
+    <lock x="956" y="128" width="8" height="40" bossname="satoko"/>
   </objects>
 </level>
