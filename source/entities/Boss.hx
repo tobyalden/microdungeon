@@ -9,6 +9,7 @@ import haxepunk.Tween;
 import haxepunk.tweens.motion.*;
 import haxepunk.tweens.misc.*;
 import haxepunk.utils.*;
+import scenes.*;
 
 class Boss extends MiniEntity
 {
@@ -55,6 +56,7 @@ class Boss extends MiniEntity
     public function die() {
         sfx["bossdeath"].play();
         explode();
+        GameScene.defeatedBosses.push(name);
         scene.remove(this);
     }
 

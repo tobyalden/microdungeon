@@ -19,6 +19,7 @@ class GameScene extends Scene
 
     public static var checkpoint:Vector2 = null;
     public static var lastSavePoint:Vector2 = null;
+    public static var defeatedBosses:Array<String> = [];
 
     private var player:Player;
     private var curtain:Curtain;
@@ -26,6 +27,7 @@ class GameScene extends Scene
     override public function begin() {
         Data.load(SAVE_FILENAME);
         lastSavePoint = Data.read("lastSavePoint", null);
+        defeatedBosses = Data.read("defeatedBosses", []);
         var level = new Level("testlevel");
         if(checkpoint != null) {
             player = new Player(checkpoint.x, checkpoint.y);
@@ -39,7 +41,9 @@ class GameScene extends Scene
         add(player);
         add(level);
         for(entity in level.entities) {
-            add(entity);
+            if(defeatedBosses.indexOf(entity.name) == -1) {
+                add(entity);
+            }
         }
         add(new UI());
         curtain = new Curtain();
@@ -54,6 +58,7 @@ class GameScene extends Scene
         );
         checkpoint = lastSavePoint.clone();
         Data.write("lastSavePoint", lastSavePoint);
+        Data.write("defeatedBosses", defeatedBosses);
         Data.save(SAVE_FILENAME);
     }
 
