@@ -44,7 +44,8 @@ class GameScene extends Scene
         Data.load(SAVE_FILENAME);
         lastSavePoint = Data.read("lastSavePoint", null);
         defeatedBosses = Data.read("defeatedBosses", []);
-        var level = new Level("testlevel");
+        var levelName = "outside";
+        var level = new Level(levelName);
         if(checkpoint != null) {
             player = new Player(checkpoint.x, checkpoint.y);
         }
@@ -72,11 +73,17 @@ class GameScene extends Scene
             "retry" => new Sfx("audio/retry.wav"),
             "backtosavepoint" => new Sfx("audio/backtosavepoint.wav")
         ];
-        var background = new Backdrop("graphics/background.png");
+        var background = new Backdrop(
+            'graphics/${levelName}_background.png'
+        );
         addGraphic(background, 5);
-        backgroundTexture = new Backdrop("graphics/backgroundtexture.png");
+        backgroundTexture = new Backdrop(
+            'graphics/${levelName}_backgroundtexture.png'
+        );
         addGraphic(backgroundTexture, 4);
-        backgroundTexture2 = new Backdrop("graphics/backgroundtexture2.png");
+        backgroundTexture2 = new Backdrop(
+            'graphics/${levelName}_backgroundtexture2.png'
+        );
         addGraphic(backgroundTexture2, 3);
     }
 

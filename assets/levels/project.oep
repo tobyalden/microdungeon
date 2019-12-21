@@ -19,6 +19,12 @@
 				<number name="speed" default="80"/>
 			</values>
         </object>
+		<object name="decoration" image="decoration.png" width="16" height="16">
+			<values>
+				<string name="fileName" default=""/>
+				<number name="layer" default="1"/>
+			</values>
+        </object>
 		<object name="bosstrigger" image="bosstrigger.png" width="8" height="8" resizableX="true" resizableY="true" tile="true">
 			<values>
 				<string name="bossname" default=""/>

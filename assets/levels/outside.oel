@@ -1,0 +1,14 @@
+<level>
+  <width>2560</width>
+  <height>360</height>
+  <walls>
+    <rect x="0" y="0" w="12" h="360"/>
+    <rect x="12" y="348" w="2548" h="12"/>
+    <rect x="2552" y="0" w="8" h="348"/>
+  </walls>
+  <objects>
+    <player x="2416" y="276"/>
+    <decoration x="12" y="332" fileName="grass2" layer="-1"/>
+    <decoration x="12" y="316" fileName="grass" layer="1"/>
+  </objects>
+</level>

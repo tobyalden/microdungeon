@@ -24,7 +24,7 @@ class Level extends Entity
 
         loadLevel(levelName);
 
-        var tilePath = "graphics/purplestone.png";
+        var tilePath = 'graphics/${levelName}_tiles.png';
         tiles = new Tilemap(
             tilePath,
             walls.width, walls.height,
@@ -116,6 +116,17 @@ class Level extends Entity
                         savePoint.att.bossname
                     );
                     entities.push(savePoint);
+                }
+            }
+            if(fastXml.node.objects.hasNode.decoration) {
+                for(decoration in fastXml.node.objects.nodes.decoration) {
+                    var decoration = new Decoration(
+                        Std.parseInt(decoration.att.x),
+                        Std.parseInt(decoration.att.y),
+                        decoration.att.fileName,
+                        Std.parseInt(decoration.att.layer)
+                    );
+                    entities.push(decoration);
                 }
             }
             if(fastXml.node.objects.hasNode.mion) {

@@ -20,8 +20,8 @@ class Main extends Engine
         Key.define("jump", [Key.Z, Key.A]);
         Key.define("shoot", [Key.X, Key.S]);
 
-        //HXP.scene = new GameScene();
-        HXP.scene = new MainMenu();
+        HXP.scene = new GameScene();
+        //HXP.scene = new MainMenu();
     }
 
     override public function update() {
