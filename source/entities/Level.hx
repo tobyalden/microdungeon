@@ -96,7 +96,6 @@ class Level extends Entity
                         Std.parseInt(savePoint.att.y),
                         savePoint.att.bossname
                     );
-                    trace(savePoint);
                     entities.push(savePoint);
                 }
             }

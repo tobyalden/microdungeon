@@ -31,9 +31,12 @@ class MainMenu extends Scene
     private var curtain:Curtain;
     private var isStarting:Bool;
     private var isConfirmingNewGame:Bool;
+    private var saveDataExists:Bool;
     private var sfx:Map<String, Sfx>;
 
     override public function begin() {
+        Data.load(GameScene.SAVE_FILENAME);
+        saveDataExists = Data.read("saveDataExists", false);
         addGraphic(new Image("graphics/mainmenu.png"));
         titleSprite = new Image("graphics/title.png");
         titleSprite.centerOrigin();
@@ -59,9 +62,13 @@ class MainMenu extends Scene
         menu.push(new Text(
             'New Game', { size: 16 }
         ));
-        menu.push(new Text(
+        var continueMenuItem = new Text(
             'Continue', { size: 16 }
-        ));
+        );
+        if(!saveDataExists) {
+            continueMenuItem.alpha = 0.5;
+        }
+        menu.push(continueMenuItem);
         var count = 0;
         for(menuItem in menu) {
             menuItem.font = "font/action.ttf";
@@ -77,7 +84,7 @@ class MainMenu extends Scene
         background.y = menu[0].y;
         background.height = menu.length * menu[0].textHeight;
 
-        cursorPositionY = 0;
+        cursorPositionY = saveDataExists ? 1 : 0;
         cursorPositionX = 0;
 
         cursorSprite = new Spritemap("graphics/cursor.png", 254, 155);
@@ -101,7 +108,8 @@ class MainMenu extends Scene
             "menuselect" => new Sfx("audio/menuselect.wav"),
             "synthsting1" => new Sfx("audio/synthsting1.wav"),
             "synthsting2" => new Sfx("audio/synthsting2.wav"),
-            "menuback" => new Sfx("audio/menuback.wav")
+            "menuback" => new Sfx("audio/menuback.wav"),
+            "cantselect" => new Sfx("audio/cantselect.wav")
         ];
     }
 
@@ -155,12 +163,20 @@ class MainMenu extends Scene
         else if(cursorPositionY == 0) {
             // New Game
             if(Input.pressed("jump")) {
-                sfx["menuselect"].play();
-                isConfirmingNewGame = true;
-                menu[0].text = "W..WEALLY?";
-                menu[0].color = 0xFF0000;
-                menu[1].text = "NAW  YEAH";
-                cursorPositionY = 1;
+                if(saveDataExists) {
+                    sfx["menuselect"].play();
+                    isConfirmingNewGame = true;
+                    menu[0].text = "W..WEALLY?";
+                    menu[0].color = 0xFF0000;
+                    menu[1].text = "NAW  YEAH";
+                    cursorPositionY = 1;
+                }
+                else {
+                    GameScene.clearSaveData();
+                    startGame();
+                    sfx["synthsting1"].play();
+                    cursorSprite.play("select");
+                }
             }
         }
         else if(cursorPositionY == 1) {
@@ -178,6 +194,7 @@ class MainMenu extends Scene
                     }
                     else {
                         // Yes
+                        GameScene.clearSaveData();
                         startGame();
                         sfx["synthsting1"].play();
                         cursorSprite.play("select");
@@ -187,9 +204,14 @@ class MainMenu extends Scene
             else {
                 // Continue
                 if(Input.pressed("jump")) {
-                    startGame();
-                    sfx["synthsting2"].play();
-                    cursorSprite.play("select");
+                    if(saveDataExists) {
+                        startGame();
+                        sfx["synthsting2"].play();
+                        cursorSprite.play("select");
+                    }
+                    else {
+                        sfx["cantselect"].play();
+                    }
                 }
             }
         }

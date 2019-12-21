@@ -24,6 +24,14 @@ class GameScene extends Scene
     private var player:Player;
     private var curtain:Curtain;
 
+    public static function clearSaveData() {
+        Data.load(SAVE_FILENAME);
+        Data.write("lastSavePoint", null);
+        Data.write("defeatedBosses", []);
+        Data.write("saveDataExists", false);
+        Data.save(SAVE_FILENAME);
+    }
+
     override public function begin() {
         Data.load(SAVE_FILENAME);
         lastSavePoint = Data.read("lastSavePoint", null);
@@ -51,14 +59,17 @@ class GameScene extends Scene
         curtain.fadeOut(0.5);
     }
 
-    public function saveGame(savePoint:SavePoint) {
-        lastSavePoint = new Vector2(
-            savePoint.centerX - player.width / 2,
-            savePoint.bottom - player.height
-        );
-        checkpoint = lastSavePoint.clone();
+    public function saveGame(savePoint:SavePoint = null) {
+        if(savePoint != null) {
+            lastSavePoint = new Vector2(
+                savePoint.centerX - player.width / 2,
+                savePoint.bottom - player.height
+            );
+            checkpoint = lastSavePoint.clone();
+        }
         Data.write("lastSavePoint", lastSavePoint);
         Data.write("defeatedBosses", defeatedBosses);
+        Data.write("saveDataExists", true);
         Data.save(SAVE_FILENAME);
     }
 
