@@ -1,6 +1,7 @@
 package scenes;
 
 import haxepunk.*;
+import haxepunk.input.*;
 import haxepunk.math.*;
 import haxepunk.Tween;
 import haxepunk.tweens.motion.*;
@@ -23,6 +24,8 @@ class GameScene extends Scene
 
     private var player:Player;
     private var curtain:Curtain;
+    private var ui:UI;
+    private var waitingForRespawn:Bool;
 
     public static function clearSaveData() {
         Data.load(SAVE_FILENAME);
@@ -53,10 +56,12 @@ class GameScene extends Scene
                 add(entity);
             }
         }
-        add(new UI());
+        ui = new UI();
+        add(ui);
         curtain = new Curtain();
         add(curtain);
         curtain.fadeOut(0.5);
+        waitingForRespawn = false;
     }
 
     public function saveGame(savePoint:SavePoint = null) {
@@ -74,6 +79,15 @@ class GameScene extends Scene
     }
 
     override public function update() {
+        if(waitingForRespawn) {
+            if(Input.pressed("jump")) {
+                respawn();
+            }
+            else if(Input.pressed("shoot")) {
+                respawn(true);
+            }
+        }
+
         camera.x = Math.floor(player.centerX / HXP.width) * HXP.width;
         camera.y = Math.floor(player.centerY / HXP.height) * HXP.height;
 
@@ -129,15 +143,33 @@ class GameScene extends Scene
     }
 
     public function onDeath() {
-        doSequence([{
-            atTime: 3,
-            doThis: function() {
-                for(boss in getCurrentBosses()) {
-                    boss.sfx["klaxon"].stop();
+        doSequence([
+            {
+                atTime: 2,
+                doThis: function() {
+                    ui.showRetryPrompt();
+                    waitingForRespawn = true;
                 }
-                HXP.scene = new GameScene();
             }
-        }]);
+        ]);
+    }
+
+    public function respawn(fromLastSavePoint:Bool = false) {
+        if(fromLastSavePoint) {
+            checkpoint = null;
+        }
+        curtain.fadeIn(0.5);
+        doSequence([
+            {
+                atTime: 0.5,
+                doThis: function() {
+                    for(boss in getCurrentBosses()) {
+                        boss.sfx["klaxon"].stop();
+                    }
+                    HXP.scene = new GameScene();
+                }
+            }
+        ]);
     }
 
     private function doSequence(sequence:Array<SequenceStep>) {

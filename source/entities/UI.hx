@@ -2,6 +2,7 @@ package entities;
 
 import haxepunk.*;
 import haxepunk.graphics.*;
+import haxepunk.graphics.text.*;
 import haxepunk.input.*;
 import haxepunk.masks.*;
 import haxepunk.math.*;
@@ -17,25 +18,48 @@ class UI extends MiniEntity
     public static inline var SINGLE_BOSS_HEALTHBAR_LENGTH = 312;
     public static inline var DOUBLE_BOSS_HEALTHBAR_LENGTH = 154;
 
+    private var retryPrompt:Text;
+    private var retryPromptRotator:VarTween;
     private var primaryBossHealthBar:ColoredRect;
     private var secondaryBossHealthBar:ColoredRect;
+
+    public function showRetryPrompt() {
+        var retryPromptFader = new VarTween();
+        retryPromptFader.tween(retryPrompt, "alpha", 1, 0.5, Ease.sineOut);
+        addTween(retryPromptFader, true);
+    }
 
     public function new() {
         super(0, 0);
         layer = -99;
 
+        var sprite = new Graphiclist();
+        retryPrompt = new Text(
+            'Z = AGAIN !!!\nX = BACK 2 SAVE POINT', { size: 24 }
+        );
+        retryPrompt.centerOrigin();
+        retryPrompt.font = "font/action.ttf";
+        retryPrompt.angle = -6;
+        retryPrompt.x = HXP.width / 2;
+        retryPrompt.y = HXP.height / 2;
+        retryPrompt.alpha = 0;
+        sprite.add(retryPrompt);
+
+        retryPromptRotator = new VarTween(TweenType.PingPong);
+        retryPromptRotator.tween(retryPrompt, "angle", 6, 1.5, Ease.sineInOut);
+        addTween(retryPromptRotator, true);
+
         primaryBossHealthBar = new ColoredRect(0, 4, 0xFFFFFF);
         primaryBossHealthBar.x = 4;
         primaryBossHealthBar.y = HXP.height - 8;
+        sprite.add(primaryBossHealthBar);
 
         secondaryBossHealthBar = new ColoredRect(0, 4, 0xFFFFFF);
         secondaryBossHealthBar.x = 4 + DOUBLE_BOSS_HEALTHBAR_LENGTH + 4;
         secondaryBossHealthBar.y = HXP.height - 8;
+        sprite.add(secondaryBossHealthBar);
 
-        var allBossHealthBars = new Graphiclist();
-        allBossHealthBars.add(primaryBossHealthBar);
-        allBossHealthBars.add(secondaryBossHealthBar);
-        graphic = allBossHealthBars;
+        graphic = sprite;
     }
 
     override public function update() {
