@@ -58,7 +58,7 @@
     <lock x="640" y="128" width="4" height="40" bossname="satoko"/>
     <lock x="956" y="128" width="8" height="40" bossname="rika"/>
     <lock x="956" y="128" width="8" height="40" bossname="satoko"/>
-    <player x="212" y="324"/>
+    <player x="284" y="324"/>
     <savepoint x="148" y="316" bossname=""/>
     <savepoint x="1112" y="136" bossname=""/>
     <savepoint x="284" y="104" bossname="rena"/>
