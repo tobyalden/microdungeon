@@ -19,7 +19,7 @@ class Sawblade extends MiniEntity
         startX:Float, startY:Float, speed:Float, pathPoints:Array<Vector2>
     ) {
         super(startX, startY);
-        layer = 1;
+        layer = 2;
         type = "hazard";
         mask = new Circle(24);
         sprite = new Spritemap("graphics/sawblade.png", 48, 48);

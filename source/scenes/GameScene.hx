@@ -1,6 +1,7 @@
 package scenes;
 
 import haxepunk.*;
+import haxepunk.graphics.tile.*;
 import haxepunk.input.*;
 import haxepunk.math.*;
 import haxepunk.Tween;
@@ -17,6 +18,7 @@ typedef SequenceStep = {
 class GameScene extends Scene
 {
     public static inline var SAVE_FILENAME = "renagame";
+    public static inline var BACKGROUND_TEXTURE_SCROLL_SPEED = 30;
 
     public static var checkpoint:Vector2 = null;
     public static var lastSavePoint:Vector2 = null;
@@ -27,6 +29,8 @@ class GameScene extends Scene
     private var ui:UI;
     private var waitingForRespawn:Bool;
     private var sfx:Map<String, Sfx>;
+    private var backgroundTexture:Backdrop;
+    private var backgroundTexture2:Backdrop;
 
     public static function clearSaveData() {
         Data.load(SAVE_FILENAME);
@@ -68,6 +72,12 @@ class GameScene extends Scene
             "retry" => new Sfx("audio/retry.wav"),
             "backtosavepoint" => new Sfx("audio/backtosavepoint.wav")
         ];
+        var background = new Backdrop("graphics/background.png");
+        addGraphic(background, 5);
+        backgroundTexture = new Backdrop("graphics/backgroundtexture.png");
+        addGraphic(backgroundTexture, 4);
+        backgroundTexture2 = new Backdrop("graphics/backgroundtexture2.png");
+        addGraphic(backgroundTexture2, 3);
     }
 
     public function saveGame(savePoint:SavePoint = null) {
@@ -85,6 +95,10 @@ class GameScene extends Scene
     }
 
     override public function update() {
+        backgroundTexture.x -= HXP.elapsed * BACKGROUND_TEXTURE_SCROLL_SPEED;
+        backgroundTexture2.x -= (
+            HXP.elapsed * BACKGROUND_TEXTURE_SCROLL_SPEED / Math.PI * 2
+        );
         if(waitingForRespawn) {
             if(Input.pressed("jump")) {
                 respawn();

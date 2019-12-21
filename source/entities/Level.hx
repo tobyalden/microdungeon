@@ -1,6 +1,7 @@
 package entities;
 
 import haxepunk.*;
+import haxepunk.graphics.*;
 import haxepunk.graphics.tile.*;
 import haxepunk.masks.*;
 import haxepunk.math.*;
@@ -14,20 +15,38 @@ class Level extends Entity
     public var playerStart(default, null):Vector2;
     private var walls:Grid;
     private var tiles:Tilemap;
+    private var background:Backdrop;
 
     public function new(levelName:String) {
         super();
+        layer = 1;
         type = "walls";
 
         loadLevel(levelName);
 
+        var tilePath = "graphics/purplestone.png";
         tiles = new Tilemap(
-            'graphics/tiles.png',
-            walls.width, walls.height, walls.tileWidth, walls.tileHeight
+            tilePath,
+            walls.width, walls.height,
+            walls.tileWidth, walls.tileHeight
         );
-        tiles.loadFromString(walls.saveToString(',', '\n', '1', '0'));
-
-        graphic = tiles;
+        var tileImage = new Image(tilePath);
+        for(tileX in 0...tiles.columns) {
+            for(tileY in 0...tiles.rows) {
+                if(!walls.getTile(tileX, tileY)) {
+                    tiles.clearTile(tileX, tileY);
+                }
+                else {
+                    var tile = Std.int(
+                        tileX % (tileImage.width / TILE_SIZE)
+                        + tileY % (tileImage.height / TILE_SIZE)
+                        * (tileImage.width / TILE_SIZE)
+                    );
+                    tiles.setTile(tileX, tileY, tile);
+                }
+            }
+        }
+        addGraphic(tiles);
         mask = walls;
     }
 
