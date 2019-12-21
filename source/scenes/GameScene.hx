@@ -15,15 +15,23 @@ typedef SequenceStep = {
 
 class GameScene extends Scene
 {
+    public static inline var SAVE_FILENAME = "renagame";
+
     public static var checkpoint:Vector2 = null;
+    public static var lastSavePoint:Vector2 = null;
 
     private var player:Player;
     private var curtain:Curtain;
 
     override public function begin() {
+        Data.load(SAVE_FILENAME);
+        lastSavePoint = Data.read("lastSavePoint", null);
         var level = new Level("testlevel");
         if(checkpoint != null) {
             player = new Player(checkpoint.x, checkpoint.y);
+        }
+        else if(lastSavePoint != null) {
+            player = new Player(lastSavePoint.x, lastSavePoint.y);
         }
         else {
             player = new Player(level.playerStart.x, level.playerStart.y);
@@ -37,6 +45,16 @@ class GameScene extends Scene
         curtain = new Curtain();
         add(curtain);
         curtain.fadeOut(0.5);
+    }
+
+    public function saveGame(savePoint:SavePoint) {
+        lastSavePoint = new Vector2(
+            savePoint.centerX - player.width / 2,
+            savePoint.bottom - player.height
+        );
+        checkpoint = lastSavePoint.clone();
+        Data.write("lastSavePoint", lastSavePoint);
+        Data.save(SAVE_FILENAME);
     }
 
     override public function update() {

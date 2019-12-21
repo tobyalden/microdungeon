@@ -128,9 +128,11 @@ class Player extends MiniEntity
                 bossTrigger.collidable = false;
             }
         }
-        var savePoint = collide("savepoint", x, y + 1);
-        if(Input.pressed("down") && savePoint != null) {
-            cast(savePoint, SavePoint).flash();
+        var _savePoint = collide("savepoint", x, y + 1);
+        if(Input.pressed("down") && _savePoint != null) {
+            var savePoint = cast(_savePoint, SavePoint);
+            savePoint.flash();
+            cast(scene, GameScene).saveGame(savePoint);
         }
     }
 
