@@ -26,6 +26,7 @@ class GameScene extends Scene
     private var curtain:Curtain;
     private var ui:UI;
     private var waitingForRespawn:Bool;
+    private var sfx:Map<String, Sfx>;
 
     public static function clearSaveData() {
         Data.load(SAVE_FILENAME);
@@ -62,6 +63,11 @@ class GameScene extends Scene
         add(curtain);
         curtain.fadeOut(0.5);
         waitingForRespawn = false;
+        sfx = [
+            "retryprompt" => new Sfx("audio/retryprompt.wav"),
+            "retry" => new Sfx("audio/retry.wav"),
+            "backtosavepoint" => new Sfx("audio/backtosavepoint.wav")
+        ];
     }
 
     public function saveGame(savePoint:SavePoint = null) {
@@ -148,6 +154,7 @@ class GameScene extends Scene
                 atTime: 2,
                 doThis: function() {
                     ui.showRetryPrompt();
+                    sfx["retryprompt"].play();
                     waitingForRespawn = true;
                 }
             }
@@ -157,6 +164,10 @@ class GameScene extends Scene
     public function respawn(fromLastSavePoint:Bool = false) {
         if(fromLastSavePoint) {
             checkpoint = null;
+            sfx["backtosavepoint"].play();
+        }
+        else {
+            sfx["retry"].play();
         }
         curtain.fadeIn(0.5);
         doSequence([
