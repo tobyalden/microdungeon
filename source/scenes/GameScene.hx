@@ -176,6 +176,7 @@ class GameScene extends Scene
     }
 
     public function respawn(fromLastSavePoint:Bool = false) {
+        waitingForRespawn = false;
         if(fromLastSavePoint) {
             checkpoint = null;
             sfx["backtosavepoint"].play();

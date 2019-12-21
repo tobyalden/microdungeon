@@ -32,7 +32,7 @@ class Mion extends Boss
         super(startX, startY);
         name = "mion";
         mask = new Hitbox(75, 75);
-        startingHealth = 1000;
+        startingHealth = 666;
         health = startingHealth;
         sprite = new Spritemap("graphics/mion.png", 75, 75);
         sprite.add("idle", [0]);
