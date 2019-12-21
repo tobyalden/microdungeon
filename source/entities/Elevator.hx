@@ -23,7 +23,7 @@ class Elevator extends MiniEntity
     ) {
         super(startX, startY);
         type = "elevator";
-        layer = -1;
+        layer = 1;
         mask = new Hitbox(16, 4);
         graphic = new Image("graphics/elevator.png");
         path = new LinearPath();

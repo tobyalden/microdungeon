@@ -56,6 +56,15 @@ class SavePoint extends MiniEntity
         ];
     }
 
+    override public function update() {
+        if(bossName != "") {
+            var boss = scene.getInstance(bossName);
+            visible = boss == null;
+            collidable = boss == null;
+        }
+        super.update();
+    }
+
     public function flash() {
         sprite.play("flash", true);
         textDisplay.alpha = 1;
