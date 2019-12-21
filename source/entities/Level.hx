@@ -89,6 +89,17 @@ class Level extends Entity
                     entities.push(lock);
                 }
             }
+            if(fastXml.node.objects.hasNode.savepoint) {
+                for(savePoint in fastXml.node.objects.nodes.savepoint) {
+                    var savePoint = new SavePoint(
+                        Std.parseInt(savePoint.att.x),
+                        Std.parseInt(savePoint.att.y),
+                        savePoint.att.bossname
+                    );
+                    trace(savePoint);
+                    entities.push(savePoint);
+                }
+            }
             if(fastXml.node.objects.hasNode.mion) {
                 for(mion in fastXml.node.objects.nodes.mion) {
                     var nodes = new Array<Vector2>();

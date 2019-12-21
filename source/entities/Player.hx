@@ -128,6 +128,10 @@ class Player extends MiniEntity
                 bossTrigger.collidable = false;
             }
         }
+        var savePoint = collide("savepoint", x, y + 1);
+        if(Input.pressed("down") && savePoint != null) {
+            cast(savePoint, SavePoint).flash();
+        }
     }
 
     public function getOffElevator() {
