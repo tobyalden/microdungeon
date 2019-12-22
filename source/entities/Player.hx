@@ -33,10 +33,10 @@ class Player extends MiniEntity
     public static inline var HOVERBOARD_HEIGHT = 7;
 
     public var activeElevator(default, null):Elevator;
+    public var isDead(default, null):Bool;
     private var sprite:Spritemap;
     private var velocity:Vector2;
     private var shotTimer:Alarm;
-    private var isDead:Bool;
     private var wasOnGround:Bool;
     private var isOnHoverboard:Bool;
     private var inventory:Array<String>;
@@ -64,7 +64,7 @@ class Player extends MiniEntity
         addTween(shotTimer);
         isDead = false;
         wasOnGround = false;
-        isOnHoverboard = true;
+        isOnHoverboard = false;
         //inventory = ["hanginggloves"];
         inventory = [];
         sfx = [

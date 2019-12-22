@@ -42,9 +42,13 @@ class GameScene extends Scene
 
     override public function begin() {
         Data.load(SAVE_FILENAME);
-        lastSavePoint = Data.read("lastSavePoint", null);
-        defeatedBosses = Data.read("defeatedBosses", []);
-        var levelName = "outside";
+        var _lastSavePoint:Vector2 = Data.read("lastSavePoint", null);
+        if(_lastSavePoint != null) {
+            lastSavePoint = _lastSavePoint.clone();
+        }
+        var _defeatedBosses:Array<String> = Data.read("defeatedBosses", []);
+        defeatedBosses = _defeatedBosses.copy();
+        var levelName = "purplecave";
         var level = new Level(levelName);
         if(checkpoint != null) {
             player = new Player(checkpoint.x, checkpoint.y);
@@ -172,6 +176,12 @@ class GameScene extends Scene
     }
 
     public function onDeath() {
+        Data.load(SAVE_FILENAME);
+        var _defeatedBosses:Array<String> = Data.read("defeatedBosses", []);
+        defeatedBosses = _defeatedBosses.copy();
+        for(boss in getCurrentBosses()) {
+            boss.sfx["music"].stop();
+        }
         doSequence([
             {
                 atTime: 2,

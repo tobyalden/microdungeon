@@ -42,10 +42,18 @@ class Boss extends MiniEntity
         if(health <= 0) {
             die();
             sfx["klaxon"].stop();
+            sfx["music"].stop();
         }
     }
 
     override public function update() {
+        if(!sfx.exists("music")) {
+            sfx["music"] = new Sfx('audio/${name}_music.ogg');
+        }
+        var player = cast(scene.getInstance("player"), Player);
+        if(active && !sfx["music"].playing && !player.isDead) {
+            sfx["music"].loop();
+        }
         if(sfx["klaxon"].playing) {
             graphic.x = Math.random() * 3;
             graphic.y = Math.random() * 3;
@@ -56,7 +64,9 @@ class Boss extends MiniEntity
     public function die() {
         sfx["bossdeath"].play();
         explode();
-        GameScene.defeatedBosses.push(name);
+        if(GameScene.defeatedBosses.indexOf(name) == -1) {
+            GameScene.defeatedBosses.push(name);
+        }
         scene.remove(this);
     }
 
