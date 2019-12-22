@@ -71,8 +71,10 @@ class GameScene extends Scene
         sfx = [
             "retryprompt" => new Sfx("audio/retryprompt.wav"),
             "retry" => new Sfx("audio/retry.wav"),
-            "backtosavepoint" => new Sfx("audio/backtosavepoint.wav")
+            "backtosavepoint" => new Sfx("audio/backtosavepoint.wav"),
+            "ambience" => new Sfx('audio/${levelName}_ambience.wav')
         ];
+        sfx["ambience"].loop();
         var background = new Backdrop(
             'graphics/${levelName}_background.png'
         );
@@ -199,6 +201,7 @@ class GameScene extends Scene
                     for(boss in getCurrentBosses()) {
                         boss.sfx["klaxon"].stop();
                     }
+                    sfx["ambience"].stop();
                     HXP.scene = new GameScene();
                 }
             }

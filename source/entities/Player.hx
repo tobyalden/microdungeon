@@ -25,31 +25,37 @@ class Player extends MiniEntity
     public static inline var GLIDE_FACTOR = 1;
     public static inline var PEASHOOTER_SHOT_INTERVAL = 1 / 60;
 
+    public static inline var HOVERBOARD_ACCEL = 600;
+    public static inline var MAX_HOVERBOARD_SPEED = 200;
+    public static inline var HOVERBOARD_JUMP_POWER = 300;
+    public static inline var HOVERBOARD_JUMP_CANCEL_POWER = 40;
+    public static inline var HOVERBOARD_HOVER_POWER = GRAVITY * 2;
+    public static inline var HOVERBOARD_HEIGHT = 7;
+
     public var activeElevator(default, null):Elevator;
     private var sprite:Spritemap;
     private var velocity:Vector2;
     private var shotTimer:Alarm;
     private var isDead:Bool;
     private var wasOnGround:Bool;
+    private var isOnHoverboard:Bool;
     private var inventory:Array<String>;
     private var sfx:Map<String, Sfx>;
 
     public function new(x:Float, y:Float) {
         super(x, y);
         name = "player";
-        sprite = new Spritemap("graphics/player.png", 16, 24);
+        sprite = new Spritemap("graphics/player.png", 26, 26);
         sprite.add("idle", [0]);
         sprite.add("run", [1, 2, 3, 2], 8);
         sprite.add("jump", [4]);
-        sprite.add("fall", [5]);
-        sprite.add("crouch", [6]);
-        sprite.add("throw", [7, 8], 2);
-        sprite.add("throw_jump", [9, 10], 2);
-        sprite.add("throw_fall", [11, 12], 2);
+        sprite.add("crouch", [5]);
+        sprite.add("hoverboard", [6]);
         sprite.play("idle");
         graphic = sprite;
         mask = new Hitbox(12, 24);
-        sprite.x = -2;
+        sprite.x = -7;
+        sprite.y = -2;
         velocity = new Vector2();
         shotTimer = new Alarm(PEASHOOTER_SHOT_INTERVAL, TweenType.Looping);
         shotTimer.onComplete.bind(function() {
@@ -58,13 +64,15 @@ class Player extends MiniEntity
         addTween(shotTimer);
         isDead = false;
         wasOnGround = false;
+        isOnHoverboard = true;
         //inventory = ["hanginggloves"];
         inventory = [];
         sfx = [
             "jump" => new Sfx("audio/jump.wav"),
             "land" => new Sfx("audio/land.wav"),
             "shoot" => new Sfx("audio/shoot.wav"),
-            "death" => new Sfx("audio/death.wav")
+            "death" => new Sfx("audio/death.wav"),
+            "hoverboard" => new Sfx("audio/hoverboard.wav"),
         ];
         activeElevator = null;
     }
@@ -87,7 +95,12 @@ class Player extends MiniEntity
             }
             else {
                 shooting();
-                movement();
+                if(isOnHoverboard) {
+                    hoverboardMovement();
+                }
+                else {
+                    movement();
+                }
                 animation();
             }
         }
@@ -168,6 +181,62 @@ class Player extends MiniEntity
         }
     }
 
+    private function hoverboardMovement() {
+        if(Input.check("left") && !isOnLeftWall()) {
+            velocity.x -= HOVERBOARD_ACCEL * HXP.elapsed;
+        }
+        else if(Input.check("right") && !isOnRightWall()) {
+            velocity.x += HOVERBOARD_ACCEL * HXP.elapsed;
+        }
+        else {
+            velocity.x = MathUtil.approach(
+                velocity.x, 0, HOVERBOARD_ACCEL * HXP.elapsed
+            );
+        }
+        velocity.x = MathUtil.clamp(
+            velocity.x, -MAX_HOVERBOARD_SPEED, MAX_HOVERBOARD_SPEED
+        );
+
+        velocity.y += GRAVITY * HXP.elapsed;
+        velocity.y = Math.min(velocity.y, MAX_FALL_SPEED);
+
+        var distanceFromGround = -1;
+        for(i in 0...HXP.height) {
+            if(collide("walls", x, y + i) != null) {
+                distanceFromGround = i;
+                break;
+            }
+        }
+        sfx["hoverboard"].volume = MathUtil.clamp(
+            (15 / distanceFromGround) / 15, 0, 1
+        );
+
+        if(collide("walls", x, y + HOVERBOARD_HEIGHT) != null) {
+            velocity.y -= HOVERBOARD_HOVER_POWER * HXP.elapsed;
+        }
+        if(collide("walls", x, y + HOVERBOARD_HEIGHT * 3) != null) {
+            if(Input.pressed("jump")) {
+                var jumpPower:Float = HOVERBOARD_JUMP_POWER;
+                if(distanceFromGround <= 3) {
+                    distanceFromGround = 1;
+                }
+                var jumpModifier = MathUtil.lerp(
+                    0.75, 1,
+                    MathUtil.clamp((15 / distanceFromGround) / 15, 0, 1)
+                );
+                velocity.y = -jumpPower * jumpModifier;
+                sfx["jump"].play();
+                trace(distanceFromGround);
+            }
+        }
+
+        moveBy(
+            velocity.x * HXP.elapsed,
+            velocity.y * HXP.elapsed,
+            ["walls", "elevator"]
+        );
+    }
+
     private function movement() {
         if(
             inventory.indexOf("hanginggloves") != -1
@@ -246,6 +315,20 @@ class Player extends MiniEntity
     }
 
     private function animation() {
+        if(isOnHoverboard) {
+            sprite.play("hoverboard");
+            if(velocity.x != 0) {
+                sprite.flipX = velocity.x < 0;
+            }
+            if(!sfx["hoverboard"].playing) {
+                sfx["hoverboard"].loop();
+            }
+            return;
+        }
+        else {
+            sfx["hoverboard"].stop();
+        }
+
         if(!wasOnGround && isOnGround()) {
             sfx["land"].play();
         }
