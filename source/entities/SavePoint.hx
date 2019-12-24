@@ -22,7 +22,7 @@ class SavePoint extends MiniEntity
     public function new(x:Float, y:Float, bossName:String) {
         super(x, y);
         this.bossName = bossName;
-        layer = -1;
+        layer = -5;
         type = "savepoint";
         sprite = new Spritemap("graphics/savepoint.png", 16, 32);
         sprite.add("idle", [0, 4, 8, 12, 8, 4], 12);

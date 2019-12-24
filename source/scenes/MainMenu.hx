@@ -205,6 +205,7 @@ class MainMenu extends Scene
                 // Continue
                 if(Input.pressed("jump")) {
                     if(saveDataExists) {
+                        GameScene.loadGame();
                         startGame();
                         sfx["synthsting2"].play();
                         cursorSprite.play("select");

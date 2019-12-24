@@ -96,6 +96,18 @@ class Level extends Entity
                     entities.push(bossTrigger);
                 }
             }
+            if(fastXml.node.objects.hasNode.door) {
+                for(door in fastXml.node.objects.nodes.door) {
+                    var door = new Door(
+                        Std.parseInt(door.att.x),
+                        Std.parseInt(door.att.y),
+                        Std.parseInt(door.att.width),
+                        Std.parseInt(door.att.height),
+                        door.att.tolevel
+                    );
+                    entities.push(door);
+                }
+            }
             if(fastXml.node.objects.hasNode.lock) {
                 for(lock in fastXml.node.objects.nodes.lock) {
                     var lock = new Lock(

@@ -147,6 +147,17 @@ class Player extends MiniEntity
             savePoint.flash();
             cast(scene, GameScene).saveGame(savePoint);
         }
+        var _door = collide("door", x, y + 1);
+        if(
+            (Input.pressed("up") || Input.pressed("down"))
+            && _door != null
+        ) {
+            var door = cast(_door, Door);
+            sprite.play("idle");
+            active = false;
+            collidable = false;
+            cast(scene, GameScene).useDoor(door);
+        }
     }
 
     public function getOffElevator() {

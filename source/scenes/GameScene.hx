@@ -23,6 +23,7 @@ class GameScene extends Scene
     public static var checkpoint:Vector2 = null;
     public static var lastSavePoint:Vector2 = null;
     public static var defeatedBosses:Array<String> = [];
+    public static var currentLevel:String = "purplecave";
 
     private var player:Player;
     private var curtain:Curtain;
@@ -37,19 +38,12 @@ class GameScene extends Scene
         Data.write("lastSavePoint", null);
         Data.write("defeatedBosses", []);
         Data.write("saveDataExists", false);
+        Data.write("currentLevel", "purplecave");
         Data.save(SAVE_FILENAME);
     }
 
     override public function begin() {
-        Data.load(SAVE_FILENAME);
-        var _lastSavePoint:Vector2 = Data.read("lastSavePoint", null);
-        if(_lastSavePoint != null) {
-            lastSavePoint = _lastSavePoint.clone();
-        }
-        var _defeatedBosses:Array<String> = Data.read("defeatedBosses", []);
-        defeatedBosses = _defeatedBosses.copy();
-        var levelName = "purplecave";
-        var level = new Level(levelName);
+        var level = new Level(currentLevel);
         if(checkpoint != null) {
             player = new Player(checkpoint.x, checkpoint.y);
         }
@@ -76,19 +70,20 @@ class GameScene extends Scene
             "retryprompt" => new Sfx("audio/retryprompt.wav"),
             "retry" => new Sfx("audio/retry.wav"),
             "backtosavepoint" => new Sfx("audio/backtosavepoint.wav"),
-            "ambience" => new Sfx('audio/${levelName}_ambience.wav')
+            "door" => new Sfx("audio/door.wav"),
+            "ambience" => new Sfx('audio/${currentLevel}_ambience.wav')
         ];
         sfx["ambience"].loop();
         var background = new Backdrop(
-            'graphics/${levelName}_background.png'
+            'graphics/${currentLevel}_background.png'
         );
         addGraphic(background, 5);
         backgroundTexture = new Backdrop(
-            'graphics/${levelName}_backgroundtexture.png'
+            'graphics/${currentLevel}_backgroundtexture.png'
         );
         addGraphic(backgroundTexture, 4);
         backgroundTexture2 = new Backdrop(
-            'graphics/${levelName}_backgroundtexture2.png'
+            'graphics/${currentLevel}_backgroundtexture2.png'
         );
         addGraphic(backgroundTexture2, 3);
     }
@@ -104,7 +99,19 @@ class GameScene extends Scene
         Data.write("lastSavePoint", lastSavePoint);
         Data.write("defeatedBosses", defeatedBosses);
         Data.write("saveDataExists", true);
+        Data.write("currentLevel", currentLevel);
         Data.save(SAVE_FILENAME);
+    }
+
+    static public function loadGame() {
+        Data.load(SAVE_FILENAME);
+        var _lastSavePoint:Vector2 = Data.read("lastSavePoint", null);
+        if(_lastSavePoint != null) {
+            lastSavePoint = _lastSavePoint.clone();
+        }
+        var _defeatedBosses:Array<String> = Data.read("defeatedBosses", []);
+        defeatedBosses = _defeatedBosses.copy();
+        currentLevel = Data.read("currentLevel", "purplecave");
     }
 
     override public function update() {
@@ -175,10 +182,25 @@ class GameScene extends Scene
         return bosses;
     }
 
+    public function useDoor(door:Door) {
+        sfx["door"].play();
+        curtain.fadeIn(0.5);
+        doSequence([
+            {
+                atTime: 0.5,
+                doThis: function() {
+                    sfx["ambience"].stop();
+                    checkpoint = null;
+                    lastSavePoint = null;
+                    currentLevel = door.toLevel;
+                    HXP.scene = new GameScene();
+                }
+            }
+        ]);
+    }
+
     public function onDeath() {
-        Data.load(SAVE_FILENAME);
-        var _defeatedBosses:Array<String> = Data.read("defeatedBosses", []);
-        defeatedBosses = _defeatedBosses.copy();
+        GameScene.loadGame();
         for(boss in getCurrentBosses()) {
             boss.sfx["music"].stop();
         }

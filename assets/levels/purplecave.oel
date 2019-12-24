@@ -63,5 +63,7 @@
     <savepoint x="1112" y="136" bossname=""/>
     <savepoint x="284" y="104" bossname="rena"/>
     <savepoint x="456" y="92" bossname="mion"/>
+    <door x="1196" y="100" width="52" height="68" tolevel="outside"/>
+    <decoration x="1196" y="100" fileName="castledoor" layer="1"/>
   </objects>
 </level>

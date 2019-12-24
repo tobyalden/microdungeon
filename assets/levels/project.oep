@@ -25,6 +25,11 @@
 				<number name="layer" default="1"/>
 			</values>
         </object>
+		<object name="door" image="door.png" width="16" height="16" resizableX="true" resizableY="true" tile="true">
+			<values>
+				<string name="tolevel" default=""/>
+			</values>
+        </object>
 		<object name="bosstrigger" image="bosstrigger.png" width="8" height="8" resizableX="true" resizableY="true" tile="true">
 			<values>
 				<string name="bossname" default=""/>
