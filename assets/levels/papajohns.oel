@@ -1,0 +1,14 @@
+<level>
+  <width>320</width>
+  <height>180</height>
+  <walls>
+    <rect x="0" y="0" w="320" h="4"/>
+    <rect x="0" y="4" w="4" h="176"/>
+    <rect x="4" y="176" w="316" h="4"/>
+    <rect x="316" y="4" w="4" h="172"/>
+  </walls>
+  <objects>
+    <player x="24" y="152"/>
+    <savepoint x="120" y="144" bossname=""/>
+  </objects>
+</level>
