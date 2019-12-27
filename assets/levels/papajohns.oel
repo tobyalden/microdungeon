@@ -1,14 +1,33 @@
 <level>
-  <width>320</width>
-  <height>180</height>
+  <width>640</width>
+  <height>360</height>
   <walls>
-    <rect x="0" y="0" w="320" h="4"/>
-    <rect x="0" y="4" w="4" h="176"/>
-    <rect x="4" y="176" w="316" h="4"/>
-    <rect x="316" y="4" w="4" h="172"/>
+    <rect x="0" y="0" w="640" h="4"/>
+    <rect x="0" y="4" w="4" h="180"/>
+    <rect x="4" y="176" w="580" h="8"/>
+    <rect x="236" y="148" w="140" h="28"/>
+    <rect x="264" y="120" w="112" h="28"/>
+    <rect x="316" y="4" w="8" h="84"/>
+    <rect x="320" y="184" w="4" h="176"/>
+    <rect x="324" y="336" w="196" h="24"/>
+    <rect x="376" y="152" w="40" h="24"/>
+    <rect x="520" y="356" w="120" h="4"/>
+    <rect x="552" y="140" w="32" h="36"/>
+    <rect x="636" y="4" w="4" h="352"/>
   </walls>
   <objects>
     <player x="24" y="152"/>
     <savepoint x="120" y="144" bossname=""/>
+    <ukyo x="452" y="8">
+      <node x="548" y="32"/>
+      <node x="332" y="36"/>
+    </ukyo>
+    <lock x="316" y="88" width="8" height="32" bossname="ukyo"/>
+    <bosstrigger x="344" y="60" width="32" height="60" bossname="ukyo"/>
+    <savepoint x="560" y="108" bossname="ukyo"/>
+    <lock x="584" y="176" width="52" height="4" bossname=""/>
+    <door x="352" y="288" width="28" height="48" tolevel="bathroom"/>
+    <decoration x="352" y="288" fileName="exitdoor" layer="1"/>
+    <decoration x="388" y="264" fileName="bathroomsign" layer="1"/>
   </objects>
 </level>

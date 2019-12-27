@@ -19,6 +19,7 @@ class Main extends Engine
         Key.define("down", [Key.DOWN, Key.K]);
         Key.define("jump", [Key.Z, Key.A]);
         Key.define("shoot", [Key.X, Key.S]);
+        Key.define("cheat", [Key.P]);
 
         //HXP.scene = new GameScene();
         HXP.scene = new MainMenu();

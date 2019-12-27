@@ -33,7 +33,12 @@ class Boss extends MiniEntity
         if(!active) {
             return;
         }
-        health -= 1;
+        if(Input.check("cheat")) {
+            health -= 1000;
+        }
+        else {
+            health -= 1;
+        }
         if(health <= startingHealth / 4) {
             if(!sfx["klaxon"].playing) {
                 sfx["klaxon"].loop();
