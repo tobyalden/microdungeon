@@ -39,6 +39,7 @@ class Player extends MiniEntity
     private var shotTimer:Alarm;
     private var wasOnGround:Bool;
     private var isOnHoverboard:Bool;
+    private var isGoingThroughDoor:Bool;
     private var inventory:Array<String>;
     private var sfx:Map<String, Sfx>;
 
@@ -65,6 +66,7 @@ class Player extends MiniEntity
         isDead = false;
         wasOnGround = false;
         isOnHoverboard = false;
+        isGoingThroughDoor = false;
         //inventory = ["hanginggloves"];
         inventory = [];
         sfx = [
@@ -73,7 +75,8 @@ class Player extends MiniEntity
             "shoot" => new Sfx("audio/shoot.wav"),
             "death" => new Sfx("audio/death.wav"),
             "hoverboard" => new Sfx("audio/hoverboard.wav"),
-            "getonhoverboard" => new Sfx("audio/getonhoverboard.wav")
+            "getonhoverboard" => new Sfx("audio/getonhoverboard.wav"),
+            "getoffhoverboard" => new Sfx("audio/getoffhoverboard.wav")
         ];
         activeElevator = null;
     }
@@ -154,17 +157,23 @@ class Player extends MiniEntity
             && _door != null
         ) {
             var door = cast(_door, Door);
-            sprite.play("idle");
             active = false;
             collidable = false;
+            isGoingThroughDoor = true;
             cast(scene, GameScene).useDoor(door);
         }
-        var _hoverboard = collide("hoverboard", x, y);
-        if(_hoverboard != null) {
-            var hoverboard = cast(_hoverboard, Hoverboard);
+        var hoverboard = collide("hoverboard", x, y);
+        if(hoverboard != null) {
             scene.remove(hoverboard);
             isOnHoverboard = true;
             sfx["getonhoverboard"].play();
+        }
+        var noHoverboardSign = collide("nohoverboardsign", x, y);
+        if(noHoverboardSign != null) {
+            if(isOnHoverboard) {
+                sfx["getoffhoverboard"].play();
+                isOnHoverboard = false;
+            }
         }
     }
 
@@ -334,6 +343,10 @@ class Player extends MiniEntity
     }
 
     private function animation() {
+        if(isGoingThroughDoor) {
+            sprite.play("idle");
+            return;
+        }
         if(isOnHoverboard) {
             sprite.play("hoverboard");
             if(velocity.x != 0) {

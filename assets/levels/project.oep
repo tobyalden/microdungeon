@@ -41,6 +41,7 @@
 			</values>
         </object>
 		<object name="hoverboard" image="hoverboard.png" width="32" height="32"></object>
+		<object name="nohoverboardsign" image="nohoverboardsign.png" width="60" height="100"></object>
 		<object name="savepoint" image="savepoint.png" width="16" height="32">
 			<values>
 				<string name="bossname" default=""/>

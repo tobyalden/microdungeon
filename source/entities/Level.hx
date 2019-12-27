@@ -139,6 +139,15 @@ class Level extends Entity
                     entities.push(hoverboard);
                 }
             }
+            if(fastXml.node.objects.hasNode.nohoverboardsign) {
+                for(noHoverboardSign in fastXml.node.objects.nodes.nohoverboardsign) {
+                    var noHoverboardSign = new NoHoverboardSign(
+                        Std.parseInt(noHoverboardSign.att.x),
+                        Std.parseInt(noHoverboardSign.att.y)
+                    );
+                    entities.push(noHoverboardSign);
+                }
+            }
             if(fastXml.node.objects.hasNode.decoration) {
                 for(decoration in fastXml.node.objects.nodes.decoration) {
                     var decoration = new Decoration(

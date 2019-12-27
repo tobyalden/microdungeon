@@ -7,12 +7,14 @@
     <rect x="2552" y="0" w="8" h="348"/>
   </walls>
   <objects>
-    <player x="2416" y="276"/>
     <decoration x="12" y="332" fileName="grass2" layer="-1"/>
     <decoration x="12" y="316" fileName="grass" layer="1"/>
     <decoration x="96" y="280" fileName="castledoorlocked" layer="1"/>
     <savepoint x="216" y="316" bossname=""/>
     <player x="112" y="324"/>
-    <hoverboard x="268" y="316"/>
+    <hoverboard x="420" y="316"/>
+    <decoration x="2336" y="220" fileName="papajohns" layer="1"/>
+    <door x="2384" y="300" width="32" height="48" tolevel="papajohns"/>
+    <nohoverboardsign x="2040" y="248"/>
   </objects>
 </level>
