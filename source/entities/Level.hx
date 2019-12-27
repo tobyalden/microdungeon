@@ -255,6 +255,30 @@ class Level extends Entity
                     entities.push(ukyo);
                 }
             }
+            if(fastXml.node.objects.hasNode.yukari) {
+                for(yukari in fastXml.node.objects.nodes.yukari) {
+                    var nodes = new Array<Vector2>();
+                    nodes.push(new Vector2(
+                        Std.parseInt(yukari.att.x),
+                        Std.parseInt(yukari.att.y)
+                    ));
+                    for(n in yukari.nodes.node) {
+                        nodes.push(new Vector2(
+                            Std.parseInt(n.att.x), Std.parseInt(n.att.y)
+                        ));
+                    }
+                    nodes.push(new Vector2(
+                        Std.parseInt(yukari.att.x),
+                        Std.parseInt(yukari.att.y)
+                    ));
+                    var yukari = new Yukari(
+                        Std.parseInt(yukari.att.x),
+                        Std.parseInt(yukari.att.y),
+                        nodes
+                    );
+                    entities.push(yukari);
+                }
+            }
             if(fastXml.node.objects.hasNode.sawblade) {
                 for(sawblade in fastXml.node.objects.nodes.sawblade) {
                     var nodes = new Array<Vector2>();

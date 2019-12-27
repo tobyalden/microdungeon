@@ -54,6 +54,9 @@
 		<object name="ukyo" image="ukyo.png" width="75" height="75">
             <nodes drawObject="true" lineMode="2"/>
         </object>
+		<object name="yukari" image="yukari.png" width="75" height="75">
+            <nodes drawObject="true" lineMode="2"/>
+        </object>
 		<object name="mion" image="mion.png" width="75" height="75">
             <nodes drawObject="true" lineMode="2"/>
         </object>

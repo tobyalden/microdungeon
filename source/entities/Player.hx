@@ -158,7 +158,6 @@ class Player extends MiniEntity
         ) {
             var door = cast(_door, Door);
             active = false;
-            collidable = false;
             isGoingThroughDoor = true;
             cast(scene, GameScene).useDoor(door);
         }
@@ -187,6 +186,9 @@ class Player extends MiniEntity
     }
 
     private function die() {
+        if(isGoingThroughDoor) {
+            return;
+        }
         isDead = true;
         visible = false;
         collidable = false;

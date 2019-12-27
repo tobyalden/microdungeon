@@ -1,0 +1,23 @@
+<level>
+  <width>1280</width>
+  <height>180</height>
+  <walls>
+    <rect x="0" y="0" w="640" h="8"/>
+    <rect x="0" y="8" w="328" h="8"/>
+    <rect x="0" y="16" w="16" h="164"/>
+    <rect x="16" y="164" w="624" h="16"/>
+    <rect x="244" y="140" w="116" h="24"/>
+    <rect x="268" y="16" w="60" h="32"/>
+    <rect x="360" y="160" w="280" h="4"/>
+    <rect x="636" y="8" w="4" h="152"/>
+  </walls>
+  <objects>
+    <player x="52" y="140"/>
+    <savepoint x="160" y="132" bossname=""/>
+    <lock x="268" y="48" width="60" height="92" bossname="yukari"/>
+    <bosstrigger x="344" y="84" width="16" height="56" bossname="yukari"/>
+    <yukari x="556" y="12">
+      <node x="368" y="80"/>
+    </yukari>
+  </objects>
+</level>

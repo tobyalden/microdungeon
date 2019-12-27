@@ -22,7 +22,9 @@ class Ukyo extends Boss
     private var wave:NumTween;
     private var hasFiredBounceShot:Bool;
 
-    public function new(startX:Float, startY:Float, pathPoints:Array<Vector2>) {
+    public function new(
+        startX:Float, startY:Float, pathPoints:Array<Vector2>
+    ) {
         super(startX, startY);
         name = "ukyo";
         mask = new Hitbox(75, 75);
