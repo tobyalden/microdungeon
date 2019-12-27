@@ -13,5 +13,6 @@
     <decoration x="96" y="280" fileName="castledoorlocked" layer="1"/>
     <savepoint x="216" y="316" bossname=""/>
     <player x="112" y="324"/>
+    <hoverboard x="268" y="316"/>
   </objects>
 </level>

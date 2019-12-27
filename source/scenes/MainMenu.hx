@@ -221,10 +221,12 @@ class MainMenu extends Scene
     
     private function startGame() {
         isStarting = true;
-        curtain.fadeIn(3);
+        var startTime = 0.5;
+        //var startTime = 3;
+        curtain.fadeIn(startTime);
         doSequence([
             {
-                atTime: 3,
+                atTime: startTime,
                 doThis: function() {
                     HXP.scene = new GameScene();
                 }

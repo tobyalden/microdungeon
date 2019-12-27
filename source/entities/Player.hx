@@ -73,6 +73,7 @@ class Player extends MiniEntity
             "shoot" => new Sfx("audio/shoot.wav"),
             "death" => new Sfx("audio/death.wav"),
             "hoverboard" => new Sfx("audio/hoverboard.wav"),
+            "getonhoverboard" => new Sfx("audio/getonhoverboard.wav")
         ];
         activeElevator = null;
     }
@@ -157,6 +158,13 @@ class Player extends MiniEntity
             active = false;
             collidable = false;
             cast(scene, GameScene).useDoor(door);
+        }
+        var _hoverboard = collide("hoverboard", x, y);
+        if(_hoverboard != null) {
+            var hoverboard = cast(_hoverboard, Hoverboard);
+            scene.remove(hoverboard);
+            isOnHoverboard = true;
+            sfx["getonhoverboard"].play();
         }
     }
 

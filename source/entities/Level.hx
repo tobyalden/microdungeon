@@ -130,6 +130,15 @@ class Level extends Entity
                     entities.push(savePoint);
                 }
             }
+            if(fastXml.node.objects.hasNode.hoverboard) {
+                for(hoverboard in fastXml.node.objects.nodes.hoverboard) {
+                    var hoverboard = new Hoverboard(
+                        Std.parseInt(hoverboard.att.x),
+                        Std.parseInt(hoverboard.att.y)
+                    );
+                    entities.push(hoverboard);
+                }
+            }
             if(fastXml.node.objects.hasNode.decoration) {
                 for(decoration in fastXml.node.objects.nodes.decoration) {
                     var decoration = new Decoration(
