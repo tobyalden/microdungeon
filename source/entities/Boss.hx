@@ -17,6 +17,7 @@ class Boss extends MiniEntity
     public var sfx(default, null):Map<String, Sfx>;
     public var startingHealth(default, null):Int;
     private var startPosition:Vector2;
+    private var age:Float;
 
     public function new(startX:Float, startY:Float) {
         super(startX, startY);
@@ -52,6 +53,7 @@ class Boss extends MiniEntity
     }
 
     override public function update() {
+        age += HXP.elapsed;
         if(!sfx.exists("music")) {
             sfx["music"] = new Sfx('audio/${name}_music.ogg');
         }

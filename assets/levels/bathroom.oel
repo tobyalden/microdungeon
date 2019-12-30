@@ -2,14 +2,19 @@
   <width>1280</width>
   <height>180</height>
   <walls>
-    <rect x="0" y="0" w="640" h="8"/>
+    <rect x="0" y="0" w="960" h="4"/>
+    <rect x="0" y="4" w="644" h="4"/>
     <rect x="0" y="8" w="328" h="8"/>
     <rect x="0" y="16" w="16" h="164"/>
-    <rect x="16" y="164" w="624" h="16"/>
+    <rect x="16" y="164" w="944" h="16"/>
     <rect x="244" y="140" w="116" h="24"/>
     <rect x="268" y="16" w="60" h="32"/>
-    <rect x="360" y="160" w="280" h="4"/>
-    <rect x="636" y="8" w="4" h="152"/>
+    <rect x="360" y="160" w="600" h="4"/>
+    <rect x="636" y="8" w="8" h="116"/>
+    <rect x="644" y="112" w="56" h="12"/>
+    <rect x="896" y="128" w="64" h="32"/>
+    <rect x="912" y="104" w="48" h="24"/>
+    <rect x="956" y="4" w="4" h="100"/>
   </walls>
   <objects>
     <player x="52" y="140"/>
@@ -19,5 +24,10 @@
     <yukari x="556" y="12">
       <node x="368" y="80"/>
     </yukari>
+    <lock x="636" y="124" width="4" height="36" bossname=""/>
+    <bosstrigger x="680" y="124" width="20" height="36" bossname="mitsuru"/>
+    <mitsuru x="760" y="8"/>
+    <savepoint x="500" y="128" bossname=""/>
+    <lock x="640" y="124" width="4" height="36" bossname="mitsuru"/>
   </objects>
 </level>
