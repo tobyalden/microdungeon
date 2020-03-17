@@ -23,6 +23,7 @@ class GameScene extends Scene
     public static var checkpoint:Vector2 = null;
     public static var lastSavePoint:Vector2 = null;
     public static var defeatedBosses:Array<String> = [];
+    public static var defeatedBossesBeforeSave:Array<String> = [];
     public static var currentLevel:String = "purplecave";
 
     private var player:Player;
@@ -89,6 +90,7 @@ class GameScene extends Scene
     }
 
     public function saveGame(savePoint:SavePoint = null) {
+        trace('saving game');
         if(savePoint != null) {
             lastSavePoint = new Vector2(
                 savePoint.centerX - player.width / 2,
@@ -97,6 +99,10 @@ class GameScene extends Scene
             checkpoint = lastSavePoint.clone();
         }
         Data.write("lastSavePoint", lastSavePoint);
+        for(defeatedBoss in defeatedBossesBeforeSave) {
+            defeatedBosses.push(defeatedBoss);
+        }
+        defeatedBossesBeforeSave = [];
         Data.write("defeatedBosses", defeatedBosses);
         Data.write("saveDataExists", true);
         Data.write("currentLevel", currentLevel);
@@ -104,12 +110,14 @@ class GameScene extends Scene
     }
 
     static public function loadGame() {
+        trace('loading game');
         Data.load(SAVE_FILENAME);
         var _lastSavePoint:Vector2 = Data.read("lastSavePoint", null);
         if(_lastSavePoint != null) {
             lastSavePoint = _lastSavePoint.clone();
         }
         var _defeatedBosses:Array<String> = Data.read("defeatedBosses", []);
+        trace('read bosses from save: ${_defeatedBosses}');
         defeatedBosses = _defeatedBosses.copy();
         currentLevel = Data.read("currentLevel", "purplecave");
     }
@@ -200,7 +208,6 @@ class GameScene extends Scene
     }
 
     public function onDeath() {
-        GameScene.loadGame();
         for(boss in getCurrentBosses()) {
             boss.sfx["music"].stop();
         }
@@ -234,6 +241,7 @@ class GameScene extends Scene
                         boss.sfx["klaxon"].stop();
                     }
                     sfx["ambience"].stop();
+                    GameScene.loadGame();
                     HXP.scene = new GameScene();
                 }
             }

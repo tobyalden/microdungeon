@@ -71,9 +71,7 @@ class Boss extends MiniEntity
     public function die() {
         sfx["bossdeath"].play();
         explode();
-        if(GameScene.defeatedBosses.indexOf(name) == -1) {
-            GameScene.defeatedBosses.push(name);
-        }
+        GameScene.defeatedBossesBeforeSave.push(name);
         scene.remove(this);
     }
 
