@@ -108,7 +108,7 @@ class Level extends Entity
                 Std.int(Std.parseInt(r.att.h) / TILE_SIZE)
             );
         }
-        if(levelType == "room") {
+        if(levelType == "room" && fastXml.hasNode.pathUpWalls) {
             for (r in fastXml.node.pathUpWalls.nodes.rect) {
                 pathUpWalls.setRect(
                     Std.int(Std.parseInt(r.att.x) / TILE_SIZE),

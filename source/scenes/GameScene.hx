@@ -29,6 +29,7 @@ class GameScene extends Scene
     override public function update() {
         super.update();
         //camera.setTo(player.centerX, player.centerY, 0.5, 0.5);
+        //camera.x = player.centerX - HXP.width / 2;
     }
 
     private function loadMaps(mapNumber:Int) {
