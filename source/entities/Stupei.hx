@@ -95,7 +95,6 @@ class Stupei extends Boss
     }
 
     public function enrage() {
-        trace('stupei engraged');
         sprite.play("enrage");
         isEnraged = true;
     }

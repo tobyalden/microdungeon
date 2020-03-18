@@ -12,9 +12,12 @@ import haxepunk.utils.*;
 
 class Bullet extends MiniEntity
 {
+    public static inline var ARC_SHOT_FALL_VELOCITY = 200;
+
     private var sprite:Spritemap;
     private var velocity:Vector2;
     private var isBounceShot:Bool;
+    private var isArcShot:Bool;
     private var age:Float;
 
     public function setIsBounceShot(newIsBounceShot:Bool) {
@@ -23,10 +26,11 @@ class Bullet extends MiniEntity
 
     public function new(
         x:Float, y:Float, heading:Vector2, speed:Float, bulletColor:Int,
-        size:Int, isBounceShot:Bool = false
+        size:Int, isBounceShot:Bool = false, isArcShot:Bool = false
     ) {
         super(x, y);
         this.isBounceShot = isBounceShot;
+        this.isArcShot = isArcShot;
         type = "hazard";
         var hitbox = new Circle(
             Std.int(size / 2), Std.int(-size / 2), Std.int(-size / 2)
@@ -48,6 +52,9 @@ class Bullet extends MiniEntity
         age += HXP.elapsed;
         if(isOffScreen()) {
             scene.remove(this);
+        }
+        if(isArcShot) {
+           velocity.y += ARC_SHOT_FALL_VELOCITY * HXP.elapsed;  
         }
         if(isBounceShot) {
             moveBy(

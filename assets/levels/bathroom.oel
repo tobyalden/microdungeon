@@ -80,6 +80,6 @@
     <savepoint x="1076" y="280" bossname=""/>
     <lock x="1176" y="284" width="24" height="28" bossname=""/>
     <decoration x="1212" y="212" fileName="cartoondoor" layer="1"/>
-    <door x="1212" y="212" width="40" height="100" tolevel=""/>
+    <door x="1212" y="212" width="40" height="100" tolevel="desert"/>
   </objects>
 </level>

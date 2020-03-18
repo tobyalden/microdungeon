@@ -84,6 +84,15 @@ class Level extends Entity
                     entities.push(rena);
                 }
             }
+            if(fastXml.node.objects.hasNode.darude) {
+                for(darude in fastXml.node.objects.nodes.darude) {
+                    var darude = new Darude(
+                        Std.parseInt(darude.att.x),
+                        Std.parseInt(darude.att.y)
+                    );
+                    entities.push(darude);
+                }
+            }
             if(fastXml.node.objects.hasNode.mitsuru) {
                 for(mitsuru in fastXml.node.objects.nodes.mitsuru) {
                     var mitsuru = new Mitsuru(

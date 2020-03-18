@@ -1,0 +1,31 @@
+<level>
+  <width>640</width>
+  <height>180</height>
+  <walls>
+    <rect x="0" y="0" w="640" h="8"/>
+    <rect x="0" y="8" w="416" h="4"/>
+    <rect x="0" y="12" w="12" h="168"/>
+    <rect x="12" y="128" w="140" h="52"/>
+    <rect x="144" y="12" w="272" h="4"/>
+    <rect x="144" y="16" w="200" h="16"/>
+    <rect x="152" y="172" w="488" h="8"/>
+    <rect x="308" y="32" w="36" h="36"/>
+    <rect x="308" y="68" w="16" h="52"/>
+    <rect x="392" y="152" w="88" h="20"/>
+    <rect x="456" y="8" w="184" h="8"/>
+    <rect x="516" y="136" w="124" h="36"/>
+    <rect x="588" y="16" w="52" h="16"/>
+    <rect x="588" y="120" w="52" h="16"/>
+    <rect x="600" y="80" w="40" h="40"/>
+    <rect x="636" y="32" w="4" h="48"/>
+  </walls>
+  <objects>
+    <player x="52" y="104"/>
+    <savepoint x="224" y="140" bossname=""/>
+    <decoration x="40" y="28" fileName="cartoondoorend" layer="1"/>
+    <darude x="520" y="40"/>
+    <savepoint x="436" y="120" bossname="darude"/>
+    <lock x="308" y="120" width="16" height="52" bossname="darude"/>
+    <bosstrigger x="420" y="0" width="12" height="152" bossname="darude"/>
+  </objects>
+</level>

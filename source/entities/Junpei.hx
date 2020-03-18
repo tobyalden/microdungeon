@@ -95,7 +95,6 @@ class Junpei extends Boss
     }
 
     public function enrage() {
-        trace('junpei engraged');
         sprite.play("enrage");
         isEnraged = true;
     }
