@@ -267,6 +267,30 @@ class Level extends Entity
                     entities.push(rika);
                 }
             }
+            if(fastXml.node.objects.hasNode.finalrena) {
+                for(finalRena in fastXml.node.objects.nodes.finalrena) {
+                    var nodes = new Array<Vector2>();
+                    nodes.push(new Vector2(
+                        Std.parseInt(finalRena.att.x),
+                        Std.parseInt(finalRena.att.y)
+                    ));
+                    for(n in finalRena.nodes.node) {
+                        nodes.push(new Vector2(
+                            Std.parseInt(n.att.x), Std.parseInt(n.att.y)
+                        ));
+                    }
+                    nodes.push(new Vector2(
+                        Std.parseInt(finalRena.att.x),
+                        Std.parseInt(finalRena.att.y)
+                    ));
+                    var finalRena = new FinalRena(
+                        Std.parseInt(finalRena.att.x),
+                        Std.parseInt(finalRena.att.y),
+                        nodes
+                    );
+                    entities.push(finalRena);
+                }
+            }
             if(fastXml.node.objects.hasNode.ukyo) {
                 for(ukyo in fastXml.node.objects.nodes.ukyo) {
                     var nodes = new Array<Vector2>();
