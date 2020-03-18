@@ -5,16 +5,17 @@
     <rect x="0" y="0" w="1280" h="4"/>
     <rect x="0" y="4" w="644" h="4"/>
     <rect x="0" y="8" w="328" h="8"/>
-    <rect x="0" y="16" w="16" h="164"/>
+    <rect x="0" y="16" w="16" h="344"/>
     <rect x="16" y="164" w="1096" h="16"/>
+    <rect x="16" y="180" w="472" h="180"/>
     <rect x="244" y="140" w="116" h="24"/>
     <rect x="268" y="16" w="60" h="32"/>
     <rect x="360" y="160" w="752" h="4"/>
+    <rect x="488" y="312" w="160" h="48"/>
     <rect x="636" y="8" w="8" h="116"/>
-    <rect x="640" y="180" w="472" h="4"/>
-    <rect x="640" y="184" w="4" h="176"/>
     <rect x="644" y="112" w="56" h="12"/>
-    <rect x="644" y="356" w="636" h="4"/>
+    <rect x="644" y="180" w="468" h="4"/>
+    <rect x="648" y="356" w="632" h="4"/>
     <rect x="704" y="304" w="36" h="52"/>
     <rect x="784" y="320" w="12" h="12"/>
     <rect x="840" y="308" w="48" h="48"/>
@@ -27,9 +28,7 @@
     <rect x="1108" y="112" w="4" h="16"/>
     <rect x="1132" y="32" w="148" h="8"/>
     <rect x="1172" y="40" w="108" h="40"/>
-    <rect x="1176" y="80" w="104" h="116"/>
-    <rect x="1176" y="196" w="24" h="88"/>
-    <rect x="1264" y="196" w="16" h="116"/>
+    <rect x="1176" y="80" w="104" h="232"/>
   </walls>
   <objects>
     <player x="52" y="140"/>
@@ -77,9 +76,10 @@
     <bosstrigger x="852" y="184" width="16" height="124" bossname="junpei"/>
     <lock x="956" y="288" width="8" height="24" bossname="junpei"/>
     <stupei x="928" y="188"/>
-    <savepoint x="1076" y="280" bossname=""/>
-    <lock x="1176" y="284" width="24" height="28" bossname=""/>
-    <decoration x="1212" y="212" fileName="cartoondoor" layer="1"/>
-    <door x="1212" y="212" width="40" height="100" tolevel="desert"/>
+    <savepoint x="560" y="280" bossname=""/>
+    <lock x="640" y="180" width="8" height="132" bossname="stupei"/>
+    <decoration x="496" y="212" fileName="cartoondoor" layer="1"/>
+    <door x="496" y="212" width="40" height="100" tolevel="desert"/>
+    <lock x="640" y="180" width="8" height="132" bossname="junpei"/>
   </objects>
 </level>
