@@ -47,8 +47,6 @@ class Boss extends MiniEntity
         }
         if(health <= 0) {
             die();
-            sfx["klaxon"].stop();
-            sfx["music"].stop();
         }
     }
 
@@ -69,6 +67,8 @@ class Boss extends MiniEntity
     }
 
     public function die() {
+        sfx["klaxon"].stop();
+        sfx["music"].stop();
         sfx["bossdeath"].play();
         explode();
         GameScene.defeatedBossesBeforeSave.push(name);
