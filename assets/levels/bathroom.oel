@@ -27,8 +27,9 @@
     <rect x="1108" y="112" w="4" h="16"/>
     <rect x="1132" y="32" w="148" h="8"/>
     <rect x="1172" y="40" w="108" h="40"/>
-    <rect x="1176" y="80" w="104" h="204"/>
-    <rect x="1192" y="284" w="88" h="28"/>
+    <rect x="1176" y="80" w="104" h="116"/>
+    <rect x="1176" y="196" w="24" h="88"/>
+    <rect x="1264" y="196" w="16" h="116"/>
   </walls>
   <objects>
     <player x="52" y="140"/>
@@ -76,5 +77,9 @@
     <bosstrigger x="852" y="184" width="16" height="124" bossname="junpei"/>
     <lock x="956" y="288" width="8" height="24" bossname="junpei"/>
     <stupei x="928" y="188"/>
+    <savepoint x="1076" y="280" bossname=""/>
+    <lock x="1176" y="284" width="24" height="28" bossname=""/>
+    <decoration x="1212" y="212" fileName="cartoondoor" layer="1"/>
+    <door x="1212" y="212" width="40" height="100" tolevel=""/>
   </objects>
 </level>
