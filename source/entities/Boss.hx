@@ -102,4 +102,13 @@ class Boss extends MiniEntity
             )
         );
     }
+
+    public function getAngleTowardsEntity(e:Entity) {
+        return (
+            Math.atan2(
+                e.centerY - centerY,
+                e.centerX - centerX
+            )
+        );
+    }
 }

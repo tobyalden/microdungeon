@@ -1,20 +1,34 @@
 <level>
   <width>1280</width>
-  <height>180</height>
+  <height>360</height>
   <walls>
-    <rect x="0" y="0" w="960" h="4"/>
+    <rect x="0" y="0" w="1280" h="4"/>
     <rect x="0" y="4" w="644" h="4"/>
     <rect x="0" y="8" w="328" h="8"/>
     <rect x="0" y="16" w="16" h="164"/>
-    <rect x="16" y="164" w="944" h="16"/>
+    <rect x="16" y="164" w="1096" h="16"/>
     <rect x="244" y="140" w="116" h="24"/>
     <rect x="268" y="16" w="60" h="32"/>
-    <rect x="360" y="160" w="600" h="4"/>
+    <rect x="360" y="160" w="752" h="4"/>
     <rect x="636" y="8" w="8" h="116"/>
+    <rect x="640" y="180" w="472" h="4"/>
+    <rect x="640" y="184" w="4" h="176"/>
     <rect x="644" y="112" w="56" h="12"/>
-    <rect x="896" y="128" w="64" h="32"/>
-    <rect x="912" y="104" w="48" h="24"/>
-    <rect x="956" y="4" w="4" h="100"/>
+    <rect x="644" y="356" w="636" h="4"/>
+    <rect x="704" y="304" w="36" h="52"/>
+    <rect x="784" y="320" w="12" h="12"/>
+    <rect x="840" y="308" w="48" h="48"/>
+    <rect x="896" y="128" w="216" h="32"/>
+    <rect x="912" y="104" w="196" h="24"/>
+    <rect x="924" y="312" w="356" h="44"/>
+    <rect x="956" y="4" w="324" h="28"/>
+    <rect x="956" y="32" w="84" h="48"/>
+    <rect x="956" y="184" w="8" h="104"/>
+    <rect x="1108" y="112" w="4" h="16"/>
+    <rect x="1132" y="32" w="148" h="8"/>
+    <rect x="1172" y="40" w="108" h="40"/>
+    <rect x="1176" y="80" w="104" h="204"/>
+    <rect x="1192" y="284" w="88" h="28"/>
   </walls>
   <objects>
     <player x="52" y="140"/>
@@ -25,9 +39,42 @@
       <node x="368" y="80"/>
     </yukari>
     <lock x="636" y="124" width="4" height="36" bossname=""/>
-    <bosstrigger x="680" y="124" width="20" height="36" bossname="mitsuru"/>
+    <bosstrigger x="852" y="184" width="16" height="124" bossname="stupei"/>
     <mitsuru x="760" y="8"/>
-    <savepoint x="500" y="128" bossname=""/>
+    <savepoint x="924" y="72" bossname="mitsuru"/>
     <lock x="640" y="124" width="4" height="36" bossname="mitsuru"/>
+    <savepoint x="500" y="128" bossname="yukari"/>
+    <sawblade x="624" y="344" width="48" height="16" speed="80">
+      <node x="688" y="344"/>
+    </sawblade>
+    <sawblade x="700" y="344" width="48" height="16" speed="80">
+      <node x="628" y="344"/>
+    </sawblade>
+    <sawblade x="712" y="340" width="60" height="16" speed="80">
+      <node x="836" y="340"/>
+    </sawblade>
+    <sawblade x="820" y="336" width="60" height="20" speed="80">
+      <node x="724" y="336"/>
+      <node x="908" y="336"/>
+    </sawblade>
+    <sawblade x="908" y="336" width="32" height="16" speed="80">
+      <node x="876" y="336"/>
+    </sawblade>
+    <sawblade x="776" y="340" width="48" height="16" speed="80">
+      <node x="844" y="340"/>
+    </sawblade>
+    <sawblade x="668" y="344" width="52" height="16" speed="80">
+      <node x="616" y="340"/>
+    </sawblade>
+    <sawblade x="876" y="336" width="8" height="8" speed="80"/>
+    <sawblade x="892" y="340" width="56" height="20" speed="80">
+      <node x="640" y="340"/>
+    </sawblade>
+    <junpei x="648" y="188"/>
+    <lock x="956" y="288" width="8" height="24" bossname="stupei"/>
+    <bosstrigger x="680" y="124" width="20" height="36" bossname="mitsuru"/>
+    <bosstrigger x="852" y="184" width="16" height="124" bossname="junpei"/>
+    <lock x="956" y="288" width="8" height="24" bossname="junpei"/>
+    <stupei x="928" y="188"/>
   </objects>
 </level>

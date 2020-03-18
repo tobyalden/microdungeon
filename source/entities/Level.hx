@@ -93,6 +93,24 @@ class Level extends Entity
                     entities.push(mitsuru);
                 }
             }
+            if(fastXml.node.objects.hasNode.junpei) {
+                for(junpei in fastXml.node.objects.nodes.junpei) {
+                    var junpei = new Junpei(
+                        Std.parseInt(junpei.att.x),
+                        Std.parseInt(junpei.att.y)
+                    );
+                    entities.push(junpei);
+                }
+            }
+            if(fastXml.node.objects.hasNode.stupei) {
+                for(stupei in fastXml.node.objects.nodes.stupei) {
+                    var stupei = new Stupei(
+                        Std.parseInt(stupei.att.x),
+                        Std.parseInt(stupei.att.y)
+                    );
+                    entities.push(stupei);
+                }
+            }
             if(fastXml.node.objects.hasNode.bosstrigger) {
                 for(bossTrigger in fastXml.node.objects.nodes.bosstrigger) {
                     var bossTrigger = new BossTrigger(
