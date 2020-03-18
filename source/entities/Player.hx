@@ -119,7 +119,7 @@ class Player extends MiniEntity
         }
         var elevator = collide("elevator", x, y + 1);
         if(
-            Input.pressed("up")
+            Input.pressed("interact")
             && elevator != null
             && !cast(elevator, Elevator).isUsed
         ) {
@@ -146,16 +146,13 @@ class Player extends MiniEntity
             }
         }
         var _savePoint = collide("savepoint", x, y + 1);
-        if(Input.pressed("down") && _savePoint != null) {
+        if(Input.pressed("interact") && _savePoint != null) {
             var savePoint = cast(_savePoint, SavePoint);
             savePoint.flash();
             cast(scene, GameScene).saveGame(savePoint);
         }
         var _door = collide("door", x, y + 1);
-        if(
-            (Input.pressed("up") || Input.pressed("down"))
-            && _door != null
-        ) {
+        if(Input.pressed("interact") && _door != null) {
             var door = cast(_door, Door);
             active = false;
             isGoingThroughDoor = true;

@@ -13,12 +13,13 @@ class Main extends Engine
 #if debug
         Console.enable();
 #end
-        Key.define("left", [Key.LEFT, Key.LEFT_SQUARE_BRACKET, Key.J]);
-        Key.define("right", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET, Key.L]);
-        Key.define("up", [Key.UP, Key.I]);
-        Key.define("down", [Key.DOWN, Key.K]);
-        Key.define("jump", [Key.Z, Key.A]);
-        Key.define("shoot", [Key.X, Key.S]);
+        Key.define("left", [Key.LEFT]);
+        Key.define("right", [Key.RIGHT]);
+        Key.define("up", [Key.UP]);
+        Key.define("down", [Key.DOWN]);
+        Key.define("interact", [Key.DOWN, Key.UP]);
+        Key.define("jump", [Key.Z]);
+        Key.define("shoot", [Key.X]);
         Key.define("cheat", [Key.P]);
 
         //HXP.scene = new GameScene();
