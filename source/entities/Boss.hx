@@ -34,7 +34,7 @@ class Boss extends MiniEntity
         if(!active) {
             return;
         }
-        if(Input.check("cheat")) {
+        if(Input.check("cheat") && Input.check("cheat2")) {
             health -= 100;
         }
         else {
