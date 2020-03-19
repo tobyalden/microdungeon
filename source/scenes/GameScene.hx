@@ -73,7 +73,7 @@ class GameScene extends Scene
             "backtosavepoint" => new Sfx("audio/backtosavepoint.wav"),
             "door" => new Sfx("audio/door.wav"),
             "finaldoor" => new Sfx("audio/finaldoor.wav"),
-            "ambience" => new Sfx('audio/${currentLevel}_ambience.wav')
+            "ambience" => new Sfx('audio/${currentLevel}_ambience.ogg')
         ];
         sfx["ambience"].loop();
         var background = new Backdrop(

@@ -63,7 +63,7 @@ class Ending extends Scene
         addTween(slideAdvancer, true);
 
         sfx = [
-            "ending" => new Sfx("audio/ending.wav")
+            "ending" => new Sfx("audio/ending.ogg")
         ];
         sfx["ending"].play();
     }
