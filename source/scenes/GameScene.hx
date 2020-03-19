@@ -72,6 +72,7 @@ class GameScene extends Scene
             "retry" => new Sfx("audio/retry.wav"),
             "backtosavepoint" => new Sfx("audio/backtosavepoint.wav"),
             "door" => new Sfx("audio/door.wav"),
+            "finaldoor" => new Sfx("audio/finaldoor.wav"),
             "ambience" => new Sfx('audio/${currentLevel}_ambience.wav')
         ];
         sfx["ambience"].loop();
@@ -191,17 +192,30 @@ class GameScene extends Scene
     }
 
     public function useDoor(door:Door) {
-        sfx["door"].play();
-        curtain.fadeIn(0.5);
+        var time = 0.5;
+        if(door.toLevel == "ending") {
+            sfx["finaldoor"].play();
+            time = 10;
+        }
+        else {
+            sfx["door"].play();
+        }
+        curtain.fadeIn(time / 2);
         doSequence([
             {
-                atTime: 0.5,
+                atTime: time,
                 doThis: function() {
-                    sfx["ambience"].stop();
-                    checkpoint = null;
-                    lastSavePoint = null;
-                    currentLevel = door.toLevel;
-                    HXP.scene = new GameScene();
+                    if(door.toLevel == "ending") {
+                        sfx["ambience"].stop();
+                        HXP.scene = new Ending();
+                    }
+                    else {
+                        sfx["ambience"].stop();
+                        checkpoint = null;
+                        lastSavePoint = null;
+                        currentLevel = door.toLevel;
+                        HXP.scene = new GameScene();
+                    }
                 }
             }
         ]);

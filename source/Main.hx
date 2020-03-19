@@ -23,7 +23,7 @@ class Main extends Engine
         Key.define("cheat", [Key.P]);
 
         //HXP.scene = new GameScene();
-        HXP.scene = new Ending();
+        HXP.scene = new MainMenu();
     }
 
     override public function update() {
