@@ -1,8 +1,9 @@
 + final rena final phase
 + fix junpei door
 + tutorial
-- ending
++ ending
 
+- customize char?
 - minimize?
 - controller support?
 - invincibility cheat?
