@@ -34,8 +34,8 @@ class Player extends MiniEntity
 
     public var activeElevator(default, null):Elevator;
     public var isDead(default, null):Bool;
+    public var velocity(default, null):Vector2;
     private var sprite:Spritemap;
-    private var velocity:Vector2;
     private var shotTimer:Alarm;
     private var wasOnGround:Bool;
     private var isOnHoverboard:Bool;
@@ -113,7 +113,8 @@ class Player extends MiniEntity
 
     private function collisions() {
         for(hazardType in ["hazard", "boss"]) {
-            if(collide(hazardType, x, y) != null) {
+            var hazard = collide(hazardType, x, y);
+            if(hazard != null) {
                 die();
             }
         }
@@ -193,6 +194,11 @@ class Player extends MiniEntity
         sfx["death"].play();
         sfx["shoot"].stop();
         shotTimer.cancel();
+        var shield = scene.getInstance("shield");
+        if(shield != null) {
+            shield.visible = false;
+            shield.collidable = false;
+        }
         cast(scene, GameScene).onDeath();
     }
 

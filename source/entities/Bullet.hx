@@ -19,6 +19,9 @@ class Bullet extends MiniEntity
     private var isBounceShot:Bool;
     private var isArcShot:Bool;
     private var age:Float;
+    private var isReflected:Bool;
+    private var size:Int;
+    private var sfx:Map<String, Sfx>;
 
     public function setIsBounceShot(newIsBounceShot:Bool) {
         isBounceShot = newIsBounceShot;
@@ -31,6 +34,7 @@ class Bullet extends MiniEntity
         super(x, y);
         this.isBounceShot = isBounceShot;
         this.isArcShot = isArcShot;
+        this.size = size;
         type = "hazard";
         var hitbox = new Circle(
             Std.int(size / 2), Std.int(-size / 2), Std.int(-size / 2)
@@ -46,6 +50,12 @@ class Bullet extends MiniEntity
         velocity = heading;
         velocity.normalize(speed);
         age = 0;
+        isReflected = false;
+        sfx = [
+            "bullethit1" => new Sfx("audio/bullethit1.ogg"),
+            "bullethit2" => new Sfx("audio/bullethit2.ogg"),
+            "bullethit3" => new Sfx("audio/bullethit3.ogg")
+        ];
     }
 
     override public function update() {
@@ -56,25 +66,74 @@ class Bullet extends MiniEntity
         if(isArcShot) {
            velocity.y += ARC_SHOT_FALL_VELOCITY * HXP.elapsed;  
         }
-        if(isBounceShot) {
+        if(isReflected) {
+            moveBy(
+                velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, ["boss"]
+            );
+        }
+        else if(isBounceShot) {
             moveBy(
                 velocity.x * HXP.elapsed, velocity.y * HXP.elapsed,
-                ["walls"]
+                ["walls", "shield"]
             );
         }
         else {
-            moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed);
+            moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, ["shield"]);
         }
         super.update();
     }
 
-    override public function moveCollideX(_:Entity) {
-        velocity.x = -velocity.x;
+    override public function moveCollideX(e:Entity) {
+        if(e.type == "boss") {
+            cast(e, Boss).takeHit(size * 2);
+            var sfxName = 'bullethit${HXP.choose(1, 2, 3)}';
+            if(!sfx[sfxName].playing) {
+                sfx[sfxName].play(1);
+            }
+            scene.remove(this);
+        }
+        else if(e.type == "walls") {
+            velocity.x = -velocity.x;
+        }
+        else {
+            setXVelocityAwayFromPlayer();
+        }
         return true;
     }
 
-    override public function moveCollideY(_:Entity) {
-        velocity.y = -velocity.y;
+    override public function moveCollideY(e:Entity) {
+        if(e.type == "boss") {
+            cast(e, Boss).takeHit(size * 2);
+            var sfxName = 'bullethit${HXP.choose(1, 2, 3)}';
+            if(!sfx[sfxName].playing) {
+                sfx[sfxName].play(1);
+            }
+            scene.remove(this);
+        }
+        else if(e.type == "walls") {
+            velocity.y = -velocity.y;
+        }
+        else {
+            setYVelocityAwayFromPlayer();
+        }
         return true;
+    }
+
+    public function setXVelocityAwayFromPlayer() {
+        var player = scene.getInstance("player");
+        velocity.x = player.centerX < centerX ? Math.abs(velocity.x) : -Math.abs(velocity.x);
+        if(!isBounceShot) {
+            isReflected = true;
+            sprite.color = 0xF4FFFD;
+        }
+    }
+
+    public function setYVelocityAwayFromPlayer() {
+        var player = scene.getInstance("player");
+        velocity.x = player.centerY < centerY ? Math.abs(velocity.x) : -Math.abs(velocity.x);
+        if(!isBounceShot) {
+            isReflected = true;
+            sprite.color = 0xF4FFFD;
+        }
     }
 }

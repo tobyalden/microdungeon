@@ -55,6 +55,7 @@ class GameScene extends Scene
             player = new Player(level.playerStart.x, level.playerStart.y);
         }
         add(player);
+        add(new Shield());
         add(level);
         for(entity in level.entities) {
             if(defeatedBosses.indexOf(entity.name) == -1) {

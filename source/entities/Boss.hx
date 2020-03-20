@@ -30,15 +30,15 @@ class Boss extends MiniEntity
         active = false;
     }
 
-    public function takeHit() {
+    public function takeHit(damage:Int = 1) {
         if(!active) {
             return;
         }
         if(Input.check("cheat") && Input.check("cheat2")) {
-            health -= 100;
+            health -= damage * 100;
         }
         else {
-            health -= 1;
+            health -= damage;
         }
         if(health <= startingHealth / 4) {
             if(!sfx["klaxon"].playing) {
