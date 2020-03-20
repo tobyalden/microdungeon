@@ -52,7 +52,7 @@
     <bosstrigger x="348" y="96" width="24" height="40" bossname="mion"/>
     <bosstrigger x="660" y="68" width="40" height="100" bossname="satoko"/>
     <bosstrigger x="660" y="68" width="40" height="100" bossname="rika"/>
-    <lock x="320" y="96" width="4" height="40" bossname="mion"/>
+    <lock x="316" y="96" width="4" height="40" bossname="rena"/>
     <lock x="636" y="128" width="4" height="40" bossname="mion"/>
     <lock x="640" y="128" width="4" height="40" bossname="rika"/>
     <lock x="640" y="128" width="4" height="40" bossname="satoko"/>
@@ -66,5 +66,6 @@
     <door x="1196" y="100" width="52" height="68" tolevel="outside"/>
     <decoration x="1196" y="100" fileName="castledoor" layer="1"/>
     <decoration x="24" y="216" fileName="tutorial" layer="1"/>
+    <lock x="320" y="96" width="4" height="40" bossname="mion"/>
   </objects>
 </level>

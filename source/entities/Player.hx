@@ -70,13 +70,13 @@ class Player extends MiniEntity
         //inventory = ["hanginggloves"];
         inventory = [];
         sfx = [
-            "jump" => new Sfx("audio/jump.wav"),
-            "land" => new Sfx("audio/land.wav"),
-            "shoot" => new Sfx("audio/shoot.wav"),
-            "death" => new Sfx("audio/death.wav"),
-            "hoverboard" => new Sfx("audio/hoverboard.wav"),
-            "getonhoverboard" => new Sfx("audio/getonhoverboard.wav"),
-            "getoffhoverboard" => new Sfx("audio/getoffhoverboard.wav")
+            "jump" => new Sfx("audio/jump.ogg"),
+            "land" => new Sfx("audio/land.ogg"),
+            "shoot" => new Sfx("audio/shoot.ogg"),
+            "death" => new Sfx("audio/death.ogg"),
+            "hoverboard" => new Sfx("audio/hoverboard.ogg"),
+            "getonhoverboard" => new Sfx("audio/getonhoverboard.ogg"),
+            "getoffhoverboard" => new Sfx("audio/getoffhoverboard.ogg")
         ];
         activeElevator = null;
     }

@@ -105,11 +105,11 @@ class MainMenu extends Scene
         );
         addTween(cursorBouncer, true);
         sfx = [
-            "menuselect" => new Sfx("audio/menuselect.wav"),
-            "synthsting1" => new Sfx("audio/synthsting1.wav"),
-            "synthsting2" => new Sfx("audio/synthsting2.wav"),
-            "menuback" => new Sfx("audio/menuback.wav"),
-            "cantselect" => new Sfx("audio/cantselect.wav")
+            "menuselect" => new Sfx("audio/menuselect.ogg"),
+            "synthsting1" => new Sfx("audio/synthsting1.ogg"),
+            "synthsting2" => new Sfx("audio/synthsting2.ogg"),
+            "menuback" => new Sfx("audio/menuback.ogg"),
+            "cantselect" => new Sfx("audio/cantselect.ogg")
         ];
     }
 

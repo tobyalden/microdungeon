@@ -52,7 +52,7 @@ class SavePoint extends MiniEntity
         addTween(textFader);
 
         sfx = [
-            "save" => new Sfx("audio/save.wav")
+            "save" => new Sfx("audio/save.ogg")
         ];
     }
 

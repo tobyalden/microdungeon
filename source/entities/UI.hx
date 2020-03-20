@@ -22,6 +22,8 @@ class UI extends MiniEntity
     private var retryPromptRotator:VarTween;
     private var primaryBossHealthBar:ColoredRect;
     private var secondaryBossHealthBar:ColoredRect;
+    private var colorShifterOne:ColorTween;
+    private var colorShifterTwo:ColorTween;
 
     public function showRetryPrompt() {
         var retryPromptFader = new VarTween();
@@ -59,10 +61,21 @@ class UI extends MiniEntity
         secondaryBossHealthBar.y = HXP.height - 8;
         sprite.add(secondaryBossHealthBar);
 
+        colorShifterOne = new ColorTween(TweenType.PingPong);
+        colorShifterOne.tween(
+            1, Color.getColorRGB(255, 0, 0), Color.getColorRGB(255, 170, 29), 1, 1, Ease.sineInOut
+        );
+        addTween(colorShifterOne, true);
+
+        //colorShifterTwo = new ColorTween(TweenType.Looping);
+        //colorShifterTwo.tween(1, 0xff0000, 0x00FF00);
+        //addTween(colorShifterTwo.tween, true);
+
         graphic = sprite;
     }
 
     override public function update() {
+        primaryBossHealthBar.color = colorShifterOne.color;
         followCamera = scene.camera;
         var bosses = cast(scene, GameScene).getCurrentBosses();
         primaryBossHealthBar.visible = bosses.length > 0;

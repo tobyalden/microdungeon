@@ -68,11 +68,11 @@ class GameScene extends Scene
         curtain.fadeOut(0.5);
         waitingForRespawn = false;
         sfx = [
-            "retryprompt" => new Sfx("audio/retryprompt.wav"),
-            "retry" => new Sfx("audio/retry.wav"),
-            "backtosavepoint" => new Sfx("audio/backtosavepoint.wav"),
-            "door" => new Sfx("audio/door.wav"),
-            "finaldoor" => new Sfx("audio/finaldoor.wav"),
+            "retryprompt" => new Sfx("audio/retryprompt.ogg"),
+            "retry" => new Sfx("audio/retry.ogg"),
+            "backtosavepoint" => new Sfx("audio/backtosavepoint.ogg"),
+            "door" => new Sfx("audio/door.ogg"),
+            "finaldoor" => new Sfx("audio/finaldoor.ogg"),
             "ambience" => new Sfx('audio/${currentLevel}_ambience.ogg')
         ];
         sfx["ambience"].loop();

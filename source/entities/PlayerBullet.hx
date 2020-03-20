@@ -24,9 +24,9 @@ class PlayerBullet extends MiniEntity
         velocity = heading;
         velocity.normalize(SPEED);
         sfx = [
-            "bullethit1" => new Sfx("audio/bullethit1.wav"),
-            "bullethit2" => new Sfx("audio/bullethit2.wav"),
-            "bullethit3" => new Sfx("audio/bullethit3.wav")
+            "bullethit1" => new Sfx("audio/bullethit1.ogg"),
+            "bullethit2" => new Sfx("audio/bullethit2.ogg"),
+            "bullethit3" => new Sfx("audio/bullethit3.ogg")
         ];
     }
 

@@ -24,8 +24,8 @@ class Boss extends MiniEntity
         type = "boss";
         startPosition = new Vector2(startX, startY);
         sfx = [
-            "bossdeath" => new Sfx("audio/bossdeath.wav"),
-            "klaxon" => new Sfx("audio/klaxon.wav")
+            "bossdeath" => new Sfx("audio/bossdeath.ogg"),
+            "klaxon" => new Sfx("audio/klaxon.ogg")
         ];
         active = false;
     }

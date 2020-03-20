@@ -41,7 +41,7 @@ class Elevator extends MiniEntity
         addTween(path);
         isUsed = false;
         sfx = [
-            "elevator" => new Sfx("audio/elevator.wav")
+            "elevator" => new Sfx("audio/elevator.ogg")
         ];
     }
 

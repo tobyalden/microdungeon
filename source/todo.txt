@@ -2,9 +2,9 @@
 + fix junpei door
 + tutorial
 + ending
++ minimize?
 
 - customize char?
-- minimize?
 - controller support?
 - invincibility cheat?
 - shield?

@@ -90,7 +90,7 @@ class FinalRena extends Boss
 
         phase = 1;
         hasFiredBounceShot = false;
-        sfx["secondphase"] = new Sfx("audio/secondphase.wav");
+        sfx["secondphase"] = new Sfx("audio/secondphase.ogg");
     }
 
     override public function die() {
