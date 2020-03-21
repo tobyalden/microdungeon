@@ -5,6 +5,7 @@ import haxepunk.graphics.*;
 import haxepunk.input.*;
 import haxepunk.masks.*;
 import haxepunk.math.*;
+import scenes.*;
 
 class PlayerBullet extends MiniEntity
 {
@@ -39,9 +40,17 @@ class PlayerBullet extends MiniEntity
         );
     }
 
+    private function getBulletDamage() {
+        return [
+            GameScene.EASY => 3,
+            GameScene.NORMAL => 2,
+            GameScene.HARD => 1
+        ][GameScene.difficulty];
+    }
+
     override public function moveCollideX(e:Entity) {
         if(e.type == "boss") {
-            cast(e, Boss).takeHit();
+            cast(e, Boss).takeHit(getBulletDamage());
             var sfxName = 'bullethit${HXP.choose(1, 2, 3)}';
             if(!sfx[sfxName].playing) {
                 sfx[sfxName].play(0.15);
@@ -53,7 +62,7 @@ class PlayerBullet extends MiniEntity
 
     override public function moveCollideY(e:Entity) {
         if(e.type == "boss") {
-            cast(e, Boss).takeHit();
+            cast(e, Boss).takeHit(getBulletDamage());
             var sfxName = 'bullethit${HXP.choose(1, 2, 3)}';
             if(!sfx[sfxName].playing) {
                 sfx[sfxName].play(0.15);

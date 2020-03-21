@@ -33,6 +33,7 @@ class MainMenu extends Scene
     private var isConfirmingNewGame:Bool;
     private var saveDataExists:Bool;
     private var sfx:Map<String, Sfx>;
+    private var difficulty:String;
 
     override public function begin() {
         Data.load(GameScene.SAVE_FILENAME);
@@ -69,6 +70,11 @@ class MainMenu extends Scene
             continueMenuItem.alpha = 0.5;
         }
         menu.push(continueMenuItem);
+        var difficultyMenuItem = new Text(
+            '  Mode: ${GameScene.difficulty}', { size: 16 }
+        );
+        difficultyMenuItem.color = 0xF3A62B;
+        menu.push(difficultyMenuItem);
         var count = 0;
         for(menuItem in menu) {
             menuItem.font = "font/action.ttf";
@@ -215,6 +221,21 @@ class MainMenu extends Scene
                     }
                 }
             }
+        }
+        else if(cursorPositionY == 2) {
+            if(Input.pressed("jump")) {
+                if(GameScene.difficulty == GameScene.EASY) {
+                    GameScene.difficulty = GameScene.NORMAL;
+                }
+                else if(GameScene.difficulty == GameScene.NORMAL) {
+                    GameScene.difficulty = GameScene.HARD;
+                }
+                else {
+                    GameScene.difficulty = GameScene.EASY;
+                }
+                sfx["menuselect"].play();
+            }
+            menu[2].text = '  Mode: ${GameScene.difficulty}';
         }
         super.update();
     }

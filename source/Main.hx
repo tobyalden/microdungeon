@@ -18,7 +18,7 @@ class Main extends Engine
         Key.define("up", [Key.UP]);
         Key.define("down", [Key.DOWN]);
         Key.define("interact", [Key.DOWN, Key.UP]);
-        Key.define("jump", [Key.Z]);
+        Key.define("jump", [Key.Z, Key.ENTER, Key.SPACE]);
         Key.define("shoot", [Key.X]);
         Key.define("cheat", [Key.P]);
         Key.define("cheat2", [Key.O]);

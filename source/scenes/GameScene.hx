@@ -17,6 +17,10 @@ typedef SequenceStep = {
 
 class GameScene extends Scene
 {
+    public static inline var EASY = "EASY";
+    public static inline var NORMAL = "NORMAL";
+    public static inline var HARD = "HARD";
+
     public static inline var SAVE_FILENAME = "renagame";
     public static inline var BACKGROUND_TEXTURE_SCROLL_SPEED = 30;
 
@@ -25,6 +29,7 @@ class GameScene extends Scene
     public static var defeatedBosses:Array<String> = [];
     public static var defeatedBossesBeforeSave:Array<String> = [];
     public static var currentLevel:String = "purplecave";
+    public static var difficulty:String = NORMAL;
 
     private var player:Player;
     private var curtain:Curtain;
@@ -55,7 +60,9 @@ class GameScene extends Scene
             player = new Player(level.playerStart.x, level.playerStart.y);
         }
         add(player);
-        add(new Shield());
+        if(difficulty != HARD) {
+            add(new Shield());
+        }
         add(level);
         for(entity in level.entities) {
             if(defeatedBosses.indexOf(entity.name) == -1) {
@@ -180,14 +187,17 @@ class GameScene extends Scene
     }
 
     public function getCurrentBosses() {
+        trace('gettin bosess');
         var _bosses = new Array<Entity>();
         var bosses = new Array<Boss>();
         getType("boss", _bosses);
         for(_boss in _bosses) {
             var boss = cast(_boss, Boss);
+            trace('hm');
             if(!boss.isOffScreen()) {
                 bosses.push(boss);
             }
+            trace('oh!');
         }
         return bosses;
     }
@@ -223,9 +233,16 @@ class GameScene extends Scene
     }
 
     public function onDeath() {
+        trace('scene deth');
+        trace('cool');
+        trace('current Bs: ${getCurrentBosses}');
+        trace('ok');
         for(boss in getCurrentBosses()) {
-            boss.sfx["music"].stop();
+            if(boss.sfx.exists("music")) {
+                boss.sfx["music"].stop();
+            }
         }
+        trace('got here');
         doSequence([
             {
                 atTime: 2,

@@ -67,15 +67,18 @@ class UI extends MiniEntity
         );
         addTween(colorShifterOne, true);
 
-        //colorShifterTwo = new ColorTween(TweenType.Looping);
-        //colorShifterTwo.tween(1, 0xff0000, 0x00FF00);
-        //addTween(colorShifterTwo.tween, true);
+        colorShifterTwo = new ColorTween(TweenType.PingPong);
+        colorShifterTwo.tween(
+            1, Color.getColorRGB(255, 0, 0), Color.getColorRGB(255, 170, 29), 1, 1, Ease.sineInOut
+        );
+        addTween(colorShifterTwo, true);
 
         graphic = sprite;
     }
 
     override public function update() {
         primaryBossHealthBar.color = colorShifterOne.color;
+        secondaryBossHealthBar.color = colorShifterTwo.color;
         followCamera = scene.camera;
         var bosses = cast(scene, GameScene).getCurrentBosses();
         primaryBossHealthBar.visible = bosses.length > 0;

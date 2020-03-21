@@ -91,6 +91,10 @@ class Player extends MiniEntity
     override public function update() {
         collisions();
         if(!isDead) {
+            var shield = scene.getInstance("shield");
+            if(shield != null) {
+                shield.visible = !isOnHoverboard;
+            }
             if(activeElevator != null) {
                 moveTo(
                     activeElevator.centerX - width / 2,
@@ -199,6 +203,7 @@ class Player extends MiniEntity
             shield.visible = false;
             shield.collidable = false;
         }
+        trace('p death');
         cast(scene, GameScene).onDeath();
     }
 

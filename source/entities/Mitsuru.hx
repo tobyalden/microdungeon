@@ -18,7 +18,7 @@ class Mitsuru extends Boss
     public static inline var SCATTER_SHOT_SPEED = 60;
     public static inline var SCATTER_SHOT_INTERVAL = 0.38;
 
-    public static inline var BOUNCE_SHOT_SPEED = 75;
+    public static inline var BOUNCE_SHOT_SPEED = 100;
 
     private var sprite:Spritemap;
     private var spoutShotInterval:Alarm;
@@ -92,7 +92,7 @@ class Mitsuru extends Boss
         );
         scene.add(new Bullet(
             centerX, centerY, shotVector,
-            BOUNCE_SHOT_SPEED, 0xFFFF00, 30, true
+            BOUNCE_SHOT_SPEED, 0xFFFF00, 15, true
         ));
         var secondShotVector = new Vector2(
             HXP.choose(0.5, 1, -1, -0.5),
@@ -109,7 +109,7 @@ class Mitsuru extends Boss
         }
         scene.add(new Bullet(
             centerX, centerY, secondShotVector,
-            BOUNCE_SHOT_SPEED, 0xFFFF00, 30, true
+            BOUNCE_SHOT_SPEED, 0xFFFF00, 15, true
         ));
     }
 
