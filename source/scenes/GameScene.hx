@@ -28,7 +28,7 @@ class GameScene extends Scene
 
     override public function update() {
         super.update();
-        //camera.setTo(player.centerX, player.centerY, 0.5, 0.5);
+        camera.setTo(player.centerX, player.centerY, 0.5, 0.5);
         //camera.x = player.centerX - HXP.width / 2;
     }
 
@@ -51,47 +51,53 @@ class GameScene extends Scene
         allBlueprint = new Grid(
             mapWidth, mapHeight, MAP_TILE_SIZE, MAP_TILE_SIZE
         );
-        for (r in fastXml.node.rooms.nodes.rect) {
-            roomMapBlueprint.setRect(
-                Std.int(Std.parseInt(r.att.x) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.y) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.w) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.h) / MAP_TILE_SIZE)
-            );
-            allBlueprint.setRect(
-                Std.int(Std.parseInt(r.att.x) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.y) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.w) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.h) / MAP_TILE_SIZE)
-            );
+        if(fastXml.hasNode.rooms) {
+            for (r in fastXml.node.rooms.nodes.rect) {
+                roomMapBlueprint.setRect(
+                    Std.int(Std.parseInt(r.att.x) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.y) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.w) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.h) / MAP_TILE_SIZE)
+                );
+                allBlueprint.setRect(
+                    Std.int(Std.parseInt(r.att.x) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.y) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.w) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.h) / MAP_TILE_SIZE)
+                );
+            }
         }
-        for (r in fastXml.node.hallways.nodes.rect) {
-            hallwayMapBlueprint.setRect(
-                Std.int(Std.parseInt(r.att.x) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.y) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.w) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.h) / MAP_TILE_SIZE)
-            );
-            allBlueprint.setRect(
-                Std.int(Std.parseInt(r.att.x) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.y) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.w) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.h) / MAP_TILE_SIZE)
-            );
+        if(fastXml.hasNode.hallways) {
+            for (r in fastXml.node.hallways.nodes.rect) {
+                hallwayMapBlueprint.setRect(
+                    Std.int(Std.parseInt(r.att.x) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.y) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.w) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.h) / MAP_TILE_SIZE)
+                );
+                allBlueprint.setRect(
+                    Std.int(Std.parseInt(r.att.x) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.y) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.w) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.h) / MAP_TILE_SIZE)
+                );
+            }
         }
-        for (r in fastXml.node.shafts.nodes.rect) {
-            shaftMapBlueprint.setRect(
-                Std.int(Std.parseInt(r.att.x) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.y) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.w) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.h) / MAP_TILE_SIZE)
-            );
-            allBlueprint.setRect(
-                Std.int(Std.parseInt(r.att.x) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.y) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.w) / MAP_TILE_SIZE),
-                Std.int(Std.parseInt(r.att.h) / MAP_TILE_SIZE)
-            );
+        if(fastXml.hasNode.shafts) {
+            for (r in fastXml.node.shafts.nodes.rect) {
+                shaftMapBlueprint.setRect(
+                    Std.int(Std.parseInt(r.att.x) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.y) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.w) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.h) / MAP_TILE_SIZE)
+                );
+                allBlueprint.setRect(
+                    Std.int(Std.parseInt(r.att.x) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.y) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.w) / MAP_TILE_SIZE),
+                    Std.int(Std.parseInt(r.att.h) / MAP_TILE_SIZE)
+                );
+            }
         }
     }
 

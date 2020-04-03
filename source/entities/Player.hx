@@ -9,9 +9,9 @@ import haxepunk.math.*;
 class Player extends MiniEntity
 {
     public static inline var RUN_SPEED = 80 * 1.25;
-    public static inline var AIR_SPEED = 80 * 1.5;
+    public static inline var AIR_SPEED = 80 * 1.25;
     public static inline var GRAVITY = 600;
-    public static inline var JUMP_POWER = 175 * 1.25;
+    public static inline var JUMP_POWER = 175 * 1.5;
     public static inline var JUMP_CANCEL_POWER = 80;
     public static inline var MAX_FALL_SPEED = 270;
 
