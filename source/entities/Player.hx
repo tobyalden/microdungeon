@@ -28,9 +28,11 @@ class Player extends MiniEntity
         sprite.add("jump", [5, 6], 3, false);
         sprite.play("idle");
         graphic = sprite;
-        sprite.x = -39;
+        sprite.x = -44;
+        //sprite.x = -34;
+        //sprite.x = -29;
         sprite.y = -52;
-        mask = new Hitbox(26, 49);
+        mask = new Hitbox(7, 49);
         velocity = new Vector2();
     }
 
@@ -41,14 +43,16 @@ class Player extends MiniEntity
     }
 
     private function movement() {
-        if(Input.check("left") && !isOnLeftWall()) {
-            velocity.x = -RUN_SPEED;
-        }
-        else if(Input.check("right") && !isOnRightWall()) {
-            velocity.x = RUN_SPEED;
-        }
-        else {
-            velocity.x = 0;
+        if(isOnGround()) {
+            if(Input.check("left")) {
+                velocity.x = -RUN_SPEED;
+            }
+            else if(Input.check("right")) {
+                velocity.x = RUN_SPEED;
+            }
+            else {
+                velocity.x = 0;
+            }
         }
 
         if(isOnGround()) {
@@ -75,7 +79,7 @@ class Player extends MiniEntity
         else if(velocity.x > 0) {
             sprite.flipX = false;
         }
-        sprite.x = sprite.flipX ? -37 : -39;
+        sprite.x = sprite.flipX ? -47 : -44;
         if(!isOnGround()) {
             sprite.play("jump");
         }
