@@ -22,7 +22,7 @@ class GameScene extends Scene
     override public function begin() {
         loadMaps(0);
         placeLevels();
-        player = new Player(152, 82);
+        player = new Player(152, 20);
         add(player);
     }
 

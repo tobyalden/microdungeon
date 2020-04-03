@@ -22,15 +22,15 @@ class Player extends MiniEntity
         Key.define("left", [Key.LEFT, Key.LEFT_SQUARE_BRACKET]);
         Key.define("right", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET]);
         Key.define("jump", [Key.Z]);
-        sprite = new Spritemap("graphics/player.png", 8, 12);
+        sprite = new Spritemap("graphics/player.png", 100, 100);
         sprite.add("idle", [0]);
-        sprite.add("run", [1, 2, 3, 2], 8);
-        sprite.add("jump", [4]);
-        sprite.add("wall", [5]);
-        sprite.add("skid", [6]);
+        sprite.add("run", [15, 16, 17, 18, 19], 8);
+        sprite.add("jump", [5, 6], 3, false);
         sprite.play("idle");
         graphic = sprite;
-        mask = new Hitbox(6, 12, -1, 0);
+        sprite.x = -39;
+        sprite.y = -52;
+        mask = new Hitbox(26, 49);
         velocity = new Vector2();
     }
 
@@ -69,7 +69,13 @@ class Player extends MiniEntity
     }
 
     private function animation() {
-        sprite.flipX = velocity.x < 0;
+        if(velocity.x < 0) {
+            sprite.flipX = true;
+        }
+        else if(velocity.x > 0) {
+            sprite.flipX = false;
+        }
+        sprite.x = sprite.flipX ? -37 : -39;
         if(!isOnGround()) {
             sprite.play("jump");
         }
