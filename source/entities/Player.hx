@@ -9,13 +9,16 @@ import haxepunk.math.*;
 class Player extends MiniEntity
 {
     public static inline var RUN_SPEED = 80 * 1.25;
+    public static inline var AIR_SPEED = 80 * 1.5;
     public static inline var GRAVITY = 600;
     public static inline var JUMP_POWER = 175 * 1.25;
-    public static inline var JUMP_CANCEL_POWER = 20;
+    public static inline var JUMP_CANCEL_POWER = 80;
     public static inline var MAX_FALL_SPEED = 270;
 
     private var sprite:Spritemap;
     private var velocity:Vector2;
+    private var isRunningJump:Bool;
+    private var slowedJump:Bool;
 
     public function new(x:Float, y:Float) {
         super(x, y);
@@ -31,7 +34,9 @@ class Player extends MiniEntity
         sprite.x = -44;
         //sprite.x = -34;
         //sprite.x = -29;
-        sprite.y = -52;
+        sprite.y = -51;
+        isRunningJump = false;
+        slowedJump = false;
         mask = new Hitbox(7, 49);
         velocity = new Vector2();
     }
@@ -54,11 +59,45 @@ class Player extends MiniEntity
                 velocity.x = 0;
             }
         }
+        else {
+            if(isRunningJump) {
+                if(velocity.x > 0) {
+                    if(Input.check("left")) {
+                        velocity.x = AIR_SPEED / 2;
+                        slowedJump = true;
+                    }
+                    else if(!slowedJump) {
+                        velocity.x = AIR_SPEED;
+                    }
+                }
+                else if(velocity.x < 0) {
+                    if(Input.check("right")) {
+                        velocity.x = -AIR_SPEED / 2;
+                        slowedJump = true;
+                    }
+                    else if(!slowedJump) {
+                        velocity.x = -AIR_SPEED;
+                    }
+                }
+            }
+            else {
+                if(Input.check("left") && !slowedJump) {
+                    velocity.x = -AIR_SPEED / 3;
+                    slowedJump = true;
+                }
+                else if(Input.check("right") && !slowedJump) {
+                    velocity.x = AIR_SPEED / 3;
+                    slowedJump = true;
+                }
+            }
+        }
 
         if(isOnGround()) {
+            slowedJump = false;
             velocity.y = 0;
             if(Input.pressed("jump")) {
                 velocity.y = -JUMP_POWER;
+                isRunningJump = velocity.x != 0;
             }
         }
         else {
@@ -72,12 +111,19 @@ class Player extends MiniEntity
         moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
     }
 
+    override public function moveCollideY(_:Entity) {
+        velocity.y = 0;
+        return true;
+    }
+
     private function animation() {
-        if(velocity.x < 0) {
-            sprite.flipX = true;
-        }
-        else if(velocity.x > 0) {
-            sprite.flipX = false;
+        if(isOnGround()) {
+            if(velocity.x < 0) {
+                sprite.flipX = true;
+            }
+            else if(velocity.x > 0) {
+                sprite.flipX = false;
+            }
         }
         sprite.x = sprite.flipX ? -47 : -44;
         if(!isOnGround()) {
