@@ -38,7 +38,6 @@ class Player extends MiniEntity
 
     public static inline var HOOK_RETRACT_SPEED = 50;
     public static inline var HOOK_RELEASE_SPEED = 75;
-    //public static inline var HOOK_ACTIVATION_FALL_SPEED_THRESHOLD = 10;
     public static inline var HOOK_ACTIVATION_FALL_SPEED_THRESHOLD = 20;
 
     // TODO: Don't allow player to break rope by walking away from it

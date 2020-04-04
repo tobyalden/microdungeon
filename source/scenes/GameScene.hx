@@ -7,7 +7,7 @@ class GameScene extends Scene
 {
     override public function begin() {
         add(new Player(152, 82));
-        add(new Level("testlevel"));
+        add(new ProcLevel());
     }
 
     override public function update() {
