@@ -35,6 +35,9 @@ class Player extends MiniEntity
     public static inline var MIN_HOOK_DISTANCE = 25;
     public static inline var MAX_HOOK_DISTANCE = 75;
 
+    public static inline var HOOK_RETRACT_SPEED = 50;
+    public static inline var HOOK_RELEASE_SPEED = 75;
+
     private var sprite:Spritemap;
     private var velocity:Vector2;
     private var hook:Hook;
@@ -151,6 +154,39 @@ class Player extends MiniEntity
             && hook.isAttached
             && distanceFrom(hook) > MIN_HOOK_DISTANCE
         ) {
+            if(Input.check("up")) {
+                var towardsHook = new Vector2(
+                    hook.centerX - centerX, hook.centerY - centerY
+                );
+                towardsHook.normalize(HOOK_RETRACT_SPEED);
+                var oldPosition = new Vector2(x, y);
+                moveTo(
+                    x + towardsHook.x * HXP.elapsed,
+                    y + towardsHook.y * HXP.elapsed,
+                    "walls"
+                );
+                if(distanceFrom(hook) <= MIN_HOOK_DISTANCE) {
+                    x = oldPosition.x;
+                    y = oldPosition.y;
+                }
+            }
+            else if(Input.check("down")) {
+                var awayFromHook = new Vector2(
+                    centerX - hook.centerX, centerY - hook.centerY
+                );
+                awayFromHook.normalize(HOOK_RETRACT_SPEED);
+                var oldPosition = new Vector2(x, y);
+                moveTo(
+                    x + awayFromHook.x * HXP.elapsed,
+                    y + awayFromHook.y * HXP.elapsed,
+                    "walls"
+                );
+                if(distanceFrom(hook) > MAX_HOOK_DISTANCE - 10) {
+                    x = oldPosition.x;
+                    y = oldPosition.y;
+                }
+            }
+
             if(
                 isOnCeiling() || isOnGround()
                 || isOnLeftWall() || isOnRightWall()
