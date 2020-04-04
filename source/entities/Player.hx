@@ -114,10 +114,22 @@ class Player extends MiniEntity
             velocity.y += gravity * HXP.elapsed;
             velocity.y = Math.min(velocity.y, MAX_FALL_SPEED_ON_WALL);
             if(Input.pressed("jump")) {
-                velocity.y = -WALL_JUMP_POWER_Y;
-                velocity.x = (
-                    isOnLeftWall() ? WALL_JUMP_POWER_X : -WALL_JUMP_POWER_X
-                );
+                if(hook != null && hook.isAttached) {
+                    isHookActive = true;
+                    if(isOnLeftWall()) {
+                        rotateAmount = -INITIAL_SWING_SPEED * 1.5;
+                    }
+                    else if(isOnRightWall()) {
+                        rotateAmount = INITIAL_SWING_SPEED * 1.5;
+                    }
+                    trace("wallpushing with rope. rotateAmount = " + rotateAmount);
+                }
+                else {
+                    velocity.y = -WALL_JUMP_POWER_Y;
+                    velocity.x = (
+                        isOnLeftWall() ? WALL_JUMP_POWER_X : -WALL_JUMP_POWER_X
+                    );
+                }
             }
         }
         else {
@@ -171,7 +183,7 @@ class Player extends MiniEntity
         ) {
             isHookActive = true;
         }
-        if(isOnWall()) {
+        if(isOnWall() && !Input.pressed("jump")) {
             isHookActive = false;
         }
         if(!isHookActive && wasHookActive) {
@@ -220,7 +232,7 @@ class Player extends MiniEntity
 
             if(
                 isOnCeiling() || isOnGround()
-                || isOnLeftWall() || isOnRightWall()
+                //|| isOnLeftWall() || isOnRightWall()
             ) {
                 rotateAmount = 0;
             }
