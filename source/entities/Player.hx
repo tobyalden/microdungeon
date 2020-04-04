@@ -37,7 +37,8 @@ class Player extends MiniEntity
 
     public static inline var HOOK_RETRACT_SPEED = 50;
     public static inline var HOOK_RELEASE_SPEED = 75;
-    public static inline var HOOK_ACTIVATION_FALL_SPEED_THRESHOLD = 10;
+    //public static inline var HOOK_ACTIVATION_FALL_SPEED_THRESHOLD = 10;
+    public static inline var HOOK_ACTIVATION_FALL_SPEED_THRESHOLD = 20;
 
     private var sprite:Spritemap;
     private var velocity:Vector2;
@@ -239,7 +240,18 @@ class Player extends MiniEntity
             rotateAmount *= Math.pow(
                 SWING_DECELERATION, (HXP.elapsed * HXP.assignedFrameRate)
             );
-            var rotateAmountTimeScaled = rotateAmount * HXP.elapsed;
+            var rotateAmountRopeLengthScaled = (
+                rotateAmount
+                * MathUtil.lerp(
+                    1.25, 0.75,
+                    (distanceFrom(hook) - MIN_HOOK_DISTANCE)
+                    / (MAX_HOOK_DISTANCE - MIN_HOOK_DISTANCE)
+                )
+
+            );
+            var rotateAmountTimeScaled = (
+                rotateAmountRopeLengthScaled * HXP.elapsed
+            );
             // Math from https://math.stackexchange.com/questions/814950
             var xRotated = (
                 Math.cos(rotateAmountTimeScaled) * (centerX - hook.centerX)
@@ -294,7 +306,11 @@ class Player extends MiniEntity
         if(velocity.y < 0) {
             rotateAmount += (velocity.y / 100) * entranceAngle.x;
         }
-        trace(rotateAmount);
+        rotateAmount *= MathUtil.lerp(
+            1.5, 0.5,
+            (distanceFrom(hook) - MIN_HOOK_DISTANCE)
+            / (MAX_HOOK_DISTANCE - MIN_HOOK_DISTANCE)
+        );
     }
 
     override public function render(camera:Camera) {
