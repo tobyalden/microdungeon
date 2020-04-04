@@ -5,6 +5,7 @@ import haxepunk.graphics.*;
 import haxepunk.input.*;
 import haxepunk.masks.*;
 import haxepunk.math.*;
+import haxepunk.utils.*;
 
 class Player extends MiniEntity
 {
@@ -24,18 +25,30 @@ class Player extends MiniEntity
     public static inline var WALL_STICKINESS = 60;
     public static inline var MAX_FALL_SPEED = 270;
     public static inline var MAX_FALL_SPEED_ON_WALL = 0;
-    public static inline var DOUBLE_JUMP_POWER_X = 0;
-    public static inline var DOUBLE_JUMP_POWER_Y = 130;
+
+    public static inline var HOOK_SHOT_SPEED = 250;
+    public static inline var GRAPPLE_EXIT_SPEED = 100;
+    public static inline var ANGULAR_ACCELERATION_MULTIPLIER = 14;
+    public static inline var SWING_DECELERATION = 0.99;
+    public static inline var INITIAL_SWING_SPEED = 3;
+    public static inline var SWING_INFLUENCE = 4;
+    public static inline var MIN_HOOK_DISTANCE = 25;
+    public static inline var MAX_HOOK_DISTANCE = 75;
 
     private var sprite:Spritemap;
     private var velocity:Vector2;
-    private var canDoubleJump:Bool;
+    private var hook:Hook;
+    private var rotateAmount:Float;
 
     public function new(x:Float, y:Float) {
         super(x, y);
+        name = "player";
         Key.define("left", [Key.LEFT, Key.LEFT_SQUARE_BRACKET]);
         Key.define("right", [Key.RIGHT, Key.RIGHT_SQUARE_BRACKET]);
+        Key.define("up", [Key.UP]);
+        Key.define("down", [Key.DOWN]);
         Key.define("jump", [Key.Z]);
+        Key.define("grapple", [Key.X]);
         sprite = new Spritemap("graphics/player.png", 8, 12);
         sprite.add("idle", [0]);
         sprite.add("run", [1, 2, 3, 2], 8);
@@ -44,9 +57,10 @@ class Player extends MiniEntity
         sprite.add("skid", [6]);
         sprite.play("idle");
         graphic = sprite;
-        mask = new Hitbox(6, 12, -1, 0);
+        sprite.x = -1;
+        mask = new Hitbox(6, 12);
         velocity = new Vector2();
-        canDoubleJump = false;
+        rotateAmount = 0;
     }
 
     override public function update() {
@@ -81,7 +95,6 @@ class Player extends MiniEntity
         velocity.x = MathUtil.clamp(velocity.x, -maxSpeed, maxSpeed);
 
         if(isOnGround()) {
-            //canDoubleJump = true;
             velocity.y = 0;
             if(Input.pressed("jump")) {
                 velocity.y = -JUMP_POWER;
@@ -99,16 +112,6 @@ class Player extends MiniEntity
             }
         }
         else {
-            if(Input.pressed("jump") && canDoubleJump) {
-                velocity.y = -DOUBLE_JUMP_POWER_Y;
-                if(velocity.x > 0 && Input.check("left")) {
-                    velocity.x = -DOUBLE_JUMP_POWER_X;
-                }
-                else if(velocity.x < 0 && Input.check("right")) {
-                    velocity.x = DOUBLE_JUMP_POWER_X;
-                }
-                canDoubleJump = false;
-            }
             if(Input.released("jump")) {
                 velocity.y = Math.max(velocity.y, -JUMP_CANCEL_POWER);
             }
@@ -116,7 +119,131 @@ class Player extends MiniEntity
             velocity.y = Math.min(velocity.y, MAX_FALL_SPEED);
         }
 
-        moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
+        if(Input.pressed("grapple")) {
+            if(hook != null) {
+                scene.remove(hook);
+            }
+            var hookDirection = sprite.flipX ? -1 : 1;
+            if(Input.check("left")) {
+                hookDirection = -1;
+            }
+            else if(Input.check("right")) {
+                hookDirection = 1;
+            }
+            var hookVelocity = new Vector2(
+                hookDirection * HOOK_SHOT_SPEED, -HOOK_SHOT_SPEED
+            );
+            hook = new Hook(centerX - 4, centerY - 4, hookVelocity);
+            scene.add(hook);
+        }
+        if(Input.released("grapple")) {
+            if(hook != null) {
+                detachHook();
+            }
+        }
+
+        if(hook != null && distanceFrom(hook) > MAX_HOOK_DISTANCE) {
+            detachHook();
+        }
+
+        if(
+            hook != null
+            && hook.isAttached
+            && distanceFrom(hook) > MIN_HOOK_DISTANCE
+        ) {
+            if(
+                isOnCeiling() || isOnGround()
+                || isOnLeftWall() || isOnRightWall()
+            ) {
+                rotateAmount = 0;
+            }
+            var angularAcceleration = new Vector2(
+                centerX - hook.centerX, centerY - hook.centerY
+            );
+            angularAcceleration.normalize(ANGULAR_ACCELERATION_MULTIPLIER);
+            if(Input.check("left")) {
+                var swingInfluence = new Vector2(SWING_INFLUENCE, 0);
+                angularAcceleration.add(swingInfluence);
+            }
+            else if(Input.check("right")) {
+                var swingInfluence = new Vector2(-SWING_INFLUENCE, 0);
+                angularAcceleration.add(swingInfluence);
+            }
+            rotateAmount += angularAcceleration.x * HXP.elapsed;
+            rotateAmount *= Math.pow(
+                SWING_DECELERATION, (HXP.elapsed * HXP.assignedFrameRate)
+            );
+            var rotateAmountTimeScaled = rotateAmount * HXP.elapsed;
+            // Math from https://math.stackexchange.com/questions/814950
+            var xRotated = (
+                Math.cos(rotateAmountTimeScaled) * (centerX - hook.centerX)
+                - Math.sin(rotateAmountTimeScaled) * (centerY - hook.centerY)
+                + hook.centerX
+            ) - width / 2;
+            var yRotated = (
+                Math.sin(rotateAmountTimeScaled) * (centerX - hook.centerX)
+                + Math.cos(rotateAmountTimeScaled) * (centerY - hook.centerY)
+                + hook.centerY
+            ) - height / 2;
+            velocity = new Vector2(xRotated - x, yRotated - y);
+            velocity.scale(1 / HXP.elapsed);
+            if(!(
+                isOnCeiling() && yRotated < y
+                || isOnGround() && yRotated > y
+                || isOnLeftWall() && xRotated < x
+                || isOnRightWall() && xRotated > x
+            )) {
+                moveTo(xRotated, yRotated, "walls");
+            }
+        }
+        else {
+            moveBy(
+                velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls"
+            );
+        }
+    }
+
+    public function detachHook() {
+        hook.enabled = false;
+        scene.remove(hook);
+        hook = null;
+    }
+
+    public function setRotateAmountToInitialValue() {
+        var hookDirection = sprite.flipX ? -1 : 1;
+        if(Input.check("left")) {
+            hookDirection = -1;
+        }
+        else if(Input.check("right")) {
+            hookDirection = 1;
+        }
+        var entranceAngle = new Vector2(
+            centerX - hook.centerX, centerY - hook.centerY
+        );
+        entranceAngle.normalize(INITIAL_SWING_SPEED);
+        rotateAmount = entranceAngle.x;
+        rotateAmount -= velocity.x / 100;
+        if(velocity.y < 0) {
+            rotateAmount += (velocity.y / 100) * entranceAngle.x;
+        }
+        trace(rotateAmount);
+    }
+
+    override public function render(camera:Camera) {
+        if(hook != null && hook.isAttached) {
+            Draw.color = 0xFFFFFF;
+            Draw.line(centerX, centerY, hook.centerX, hook.centerY);
+            Draw.color = 0x00FF00;
+            Draw.circle(
+                hook.centerX,
+                hook.centerY,
+                MathUtil.distance(
+                    centerX, centerY, hook.centerX, hook.centerY
+                ),
+                100
+            );
+        }
+        super.render(camera);
     }
 
     override public function moveCollideX(_:Entity) {
