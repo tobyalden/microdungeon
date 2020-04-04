@@ -37,11 +37,14 @@ class Player extends MiniEntity
 
     public static inline var HOOK_RETRACT_SPEED = 50;
     public static inline var HOOK_RELEASE_SPEED = 75;
+    public static inline var HOOK_ACTIVATION_FALL_SPEED_THRESHOLD = 10;
 
     private var sprite:Spritemap;
     private var velocity:Vector2;
     private var hook:Hook;
     private var rotateAmount:Float;
+    private var isHookActive:Bool;
+    private var wasHookActive:Bool;
 
     public function new(x:Float, y:Float) {
         super(x, y);
@@ -64,6 +67,8 @@ class Player extends MiniEntity
         mask = new Hitbox(6, 12);
         velocity = new Vector2();
         rotateAmount = 0;
+        isHookActive = false;
+        wasHookActive = false;
     }
 
     override public function update() {
@@ -150,9 +155,34 @@ class Player extends MiniEntity
         }
 
         if(
+            !isHookActive
+            && velocity.y > HOOK_ACTIVATION_FALL_SPEED_THRESHOLD
+            && (hook == null || centerY > hook.centerY)
+        ) {
+            isHookActive = true;
+        }
+        if(isOnGround() && isHookActive) {
+            isHookActive = false;
+        }
+        if(
+            isOnGround() && Input.check("up") && hook != null &&
+            hook.isAttached
+        ) {
+            isHookActive = true;
+        }
+        if(isOnWall()) {
+            isHookActive = false;
+        }
+        if(!isHookActive && wasHookActive) {
+            rotateAmount = 0;
+        }
+
+
+        if(
             hook != null
             && hook.isAttached
             && distanceFrom(hook) > MIN_HOOK_DISTANCE
+            && isHookActive
         ) {
             if(Input.check("up")) {
                 var towardsHook = new Vector2(
@@ -237,12 +267,14 @@ class Player extends MiniEntity
                 velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls"
             );
         }
+        wasHookActive = isHookActive;
     }
 
     public function detachHook() {
         hook.enabled = false;
         scene.remove(hook);
         hook = null;
+        isHookActive = false;
     }
 
     public function setRotateAmountToInitialValue() {
@@ -267,9 +299,9 @@ class Player extends MiniEntity
 
     override public function render(camera:Camera) {
         if(hook != null && hook.isAttached) {
-            Draw.color = 0xFFFFFF;
+            Draw.color = !isHookActive ? 0x0000FF : 0xFFFFFF;
             Draw.line(centerX, centerY, hook.centerX, hook.centerY);
-            Draw.color = 0x00FF00;
+            Draw.color = !isHookActive ? 0x0000FF : 0x00FF00;
             Draw.circle(
                 hook.centerX,
                 hook.centerY,
