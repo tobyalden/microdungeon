@@ -31,6 +31,7 @@ class Player extends MiniEntity
     public static inline var ANGULAR_ACCELERATION_MULTIPLIER = 14;
     public static inline var SWING_DECELERATION = 0.99;
     public static inline var INITIAL_SWING_SPEED = 3;
+    public static inline var KICK_OFF_SPEED = 4;
     public static inline var SWING_INFLUENCE = 4;
     public static inline var MIN_HOOK_DISTANCE = 25;
     public static inline var MAX_HOOK_DISTANCE = 75;
@@ -39,6 +40,8 @@ class Player extends MiniEntity
     public static inline var HOOK_RELEASE_SPEED = 75;
     //public static inline var HOOK_ACTIVATION_FALL_SPEED_THRESHOLD = 10;
     public static inline var HOOK_ACTIVATION_FALL_SPEED_THRESHOLD = 20;
+
+    // TODO: Don't allow player to break rope by walking away from it
 
     private var sprite:Spritemap;
     private var velocity:Vector2;
@@ -114,15 +117,14 @@ class Player extends MiniEntity
             velocity.y += gravity * HXP.elapsed;
             velocity.y = Math.min(velocity.y, MAX_FALL_SPEED_ON_WALL);
             if(Input.pressed("jump")) {
-                if(hook != null && hook.isAttached) {
+                if(hook != null && hook.isAttached && distanceFrom(hook) > MIN_HOOK_DISTANCE) {
                     isHookActive = true;
                     if(isOnLeftWall()) {
-                        rotateAmount = -INITIAL_SWING_SPEED * 1.5;
+                        rotateAmount = -KICK_OFF_SPEED;
                     }
                     else if(isOnRightWall()) {
-                        rotateAmount = INITIAL_SWING_SPEED * 1.5;
+                        rotateAmount = KICK_OFF_SPEED;
                     }
-                    trace("wallpushing with rope. rotateAmount = " + rotateAmount);
                 }
                 else {
                     velocity.y = -WALL_JUMP_POWER_Y;
